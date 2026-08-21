@@ -1,0 +1,15 @@
+node_modules
+dist
+dist-ssr
+*.local
+
+.env
+.env.example
+
+server/data/*.sqlite
+
+PLAN.md
+CLAUDE.md
+
+.DS_Store
+*.log
