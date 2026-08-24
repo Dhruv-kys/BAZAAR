@@ -1,0 +1,132 @@
+.orb {
+  --orb-stroke: #305eff;
+  --orb-hi: rgba(255, 255, 255, 0.95);
+  --orb-mid: rgba(120, 155, 255, 0.55);
+  --orb-low: rgba(48, 94, 255, 0.32);
+
+  position: absolute;
+  right: -40px;
+  top: 50%;
+  width: 300px;
+  height: 300px;
+  translate: 0 -50%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+html.dark .orb {
+  --orb-stroke: #8aa5ff;
+  --orb-hi: rgba(255, 255, 255, 0.7);
+  --orb-mid: rgba(125, 155, 255, 0.4);
+  --orb-low: rgba(60, 80, 190, 0.3);
+}
+
+.orb-svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.orb-track {
+  fill: none;
+  stroke: var(--orb-stroke);
+  stroke-width: 1;
+  opacity: 0.16;
+}
+
+.orb-dashed {
+  stroke-dasharray: 3 9;
+  opacity: 0.3;
+  transform-origin: 150px 150px;
+  animation: orb-spin 46s linear infinite;
+}
+
+.orb-sweep {
+  fill: none;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-dasharray: 150 720;
+  transform-origin: 150px 150px;
+  animation: orb-spin 14s linear infinite;
+  opacity: 0.85;
+}
+
+.orb-sweep-2 {
+  stroke-dasharray: 96 570;
+  animation-duration: 19s;
+  animation-direction: reverse;
+  opacity: 0.6;
+}
+
+.orb-core {
+  filter: drop-shadow(0 6px 22px rgba(48, 94, 255, 0.35));
+  transform-origin: 150px 150px;
+  animation: orb-breathe 7s ease-in-out infinite;
+}
+
+.orb-core-edge {
+  fill: none;
+  stroke: var(--orb-stroke);
+  stroke-width: 1;
+  opacity: 0.35;
+  transform-origin: 150px 150px;
+  animation: orb-breathe 7s ease-in-out infinite;
+}
+
+.orb-dot {
+  fill: var(--orb-stroke);
+  offset-path: circle(138px at 150px 150px);
+  animation: orb-orbit 18s linear infinite;
+}
+
+.orb-dot-2 {
+  offset-path: circle(106px at 150px 150px);
+  animation-duration: 12s;
+  animation-delay: -4s;
+  opacity: 0.8;
+}
+
+.orb-dot-3 {
+  offset-path: circle(72px at 150px 150px);
+  animation-duration: 8s;
+  animation-delay: -2s;
+  opacity: 0.65;
+}
+
+@keyframes orb-spin {
+  to {
+    rotate: 360deg;
+  }
+}
+
+@keyframes orb-breathe {
+  0%,
+  100% {
+    scale: 1;
+  }
+  50% {
+    scale: 1.05;
+  }
+}
+
+@keyframes orb-orbit {
+  to {
+    offset-distance: 100%;
+  }
+}
+
+@media (max-width: 1180px) {
+  .orb {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .orb-dashed,
+  .orb-sweep,
+  .orb-core,
+  .orb-core-edge,
+  .orb-dot {
+    animation: none;
+  }
+}

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { OrderSummaryCard, type PendingOrder } from "../order/OrderSummaryCard";
 import { AlertIcon } from "../icons";
+import { AgentOrb } from "./AgentOrb";
 import { RichText } from "./RichText";
 import "./ChatPanel.css";
 
@@ -65,7 +66,9 @@ export function ChatPanel({ sessionId }: { sessionId: string }) {
     <section className="cp">
       <div className={`cp-thread${empty && !sending ? " empty" : ""}`} ref={threadRef}>
         {empty ? (
-          <div className="cp-intro">
+          <>
+            <AgentOrb />
+            <div className="cp-intro">
             <span className="eyebrow">Merchant sales agent</span>
             <h1 className="cp-head">
               Tell it the occasion.
@@ -92,7 +95,8 @@ export function ChatPanel({ sessionId }: { sessionId: string }) {
                 </span>
               ))}
             </div>
-          </div>
+            </div>
+          </>
         ) : (
           messages.map((m, i) =>
             m.role === "notice" ? (
