@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { DemoControls } from "../demo/DemoControls";
+import "./OrderSummaryCard.css";
 
 export interface PendingOrderItem {
   productId: string;
@@ -25,8 +26,8 @@ export interface PendingOrder {
   totalInPaise: number;
 }
 
-function formatRupees(paise: number): string {
-  return `₹${(paise / 100).toFixed(2)}`;
+function rupees(paise: number) {
+  return `₹${(paise / 100).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
 
 export function OrderSummaryCard({ order }: { order: PendingOrder }) {
@@ -53,38 +54,71 @@ export function OrderSummaryCard({ order }: { order: PendingOrder }) {
   }
 
   return (
-    <section>
-      <h2>Order Summary</h2>
-      <ul>
+    <section className="os">
+      <header className="os-head">
+        <span className="eyebrow">Order summary</span>
+        <span className="os-gate">Nothing is charged until you confirm</span>
+      </header>
+
+      <ul className="os-lines">
         {order.items.map((item) => (
           <li key={item.variantId}>
-            {item.quantity} x {item.productName} ({item.variantLabel}) - {formatRupees(item.priceInPaise * item.quantity)}
+            <span className="os-qty">{item.quantity}×</span>
+            <span className="os-name">
+              {item.productName}
+              <em>{item.variantLabel}</em>
+            </span>
+            <span className="os-amt">{rupees(item.priceInPaise * item.quantity)}</span>
           </li>
         ))}
         {order.addOns.map((addOn) => (
-          <li key={addOn.addOnId}>
-            {addOn.name} - {formatRupees(addOn.priceInPaise)}
+          <li key={addOn.addOnId} className="os-addon">
+            <span className="os-qty">+</span>
+            <span className="os-name">{addOn.name}</span>
+            <span className="os-amt">{rupees(addOn.priceInPaise)}</span>
           </li>
         ))}
       </ul>
-      <p>Subtotal: {formatRupees(order.subtotalInPaise)}</p>
-      {order.discountInPaise > 0 && <p>Discount: -{formatRupees(order.discountInPaise)}</p>}
-      <p>
-        <strong>Total: {formatRupees(order.totalInPaise)}</strong>
-      </p>
+
+      <div className="os-math">
+        <div className="os-row">
+          <span>Subtotal</span>
+          <span>{rupees(order.subtotalInPaise)}</span>
+        </div>
+        {order.discountInPaise > 0 && (
+          <div className="os-row os-save">
+            <span>Discount applied</span>
+            <span>−{rupees(order.discountInPaise)}</span>
+          </div>
+        )}
+        <div className="os-row os-total">
+          <span>Total</span>
+          <span>{rupees(order.totalInPaise)}</span>
+        </div>
+      </div>
+
       {paymentUrl ? (
-        <>
-          <a href={paymentUrl} target="_blank" rel="noreferrer">
-            Pay ₹{(order.totalInPaise / 100).toFixed(2)} now →
+        <div className="os-live">
+          <a className="os-pay" href={paymentUrl} target="_blank" rel="noreferrer">
+            Pay {rupees(order.totalInPaise)} securely →
           </a>
+          <p className="os-note">Razorpay test mode — a real payment link, no real money moves.</p>
           <DemoControls summaryId={order.summaryId} />
-        </>
+        </div>
       ) : (
-        <button type="button" onClick={confirmAndPay} disabled={confirming}>
-          {confirming ? "Preparing payment..." : "Confirm & Pay"}
-        </button>
+        <div className="os-actions">
+          <button className="os-confirm" type="button" onClick={confirmAndPay} disabled={confirming}>
+            {confirming ? "Creating secure link…" : `Confirm & pay ${rupees(order.totalInPaise)}`}
+          </button>
+          <p className="os-note">Confirming creates a Razorpay payment link. You pay on Razorpay, not here.</p>
+        </div>
       )}
-      {error && <p role="alert">{error}</p>}
+
+      {error && (
+        <p className="os-error" role="alert">
+          {error}
+        </p>
+      )}
     </section>
   );
 }

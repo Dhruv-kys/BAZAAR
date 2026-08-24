@@ -1,4 +1,5 @@
 import { useState } from "react";
+import "./DemoControls.css";
 
 export function DemoControls({ summaryId }: { summaryId: string }) {
   const [loading, setLoading] = useState(false);
@@ -24,19 +25,27 @@ export function DemoControls({ summaryId }: { summaryId: string }) {
   }
 
   return (
-    <div>
-      <button type="button" onClick={simulateFailure} disabled={loading}>
-        {loading ? "Simulating..." : "Force Simulate Failure (demo)"}
-      </button>
-      {retryUrl && (
-        <p>
-          Payment declined.{" "}
-          <a href={retryUrl} target="_blank" rel="noreferrer">
+    <div className="dc">
+      {retryUrl ? (
+        <div className="dc-recovered">
+          <div className="dc-recovered-head">
+            <span className="dc-badge">Payment declined</span>
+            <span className="dc-recovered-note">Handled — a fresh link is ready</span>
+          </div>
+          <a className="dc-retry" href={retryUrl} target="_blank" rel="noreferrer">
             Retry payment →
           </a>
+        </div>
+      ) : (
+        <button className="dc-trigger" type="button" onClick={simulateFailure} disabled={loading}>
+          {loading ? "Simulating…" : "Simulate a declined payment"}
+        </button>
+      )}
+      {error && (
+        <p className="dc-error" role="alert">
+          {error}
         </p>
       )}
-      {error && <p role="alert">{error}</p>}
     </div>
   );
 }
