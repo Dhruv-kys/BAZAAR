@@ -1,10 +1,18 @@
 import OpenAI from "openai";
+import { missingKeysFor } from "../config.js";
 
 export const CHAT_MODEL = process.env.OPENAI_MODEL ?? "gpt-4o-mini";
 
 const MAX_RETRIES = 3;
 const MAX_RETRY_WAIT_MS = 8000;
 const MAX_COMPLETION_TOKENS = 700;
+
+export class AgentNotConfiguredError extends Error {
+  constructor(missing: string[]) {
+    super(`Missing required environment variable(s): ${missing.join(", ")}`);
+    this.name = "AgentNotConfiguredError";
+  }
+}
 
 export class AgentBusyError extends Error {
   readonly retryAfterSeconds?: number;
@@ -19,6 +27,9 @@ export class AgentBusyError extends Error {
 let client: OpenAI | undefined;
 
 function getClient(): OpenAI {
+  const missing = missingKeysFor("chat");
+  if (missing.length) throw new AgentNotConfiguredError(missing);
+
   client ??= new OpenAI({ apiKey: process.env.OPENAI_API_KEY, maxRetries: 0 });
   return client;
 }

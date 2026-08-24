@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { runChatTurn } from "../agent/agentCore.js";
-import { AgentBusyError } from "../agent/llmClient.js";
+import { AgentBusyError, AgentNotConfiguredError } from "../agent/llmClient.js";
 
 function waitHint(seconds?: number): string {
   if (!seconds) return "in a moment";
@@ -22,6 +22,11 @@ chatRouter.post("/", async (req, res) => {
     const result = await runChatTurn(sessionId, message);
     res.json(result);
   } catch (error) {
+    if (error instanceof AgentNotConfiguredError) {
+      console.error("chat turn misconfigured:", error.message);
+      res.status(503).json({ error: "The assistant isn't configured yet. Add OPENAI_API_KEY to .env and restart." });
+      return;
+    }
     if (error instanceof AgentBusyError) {
       console.error("chat turn rate limited:", error.message);
       res.status(429).json({

@@ -1,6 +1,6 @@
 import cors from "cors";
 import express from "express";
-import { config } from "./config.js";
+import { config, reportConfig } from "./config.js";
 import { auditRouter } from "./routes/audit.js";
 import { chatRouter } from "./routes/chat.js";
 import { guardrailsRouter } from "./routes/guardrails.js";
@@ -25,4 +25,5 @@ app.use("/api/orders", ordersRouter);
 
 app.listen(config.port, () => {
   console.log(`server listening on http://localhost:${config.port}`);
+  reportConfig();
 });
