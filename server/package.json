@@ -4,8 +4,9 @@
   "type": "module",
   "scripts": {
     "dev": "tsx watch src/index.ts",
-    "build": "tsc -p tsconfig.json",
-    "start": "node dist/index.js"
+    "build": "tsc -p tsconfig.build.json",
+    "start": "node dist/index.js",
+    "test": "tsx --test src/**/*.test.ts"
   },
   "dependencies": {
     "better-sqlite3": "^13.0.3",
