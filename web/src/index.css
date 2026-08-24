@@ -1,8 +1,104 @@
 :root {
-  color-scheme: light dark;
-  font: 16px/1.5 system-ui, "Segoe UI", Roboto, sans-serif;
+  --ink: #f7f3e6;
+  --panel: #ffffff;
+  --panel-2: #fbf8f0;
+  --line: rgba(30, 24, 10, 0.1);
+  --line-2: rgba(30, 24, 10, 0.16);
+  --blue: #3d4ee6;
+  --blue-2: #5b6cff;
+  --cyan: #0ea5b7;
+  --go: #17a673;
+  --warn: #b4791a;
+  --stop: #cc4433;
+  --head: #2a2415;
+  --body: #4a4438;
+  --muted: #6b6455;
+  --faint: #8c8574;
+  --accent-pastel: #dce1ff;
+  --go-soft: rgba(23, 166, 115, 0.1);
+  --warn-soft: rgba(180, 121, 26, 0.12);
+  --stop-soft: rgba(204, 68, 51, 0.1);
+  --blue-soft: rgba(91, 108, 255, 0.1);
+
+  --sans: "Hanken Grotesk", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --serif: "Instrument Serif", Georgia, serif;
+  --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  color-scheme: light;
+}
+
+html.dark {
+  --ink: #14120e;
+  --panel: #1d1912;
+  --panel-2: #232016;
+  --line: rgba(251, 246, 232, 0.12);
+  --line-2: rgba(251, 246, 232, 0.2);
+  --blue: #6b7dff;
+  --blue-2: #8a97ff;
+  --cyan: #63e6ff;
+  --go: #3fe0a0;
+  --warn: #e0b055;
+  --stop: #ff8f7a;
+  --head: #fbf6e8;
+  --body: #ded8c8;
+  --muted: #a49d8b;
+  --faint: #837c6b;
+  --accent-pastel: #33407a;
+  --go-soft: rgba(63, 224, 160, 0.12);
+  --warn-soft: rgba(224, 176, 85, 0.14);
+  --stop-soft: rgba(255, 143, 122, 0.12);
+  --blue-soft: rgba(107, 125, 255, 0.14);
+
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+  background: var(--ink);
 }
 
 body {
-  margin: 0;
+  font-family: var(--sans);
+  color: var(--body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background 0.4s ease, color 0.4s ease;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+::selection {
+  background: var(--accent-pastel);
+  color: var(--head);
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+input {
+  font-family: inherit;
+}
+
+a {
+  color: var(--blue);
+}
+
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.24em;
+  color: var(--blue-2);
 }

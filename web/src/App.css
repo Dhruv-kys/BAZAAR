@@ -1,0 +1,91 @@
+.app {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 1320px;
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 20px 24px 26px;
+}
+
+.app-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.app-brand {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.app-mark {
+  font-size: 15px;
+  color: var(--blue);
+}
+
+.app-name {
+  font-family: var(--serif);
+  font-size: 25px;
+  letter-spacing: -0.01em;
+  color: var(--head);
+}
+
+.app-slash {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  color: var(--faint);
+}
+
+.app-nav-right {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  flex-wrap: wrap;
+}
+
+.app-theme {
+  width: 33px;
+  height: 33px;
+  display: grid;
+  place-items: center;
+  font-size: 13px;
+  color: var(--muted);
+  background: var(--panel);
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  transition: all 0.2s ease;
+}
+
+.app-theme:hover {
+  color: var(--head);
+  border-color: var(--head);
+}
+
+.app-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
+  gap: 16px;
+  flex: 1;
+  min-height: 0;
+}
+
+@media (max-width: 1040px) {
+  .app-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .app-grid > * {
+    min-height: 60vh;
+  }
+}
+
+@media (max-width: 560px) {
+  .app {
+    padding: 16px 14px 20px;
+  }
+}
