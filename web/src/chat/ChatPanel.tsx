@@ -4,7 +4,7 @@ import { RichText } from "./RichText";
 import "./ChatPanel.css";
 
 interface ChatMessage {
-  role: "user" | "assistant";
+  role: "user" | "assistant" | "notice";
   content: string;
 }
 
@@ -45,11 +45,14 @@ export function ChatPanel({ sessionId }: { sessionId: string }) {
         body: JSON.stringify({ sessionId, message: text }),
       });
       const data = await res.json();
-      const reply = res.ok ? data.reply : `Error: ${data.error}`;
-      setMessages((prev) => [...prev, { role: "assistant", content: reply }]);
-      if (res.ok && data.orderSummary) setOrderSummary(data.orderSummary);
+      if (!res.ok) {
+        setMessages((prev) => [...prev, { role: "notice", content: data.error ?? "Something went wrong." }]);
+        return;
+      }
+      setMessages((prev) => [...prev, { role: "assistant", content: data.reply }]);
+      if (data.orderSummary) setOrderSummary(data.orderSummary);
     } catch {
-      setMessages((prev) => [...prev, { role: "assistant", content: "Couldn't reach the server." }]);
+      setMessages((prev) => [...prev, { role: "notice", content: "Couldn't reach the server." }]);
     } finally {
       setSending(false);
     }
@@ -90,14 +93,21 @@ export function ChatPanel({ sessionId }: { sessionId: string }) {
             </div>
           </div>
         ) : (
-          messages.map((m, i) => (
-            <div key={i} className={`cp-msg ${m.role}`}>
-              <span className="cp-who">{m.role === "user" ? "You" : "Agent"}</span>
-              <div className="cp-bubble">
-                {m.role === "assistant" ? <RichText text={m.content} /> : m.content}
+          messages.map((m, i) =>
+            m.role === "notice" ? (
+              <div key={i} className="cp-notice" role="status">
+                <span aria-hidden="true">⚠</span>
+                {m.content}
               </div>
-            </div>
-          ))
+            ) : (
+              <div key={i} className={`cp-msg ${m.role}`}>
+                <span className="cp-who">{m.role === "user" ? "You" : "Agent"}</span>
+                <div className="cp-bubble">
+                  {m.role === "assistant" ? <RichText text={m.content} /> : m.content}
+                </div>
+              </div>
+            ),
+          )
         )}
 
         {sending && (

@@ -125,6 +125,21 @@
   color: var(--head);
 }
 
+.cp-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  margin-bottom: 18px;
+  padding: 12px 15px;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--warn);
+  background: var(--warn-soft);
+  border: 1px solid rgba(180, 121, 26, 0.28);
+  border-radius: 11px;
+  animation: cp-in 0.32s ease both;
+}
+
 .cp-msg {
   display: flex;
   flex-direction: column;

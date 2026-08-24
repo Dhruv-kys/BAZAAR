@@ -3,11 +3,22 @@ import Groq from "groq-sdk";
 export const CHAT_MODEL = "openai/gpt-oss-120b";
 
 const MAX_RETRIES = 3;
+const MAX_RETRY_WAIT_MS = 8000;
+
+export class AgentBusyError extends Error {
+  readonly retryAfterSeconds?: number;
+
+  constructor(retryAfterSeconds?: number) {
+    super("The assistant is rate limited upstream");
+    this.name = "AgentBusyError";
+    this.retryAfterSeconds = retryAfterSeconds;
+  }
+}
 
 let groq: Groq | undefined;
 
 function getGroqClient(): Groq {
-  groq ??= new Groq({ apiKey: process.env.GROQ_API_KEY });
+  groq ??= new Groq({ apiKey: process.env.GROQ_API_KEY, maxRetries: 0 });
   return groq;
 }
 
@@ -33,17 +44,23 @@ export async function createChatCompletion(
         ...(tools.length ? { tools } : {}),
       });
     } catch (error) {
-      if (attempt >= MAX_RETRIES) throw error;
-
-      if (isMalformedToolCall(error)) {
-        await sleep(250 * (attempt + 1));
-        continue;
+      if (!(error instanceof Groq.RateLimitError)) {
+        if (isMalformedToolCall(error) && attempt < MAX_RETRIES) {
+          await sleep(250 * (attempt + 1));
+          continue;
+        }
+        throw error;
       }
 
-      if (!(error instanceof Groq.RateLimitError)) throw error;
+      const retryAfterSeconds = Number(error.headers?.get("retry-after"));
+      const retryAfterMs = Number.isFinite(retryAfterSeconds)
+        ? retryAfterSeconds * 1000
+        : 2 ** attempt * 1000;
 
-      const retryAfterHeader = error.headers?.get("retry-after");
-      const retryAfterMs = retryAfterHeader ? Number(retryAfterHeader) * 1000 : 2 ** attempt * 1000;
+      if (retryAfterMs > MAX_RETRY_WAIT_MS || attempt >= MAX_RETRIES) {
+        throw new AgentBusyError(Number.isFinite(retryAfterSeconds) ? retryAfterSeconds : undefined);
+      }
+
       await sleep(retryAfterMs);
     }
   }
