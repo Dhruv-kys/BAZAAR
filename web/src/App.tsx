@@ -1,19 +1,16 @@
-import { useEffect, useState } from "react";
+import { AuditPanel } from "./audit/AuditPanel";
+import { ChatPanel } from "./chat/ChatPanel";
+import { GuardrailsBadge } from "./guardrails/GuardrailsBadge";
+
+const sessionId = crypto.randomUUID();
 
 function App() {
-  const [status, setStatus] = useState<string>("checking...");
-
-  useEffect(() => {
-    fetch("/api/health")
-      .then((res) => res.json())
-      .then((data) => setStatus(data.status))
-      .catch(() => setStatus("unreachable"));
-  }, []);
-
   return (
     <main>
       <h1>Bazaar</h1>
-      <p>server: {status}</p>
+      <GuardrailsBadge />
+      <ChatPanel sessionId={sessionId} />
+      <AuditPanel sessionId={sessionId} />
     </main>
   );
 }
