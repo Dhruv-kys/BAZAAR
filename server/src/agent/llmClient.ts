@@ -1,9 +1,10 @@
-import Groq from "groq-sdk";
+import OpenAI from "openai";
 
-export const CHAT_MODEL = "openai/gpt-oss-120b";
+export const CHAT_MODEL = process.env.OPENAI_MODEL ?? "gpt-4o-mini";
 
 const MAX_RETRIES = 3;
 const MAX_RETRY_WAIT_MS = 8000;
+const MAX_COMPLETION_TOKENS = 700;
 
 export class AgentBusyError extends Error {
   readonly retryAfterSeconds?: number;
@@ -15,11 +16,11 @@ export class AgentBusyError extends Error {
   }
 }
 
-let groq: Groq | undefined;
+let client: OpenAI | undefined;
 
-function getGroqClient(): Groq {
-  groq ??= new Groq({ apiKey: process.env.GROQ_API_KEY, maxRetries: 0 });
-  return groq;
+function getClient(): OpenAI {
+  client ??= new OpenAI({ apiKey: process.env.OPENAI_API_KEY, maxRetries: 0 });
+  return client;
 }
 
 function sleep(ms: number) {
@@ -27,24 +28,23 @@ function sleep(ms: number) {
 }
 
 function isMalformedToolCall(error: unknown): boolean {
-  if (!(error instanceof Groq.BadRequestError)) return false;
-  const body = error.error as { error?: { code?: string } } | undefined;
-  return body?.error?.code === "tool_use_failed";
+  return error instanceof OpenAI.BadRequestError;
 }
 
 export async function createChatCompletion(
-  messages: Groq.Chat.Completions.ChatCompletionMessageParam[],
-  tools: Groq.Chat.Completions.ChatCompletionTool[],
-): Promise<Groq.Chat.Completions.ChatCompletion> {
+  messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[],
+  tools: OpenAI.Chat.Completions.ChatCompletionTool[],
+): Promise<OpenAI.Chat.Completions.ChatCompletion> {
   for (let attempt = 0; ; attempt++) {
     try {
-      return await getGroqClient().chat.completions.create({
+      return await getClient().chat.completions.create({
         model: CHAT_MODEL,
         messages,
+        max_completion_tokens: MAX_COMPLETION_TOKENS,
         ...(tools.length ? { tools } : {}),
       });
     } catch (error) {
-      if (!(error instanceof Groq.RateLimitError)) {
+      if (!(error instanceof OpenAI.RateLimitError)) {
         if (isMalformedToolCall(error) && attempt < MAX_RETRIES) {
           await sleep(250 * (attempt + 1));
           continue;

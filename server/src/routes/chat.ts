@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { runChatTurn } from "../agent/agentCore.js";
-import { AgentBusyError } from "../agent/groqClient.js";
+import { AgentBusyError } from "../agent/llmClient.js";
 
 function waitHint(seconds?: number): string {
   if (!seconds) return "in a moment";

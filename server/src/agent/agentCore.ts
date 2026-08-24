@@ -1,6 +1,6 @@
 import type { PendingOrder } from "../payments/pendingOrderStore.js";
-import { createChatCompletion } from "./groqClient.js";
-import { getSessionMessages } from "./session.js";
+import { createChatCompletion } from "./llmClient.js";
+import { getSessionMessages, trimHistory } from "./session.js";
 import { SYSTEM_PROMPT } from "./systemPrompt.js";
 import { toolDefinitions } from "./tools.js";
 import { toolHandlers, type ToolResult } from "./toolHandlers.js";
@@ -18,6 +18,7 @@ export async function runChatTurn(sessionId: string, userMessage: string): Promi
     history.push({ role: "system", content: SYSTEM_PROMPT });
   }
   history.push({ role: "user", content: userMessage });
+  trimHistory(history);
 
   let orderSummary: PendingOrder | undefined;
 
@@ -31,6 +32,8 @@ export async function runChatTurn(sessionId: string, userMessage: string): Promi
     }
 
     for (const toolCall of message.tool_calls) {
+      if (toolCall.type !== "function") continue;
+
       const result = runTool(toolCall.function.name, toolCall.function.arguments, { sessionId });
       if (toolCall.function.name === "present_order_summary" && result.ok) {
         orderSummary = result.result as PendingOrder;

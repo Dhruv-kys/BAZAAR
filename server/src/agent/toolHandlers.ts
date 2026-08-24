@@ -25,7 +25,17 @@ export const toolHandlers: Record<string, ToolHandler> = {
     if (!parsed.success) return { ok: false, error: parsed.error.message };
 
     const { query, occasionTag, category } = parsed.data;
-    return { ok: true, result: searchCatalog(query ?? undefined, occasionTag ?? undefined, category ?? undefined) };
+    const matches = searchCatalog(query ?? undefined, occasionTag ?? undefined, category ?? undefined);
+    return {
+      ok: true,
+      result: matches.map((product) => ({
+        id: product.id,
+        name: product.name,
+        category: product.category,
+        fromPaise: Math.min(...product.variants.map((v) => v.priceInPaise)),
+        variantCount: product.variants.length,
+      })),
+    };
   },
 
   get_product_details(args) {

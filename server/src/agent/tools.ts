@@ -1,5 +1,5 @@
 import { z } from "zod";
-import type Groq from "groq-sdk";
+import type OpenAI from "openai";
 import { GUARDRAILS } from "../guardrails/config.js";
 
 export const searchCatalogParams = z.object({
@@ -57,7 +57,7 @@ export const presentOrderSummaryParams = z.object({
     .describe("The id returned by apply_discount, if a discount was applied to this order"),
 });
 
-export const toolDefinitions: Groq.Chat.Completions.ChatCompletionTool[] = [
+export const toolDefinitions: OpenAI.Chat.Completions.ChatCompletionTool[] = [
   {
     type: "function",
     function: {
