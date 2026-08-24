@@ -1,6 +1,18 @@
 import Razorpay from "razorpay";
 import type { PendingOrder } from "./pendingOrderStore.js";
 
+export function paymentReferenceId(order: Pick<PendingOrder, "summaryId" | "attemptCount">): string {
+  return order.attemptCount === 0 ? order.summaryId : `${order.summaryId}-r${order.attemptCount}`;
+}
+
+export function summaryIdFromReference(referenceId: string): string {
+  return referenceId.replace(/-r\d+$/, "");
+}
+
+export function paymentLinkDescription(order: Pick<PendingOrder, "items">): string {
+  return order.items.map((item) => `${item.quantity}x ${item.productName} (${item.variantLabel})`).join(", ");
+}
+
 export async function createPaymentLink(order: PendingOrder): Promise<{ id: string; shortUrl: string }> {
   const keyId = process.env.RAZORPAY_KEY_ID;
   const keySecret = process.env.RAZORPAY_KEY_SECRET;
@@ -8,12 +20,8 @@ export async function createPaymentLink(order: PendingOrder): Promise<{ id: stri
     throw new Error("RAZORPAY_KEY_ID/RAZORPAY_KEY_SECRET are not configured");
   }
 
-  const description = order.items
-    .map((item) => `${item.quantity}x ${item.productName} (${item.variantLabel})`)
-    .join(", ");
-
-  const referenceId =
-    order.attemptCount === 0 ? order.summaryId : `${order.summaryId}-r${order.attemptCount}`;
+  const description = paymentLinkDescription(order);
+  const referenceId = paymentReferenceId(order);
 
   const res = await fetch("https://api.razorpay.com/v1/payment_links/", {
     method: "POST",

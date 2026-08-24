@@ -2,7 +2,7 @@ import express, { Router } from "express";
 import { logAuditEvent } from "../audit/auditStore.js";
 import { handlePaymentFailure } from "../payments/handlePaymentFailure.js";
 import { getPendingOrder } from "../payments/pendingOrderStore.js";
-import { verifyWebhookSignature } from "../payments/razorpay.js";
+import { summaryIdFromReference, verifyWebhookSignature } from "../payments/razorpay.js";
 
 export const paymentsRouter = Router();
 
@@ -22,7 +22,7 @@ function extractSummaryId(event: RazorpayWebhookEvent): string | undefined {
   if (fromNotes) return fromNotes;
 
   const referenceId = event.payload?.payment_link?.entity?.reference_id;
-  return referenceId?.replace(/-r\d+$/, "");
+  return referenceId ? summaryIdFromReference(referenceId) : undefined;
 }
 
 paymentsRouter.post("/webhook", express.raw({ type: "application/json" }), async (req, res) => {
