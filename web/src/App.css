@@ -58,10 +58,32 @@
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .app::before,
-  .app::after {
-    animation: none;
+.app-nav,
+.tr,
+.app-grid > * {
+  animation: rise 0.62s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.tr {
+  animation-delay: 0.06s;
+}
+
+.app-grid > *:first-child {
+  animation-delay: 0.12s;
+}
+
+.app-grid > *:last-child {
+  animation-delay: 0.18s;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
   }
 }
 
@@ -121,6 +143,7 @@
 .app-theme:hover {
   color: var(--head);
   border-color: var(--head);
+  transform: rotate(-18deg) scale(1.08);
 }
 
 .app-grid {
@@ -144,5 +167,18 @@
 @media (max-width: 560px) {
   .app {
     padding: 16px 14px 20px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-nav,
+  .tr,
+  .app-grid > * {
+    animation: none;
+  }
+
+  .app::before,
+  .app::after {
+    animation: none;
   }
 }

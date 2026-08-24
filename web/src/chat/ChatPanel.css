@@ -8,7 +8,7 @@
   border: 1px solid var(--glass-edge);
   border-radius: 18px;
   overflow: hidden;
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-md), var(--glass-sheen);
 }
 
 .cp-thread {
@@ -29,7 +29,13 @@
 .cp-intro {
   position: relative;
   z-index: 1;
+  isolation: isolate;
   max-width: 52ch;
+}
+
+.cp-intro > *:not(.orb) {
+  position: relative;
+  z-index: 1;
 }
 
 .cp-head {
@@ -74,10 +80,21 @@
   transition: all 0.2s ease;
 }
 
+.cp-starter {
+  transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease,
+    transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.25s ease;
+}
+
 .cp-starter:hover {
   color: var(--blue);
   border-color: var(--blue-2);
   background: var(--blue-soft);
+  transform: translateY(-2px);
+  box-shadow: var(--lift);
+}
+
+.cp-starter:active {
+  transform: translateY(0);
 }
 
 .cp-chips {
@@ -279,7 +296,12 @@
 }
 
 .cp-send:hover:not(:disabled) {
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: var(--lift);
+}
+
+.cp-send:active:not(:disabled) {
+  transform: translateY(0);
 }
 
 .cp-send:disabled {
