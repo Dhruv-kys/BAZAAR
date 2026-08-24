@@ -1,0 +1,81 @@
+.tr {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.tr-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  padding: 13px 15px;
+  background: var(--panel);
+  transition: background 0.4s ease;
+}
+
+.tr-dot {
+  width: 7px;
+  height: 7px;
+  margin-top: 5px;
+  flex: none;
+  border-radius: 50%;
+  border: 1.5px dashed var(--faint);
+  transition: all 0.35s ease;
+}
+
+.tr-item.proven {
+  background: var(--go-soft);
+}
+
+.tr-item.proven .tr-dot {
+  border: none;
+  background: var(--go);
+  box-shadow: 0 0 0 3px var(--go-soft);
+}
+
+.tr-text {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.tr-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--faint);
+  transition: color 0.35s ease;
+}
+
+.tr-item.proven .tr-label {
+  color: var(--go);
+}
+
+.tr-proof {
+  font-size: 12px;
+  line-height: 1.35;
+  color: var(--muted);
+}
+
+.tr-item.proven .tr-proof {
+  color: var(--body);
+}
+
+@media (max-width: 900px) {
+  .tr {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 520px) {
+  .tr {
+    grid-template-columns: 1fr;
+  }
+}
