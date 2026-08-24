@@ -8,7 +8,7 @@
   border: 1px solid var(--term-line);
   border-radius: 16px;
   overflow: hidden;
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-md), var(--glass-sheen);
   font-family: var(--mono);
 }
 

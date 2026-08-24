@@ -18,6 +18,8 @@
   --glass-2: rgba(255, 255, 255, 0.55);
   --glass-edge: rgba(255, 255, 255, 0.85);
   --glass-blur: saturate(165%) blur(22px);
+  --glass-sheen: inset 0 1px 0 rgba(255, 255, 255, 0.9), inset 0 -1px 0 rgba(19, 38, 68, 0.04);
+  --lift: rgba(19, 38, 68, 0.1) 0 18px 40px -20px;
   --go: #17a673;
   --warn: #b4791a;
   --stop: #cc4433;
@@ -69,6 +71,8 @@ html.dark {
   --glass-2: rgba(38, 36, 32, 0.5);
   --glass-edge: rgba(255, 253, 245, 0.14);
   --glass-blur: saturate(150%) blur(22px);
+  --glass-sheen: inset 0 1px 0 rgba(255, 253, 245, 0.16), inset 0 -1px 0 rgba(0, 0, 0, 0.25);
+  --lift: rgba(0, 0, 0, 0.5) 0 18px 40px -20px;
   --go: #3fe0a0;
   --warn: #e0b055;
   --stop: #ff8f7a;

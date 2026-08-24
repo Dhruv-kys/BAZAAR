@@ -8,7 +8,7 @@
   border: 1px solid var(--glass-edge);
   border-radius: 14px;
   overflow: hidden;
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-sm), var(--glass-sheen);
 }
 
 .tr-item {
