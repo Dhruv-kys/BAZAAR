@@ -46,8 +46,8 @@
 
 .cp-lede {
   margin: 16px 0 0;
-  font-size: 14px;
-  line-height: 1.6;
+  font-size: 15px;
+  line-height: 1.65;
   color: var(--muted);
 }
 
@@ -59,8 +59,8 @@
 }
 
 .cp-starter {
-  padding: 8px 13px;
-  font-size: 13px;
+  padding: 9px 14px;
+  font-size: 14px;
   color: var(--body);
   background: var(--panel-2);
   border: 1px solid var(--line-2);
@@ -88,24 +88,20 @@
 
 .cp-who {
   font-family: var(--mono);
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.16em;
   color: var(--faint);
 }
 
 .cp-bubble {
   max-width: 68ch;
-  padding: 12px 15px;
-  font-size: 14px;
-  line-height: 1.6;
+  padding: 13px 16px;
+  font-size: 15px;
+  line-height: 1.65;
   border-radius: 14px;
   overflow-wrap: anywhere;
-}
-
-.cp-msg.user .cp-bubble {
-  white-space: pre-wrap;
 }
 
 .cp-bubble p {
@@ -154,6 +150,7 @@
   border: 1px solid var(--line-2);
   color: var(--head);
   border-top-right-radius: 5px;
+  white-space: pre-wrap;
 }
 
 .cp-thinking {
@@ -189,8 +186,8 @@
 .cp-input {
   flex: 1;
   min-width: 0;
-  padding: 11px 15px;
-  font-size: 14px;
+  padding: 12px 16px;
+  font-size: 15px;
   color: var(--head);
   background: var(--panel-2);
   border: 1px solid var(--line-2);

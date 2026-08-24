@@ -46,11 +46,11 @@
 
 .tr-label {
   font-family: var(--mono);
-  font-size: 10px;
+  font-size: 10.5px;
   font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 0.18em;
-  color: var(--faint);
+  letter-spacing: 0.14em;
+  color: var(--muted);
   transition: color 0.35s ease;
 }
 
@@ -59,12 +59,8 @@
 }
 
 .tr-proof {
-  font-size: 12px;
-  line-height: 1.35;
-  color: var(--muted);
-}
-
-.tr-item.proven .tr-proof {
+  font-size: 13px;
+  line-height: 1.45;
   color: var(--body);
 }
 

@@ -18,7 +18,7 @@
 }
 
 .os-gate {
-  font-size: 12px;
+  font-size: 12.5px;
   color: var(--muted);
 }
 
@@ -32,8 +32,8 @@
   display: flex;
   align-items: baseline;
   gap: 11px;
-  padding: 7px 0;
-  font-size: 14px;
+  padding: 8px 0;
+  font-size: 15px;
   color: var(--body);
 }
 
@@ -54,7 +54,7 @@
 .os-name em {
   display: block;
   font-style: normal;
-  font-size: 12px;
+  font-size: 12.5px;
   color: var(--muted);
   margin-top: 1px;
 }
@@ -65,7 +65,7 @@
 
 .os-amt {
   font-family: var(--mono);
-  font-size: 13px;
+  font-size: 14px;
   color: var(--head);
   flex: none;
 }
@@ -80,8 +80,8 @@
   display: flex;
   justify-content: space-between;
   gap: 12px;
-  padding: 5px 0;
-  font-size: 13px;
+  padding: 6px 0;
+  font-size: 14px;
   color: var(--muted);
 }
 
@@ -156,17 +156,17 @@
 }
 
 .os-note {
-  margin: 10px 0 0;
-  font-size: 12px;
-  line-height: 1.5;
+  margin: 11px 0 0;
+  font-size: 13px;
+  line-height: 1.55;
   text-align: center;
-  color: var(--faint);
+  color: var(--muted);
 }
 
 .os-error {
   margin: 12px 0 0;
-  padding: 10px 13px;
-  font-size: 13px;
+  padding: 11px 14px;
+  font-size: 14px;
   color: var(--stop);
   background: var(--stop-soft);
   border: 1px solid rgba(204, 68, 51, 0.28);

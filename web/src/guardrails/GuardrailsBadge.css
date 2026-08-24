@@ -23,9 +23,9 @@
 
 .gb-item {
   font-family: var(--mono);
-  font-size: 10px;
+  font-size: 10.5px;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.07em;
   color: var(--muted);
   white-space: nowrap;
 }
