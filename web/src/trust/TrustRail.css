@@ -3,8 +3,10 @@
   grid-template-columns: repeat(4, 1fr);
   gap: 1px;
   background: var(--line);
-  border: 1px solid var(--line);
-  border-radius: 12px;
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-edge);
+  border-radius: 14px;
   overflow: hidden;
   box-shadow: var(--shadow-sm);
 }
@@ -14,7 +16,7 @@
   align-items: flex-start;
   gap: 9px;
   padding: 13px 15px;
-  background: var(--panel);
+  background: var(--glass);
   transition: background 0.4s ease;
 }
 

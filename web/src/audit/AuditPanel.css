@@ -2,9 +2,11 @@
   display: flex;
   flex-direction: column;
   min-height: 0;
-  background: var(--term-bg);
+  background: rgba(23, 21, 15, 0.82);
+  -webkit-backdrop-filter: saturate(140%) blur(20px);
+  backdrop-filter: saturate(140%) blur(20px);
   border: 1px solid var(--term-line);
-  border-radius: 14px;
+  border-radius: 16px;
   overflow: hidden;
   box-shadow: var(--shadow-md);
   font-family: var(--mono);
@@ -15,7 +17,7 @@
   align-items: center;
   gap: 11px;
   padding: 10px 14px;
-  background: var(--term-bar);
+  background: rgba(32, 29, 21, 0.72);
   border-bottom: 1px solid var(--term-line);
 }
 
@@ -197,7 +199,7 @@
   align-items: center;
   gap: 16px;
   padding: 8px 14px;
-  background: var(--term-bar);
+  background: rgba(32, 29, 21, 0.72);
   border-top: 1px solid var(--term-line);
   font-size: 10.5px;
   letter-spacing: 0.08em;

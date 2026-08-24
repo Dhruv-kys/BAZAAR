@@ -3,7 +3,7 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
-  max-width: 1264px;
+  max-width: 1320px;
   min-height: 100vh;
   margin: 0 auto;
   padding: 20px 24px 26px;
@@ -13,7 +13,7 @@
 .app::after {
   content: "";
   position: fixed;
-  inset: -25%;
+  inset: -30%;
   z-index: -1;
   pointer-events: none;
   will-change: transform;
@@ -21,36 +21,40 @@
 
 .app::before {
   background:
-    radial-gradient(38% 30% at 22% 26%, var(--ray-1), transparent 70%),
-    radial-gradient(34% 26% at 78% 68%, var(--ray-2), transparent 70%);
-  filter: blur(56px);
-  animation: drift-a 34s ease-in-out infinite alternate;
+    radial-gradient(30% 26% at 20% 24%, var(--ray-1), transparent 68%),
+    radial-gradient(28% 24% at 80% 66%, var(--ray-2), transparent 68%);
+  filter: blur(40px);
+  animation: drift-a 34s ease-in-out infinite;
 }
 
 .app::after {
   background:
-    radial-gradient(30% 24% at 68% 18%, var(--ray-2), transparent 72%),
-    radial-gradient(36% 28% at 30% 80%, var(--ray-1), transparent 72%);
-  filter: blur(64px);
-  opacity: 0.75;
-  animation: drift-b 46s ease-in-out infinite alternate;
+    radial-gradient(26% 22% at 64% 20%, var(--ray-3), transparent 70%),
+    radial-gradient(24% 20% at 34% 78%, var(--ray-2), transparent 70%);
+  filter: blur(48px);
+  animation: drift-b 46s ease-in-out infinite;
 }
 
 @keyframes drift-a {
-  from {
-    transform: translate3d(-3%, -2%, 0) scale(1);
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
   }
-  to {
-    transform: translate3d(4%, 3%, 0) scale(1.12);
+  33% {
+    transform: translate3d(4%, 3%, 0) scale(1.09);
+  }
+  66% {
+    transform: translate3d(-3%, 5%, 0) scale(1.04);
   }
 }
 
 @keyframes drift-b {
-  from {
-    transform: translate3d(3%, 2%, 0) scale(1.08);
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1.05);
   }
-  to {
-    transform: translate3d(-4%, -3%, 0) scale(1);
+  50% {
+    transform: translate3d(-5%, -4%, 0) scale(1.14);
   }
 }
 
@@ -59,13 +63,6 @@
   .app::after {
     animation: none;
   }
-}
-
-.app-nav,
-.app > .tr,
-.app-grid {
-  position: relative;
-  z-index: 1;
 }
 
 .app-nav {
@@ -106,22 +103,6 @@
   align-items: center;
   gap: 11px;
   flex-wrap: wrap;
-}
-
-.app-reset {
-  padding: 7px 14px;
-  font-size: 13px;
-  color: var(--muted);
-  background: var(--panel);
-  border: 1px solid var(--line-2);
-  border-radius: 999px;
-  box-shadow: var(--shadow-sm);
-  transition: all 0.2s ease;
-}
-
-.app-reset:hover {
-  color: var(--blue);
-  border-color: var(--blue-2);
 }
 
 .app-theme {

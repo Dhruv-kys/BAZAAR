@@ -2,9 +2,11 @@
   display: flex;
   flex-direction: column;
   min-height: 0;
-  background: var(--panel);
-  border: 1px solid var(--line);
-  border-radius: 16px;
+  background: var(--glass);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-edge);
+  border-radius: 18px;
   overflow: hidden;
   box-shadow: var(--shadow-md);
 }
@@ -22,19 +24,6 @@
   display: flex;
   align-items: center;
   padding-bottom: 26px;
-}
-
-.cp-thread.empty::before {
-  content: "";
-  position: absolute;
-  inset: -10% -30% auto -10%;
-  height: 88%;
-  z-index: 0;
-  pointer-events: none;
-  background:
-    linear-gradient(142deg, transparent 22%, var(--ray-1) 44%, transparent 62%),
-    linear-gradient(202deg, transparent 40%, var(--ray-2) 60%, transparent 78%);
-  filter: blur(46px);
 }
 
 .cp-intro {
@@ -105,8 +94,10 @@
   padding: 7px 13px;
   font-size: 12px;
   color: var(--muted);
-  background: var(--panel);
-  border: 1px solid var(--line);
+  background: var(--glass);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--glass-edge);
   border-radius: 999px;
   box-shadow: var(--shadow-sm);
   animation: cp-float 5.5s ease-in-out infinite;
@@ -123,6 +114,11 @@
 .cp-chip strong {
   font-weight: 600;
   color: var(--head);
+}
+
+.cp-notice svg {
+  flex: none;
+  margin-top: 2px;
 }
 
 .cp-notice {
@@ -205,8 +201,8 @@
 }
 
 .cp-msg.assistant .cp-bubble {
-  background: var(--panel-2);
-  border: 1px solid var(--line);
+  background: var(--glass-2);
+  border: 1px solid var(--glass-edge);
   color: var(--body);
   border-top-left-radius: 5px;
 }
@@ -246,7 +242,7 @@
   gap: 9px;
   padding: 14px 20px 18px;
   border-top: 1px solid var(--line);
-  background: var(--panel);
+  background: var(--glass-2);
 }
 
 .cp-input {
