@@ -3,23 +3,69 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
-  max-width: 1320px;
+  max-width: 1264px;
   min-height: 100vh;
   margin: 0 auto;
   padding: 20px 24px 26px;
 }
 
-.app::before {
+.app::before,
+.app::after {
   content: "";
   position: fixed;
-  inset: 0;
+  inset: -25%;
   z-index: -1;
   pointer-events: none;
+  will-change: transform;
+}
+
+.app::before {
   background:
-    linear-gradient(148deg, transparent 18%, var(--ray-1) 36%, transparent 52%),
-    linear-gradient(196deg, transparent 42%, var(--ray-2) 62%, transparent 74%);
-  filter: blur(38px);
-  opacity: 0.9;
+    radial-gradient(38% 30% at 22% 26%, var(--ray-1), transparent 70%),
+    radial-gradient(34% 26% at 78% 68%, var(--ray-2), transparent 70%);
+  filter: blur(56px);
+  animation: drift-a 34s ease-in-out infinite alternate;
+}
+
+.app::after {
+  background:
+    radial-gradient(30% 24% at 68% 18%, var(--ray-2), transparent 72%),
+    radial-gradient(36% 28% at 30% 80%, var(--ray-1), transparent 72%);
+  filter: blur(64px);
+  opacity: 0.75;
+  animation: drift-b 46s ease-in-out infinite alternate;
+}
+
+@keyframes drift-a {
+  from {
+    transform: translate3d(-3%, -2%, 0) scale(1);
+  }
+  to {
+    transform: translate3d(4%, 3%, 0) scale(1.12);
+  }
+}
+
+@keyframes drift-b {
+  from {
+    transform: translate3d(3%, 2%, 0) scale(1.08);
+  }
+  to {
+    transform: translate3d(-4%, -3%, 0) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app::before,
+  .app::after {
+    animation: none;
+  }
+}
+
+.app-nav,
+.app > .tr,
+.app-grid {
+  position: relative;
+  z-index: 1;
 }
 
 .app-nav {
@@ -60,6 +106,22 @@
   align-items: center;
   gap: 11px;
   flex-wrap: wrap;
+}
+
+.app-reset {
+  padding: 7px 14px;
+  font-size: 13px;
+  color: var(--muted);
+  background: var(--panel);
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.2s ease;
+}
+
+.app-reset:hover {
+  color: var(--blue);
+  border-color: var(--blue-2);
 }
 
 .app-theme {
