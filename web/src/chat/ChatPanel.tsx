@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { OrderSummaryCard, type PendingOrder } from "../order/OrderSummaryCard";
+import { AlertIcon } from "../icons";
 import { RichText } from "./RichText";
 import "./ChatPanel.css";
 
@@ -96,7 +97,7 @@ export function ChatPanel({ sessionId }: { sessionId: string }) {
           messages.map((m, i) =>
             m.role === "notice" ? (
               <div key={i} className="cp-notice" role="status">
-                <span aria-hidden="true">⚠</span>
+                <AlertIcon />
                 {m.content}
               </div>
             ) : (

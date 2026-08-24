@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { DemoControls } from "../demo/DemoControls";
+import { LockIcon, ShieldIcon } from "../icons";
 import "./OrderSummaryCard.css";
 
 export interface PendingOrderItem {
@@ -57,7 +58,10 @@ export function OrderSummaryCard({ order }: { order: PendingOrder }) {
     <section className="os">
       <header className="os-head">
         <span className="eyebrow">Order summary</span>
-        <span className="os-gate">Nothing is charged until you confirm</span>
+        <span className="os-gate">
+          <LockIcon size={12} />
+          Nothing is charged until you confirm
+        </span>
       </header>
 
       <ul className="os-lines">
@@ -100,13 +104,14 @@ export function OrderSummaryCard({ order }: { order: PendingOrder }) {
       {paymentUrl ? (
         <div className="os-live">
           <a className="os-pay" href={paymentUrl} target="_blank" rel="noreferrer">
-            Pay {rupees(order.totalInPaise)} securely →
+            <LockIcon size={15} />
+            Pay {rupees(order.totalInPaise)} on Razorpay
           </a>
           <p className="os-secured">
-            <span aria-hidden="true" />
-            Secured by Razorpay · test mode
+            <ShieldIcon size={12} />
+            Card details are entered on Razorpay — never on this site
           </p>
-          <p className="os-note">A real payment link — no real money moves.</p>
+          <p className="os-note">Razorpay test mode: a real payment link, but no real money moves.</p>
           <DemoControls summaryId={order.summaryId} />
         </div>
       ) : (
@@ -114,7 +119,11 @@ export function OrderSummaryCard({ order }: { order: PendingOrder }) {
           <button className="os-confirm" type="button" onClick={confirmAndPay} disabled={confirming}>
             {confirming ? "Creating secure link…" : `Confirm & pay ${rupees(order.totalInPaise)}`}
           </button>
-          <p className="os-note">Confirming creates a Razorpay payment link. You pay on Razorpay, not here.</p>
+          <p className="os-secured">
+            <ShieldIcon size={12} />
+            Card details are entered on Razorpay — never on this site
+          </p>
+          <p className="os-note">Confirming only creates a payment link. You choose when to pay.</p>
         </div>
       )}
 

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { ShieldIcon } from "../icons";
 import "./GuardrailsBadge.css";
 
 interface Guardrails {
@@ -26,8 +27,8 @@ export function GuardrailsBadge() {
 
   return (
     <div className="gb" title="Enforced in server code, not by the model">
-      <span className="gb-shield" aria-hidden="true">
-        ⛨
+      <span className="gb-shield">
+        <ShieldIcon />
       </span>
       <span className="gb-items">
         <span className="gb-item">
