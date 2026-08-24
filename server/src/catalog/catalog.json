@@ -1,0 +1,77 @@
+{
+  "products": [
+    {
+      "id": "choc-truffle-cake",
+      "name": "Chocolate Truffle Cake",
+      "category": "cake",
+      "tags": ["birthday", "chocolate", "party", "anniversary"],
+      "variants": [
+        { "id": "choc-truffle-0.5kg", "label": "0.5 kg", "priceInPaise": 59900 },
+        { "id": "choc-truffle-1kg", "label": "1 kg", "priceInPaise": 99900 },
+        {
+          "id": "choc-truffle-2kg",
+          "label": "2 kg (Premium)",
+          "priceInPaise": 179900,
+          "premium": true,
+          "upsellReason": "Feeds 20+ guests and comes with a taller tiered presentation - a stronger centerpiece for a birthday party"
+        }
+      ]
+    },
+    {
+      "id": "red-velvet-cake",
+      "name": "Red Velvet Cake",
+      "category": "cake",
+      "tags": ["birthday", "anniversary", "romantic"],
+      "variants": [
+        { "id": "red-velvet-0.5kg", "label": "0.5 kg", "priceInPaise": 64900 },
+        { "id": "red-velvet-1kg", "label": "1 kg", "priceInPaise": 109900 },
+        {
+          "id": "red-velvet-2kg",
+          "label": "2 kg (Premium)",
+          "priceInPaise": 189900,
+          "premium": true,
+          "upsellReason": "Layered with real cream cheese frosting instead of the standard glaze"
+        }
+      ]
+    },
+    {
+      "id": "assorted-cupcakes",
+      "name": "Assorted Cupcakes (Box of 6)",
+      "category": "cupcakes",
+      "tags": ["party", "kids", "office"],
+      "variants": [
+        { "id": "cupcakes-box6", "label": "Box of 6", "priceInPaise": 39900 },
+        {
+          "id": "cupcakes-box12",
+          "label": "Box of 12 (Premium)",
+          "priceInPaise": 74900,
+          "premium": true,
+          "upsellReason": "Better per-cupcake price and enough for a bigger group"
+        }
+      ]
+    }
+  ],
+  "addOns": [
+    {
+      "id": "topper-happy-birthday",
+      "name": "\"Happy Birthday\" Edible Topper",
+      "priceInPaise": 14900,
+      "crossSellFor": ["cake"],
+      "tags": ["birthday"]
+    },
+    {
+      "id": "candles-number",
+      "name": "Number Candles",
+      "priceInPaise": 9900,
+      "crossSellFor": ["cake"],
+      "tags": ["birthday"]
+    },
+    {
+      "id": "greeting-card",
+      "name": "Handwritten Greeting Card",
+      "priceInPaise": 4900,
+      "crossSellFor": ["cake", "cupcakes"],
+      "tags": ["birthday", "anniversary", "romantic"]
+    }
+  ]
+}
