@@ -1,0 +1,49 @@
+.af {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(34px, 1fr));
+  grid-auto-rows: 30px;
+  overflow: hidden;
+  pointer-events: none;
+  user-select: none;
+  font-family: var(--mono);
+  font-size: 11px;
+  line-height: 1;
+  color: var(--faint);
+  opacity: 0.2;
+}
+
+.af-cell {
+  pointer-events: auto;
+  display: grid;
+  place-items: center;
+  transition: color 0.18s ease, transform 0.18s ease;
+}
+
+.af-cell i {
+  display: none;
+  font-style: normal;
+  font-size: 9.5px;
+  letter-spacing: -0.02em;
+}
+
+.af-cell:hover {
+  color: var(--blue);
+  transform: scale(1.35);
+}
+
+.af-cell:hover b {
+  display: none;
+}
+
+.af-cell:hover i {
+  display: block;
+}
+
+@media (max-width: 620px) {
+  .af {
+    display: none;
+  }
+}
