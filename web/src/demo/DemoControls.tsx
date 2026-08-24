@@ -38,7 +38,7 @@ export function DemoControls({ summaryId }: { summaryId: string }) {
         </div>
       ) : (
         <button className="dc-trigger" type="button" onClick={simulateFailure} disabled={loading}>
-          {loading ? "Simulating…" : "Test a declined payment"}
+          {loading ? "Simulating…" : "Simulate a declined payment"}
         </button>
       )}
       {error && (

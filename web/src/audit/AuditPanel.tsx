@@ -58,7 +58,6 @@ function timeOf(timestamp: string) {
   return new Date(timestamp).toLocaleTimeString("en-GB", { hour12: false });
 }
 
-
 export function AuditPanel({ events, sessionId }: { events: AuditEvent[]; sessionId: string }) {
   const bodyRef = useRef<HTMLDivElement>(null);
 
@@ -74,7 +73,7 @@ export function AuditPanel({ events, sessionId }: { events: AuditEvent[]; sessio
           <i />
           <i />
         </span>
-        <span className="ap-title">audit.log — why the agent did what it did</span>
+        <span className="ap-title">audit.log — agent decisions</span>
       </header>
 
       <div className="ap-body" ref={bodyRef}>
@@ -83,7 +82,7 @@ export function AuditPanel({ events, sessionId }: { events: AuditEvent[]; sessio
         </p>
 
         {events.length === 0 ? (
-          <p className="ap-waiting">waiting for the first decision… every recommendation, price cap and charge appears here as it happens.</p>
+          <p className="ap-waiting">waiting for first agent decision…</p>
         ) : (
           <ol className="ap-list">
             {events.map((event) => {
