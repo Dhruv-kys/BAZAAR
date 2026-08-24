@@ -1,20 +1,32 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { OrderSummaryCard, type PendingOrder } from "../order/OrderSummaryCard";
+import { RichText } from "./RichText";
+import "./ChatPanel.css";
 
 interface ChatMessage {
   role: "user" | "assistant";
   content: string;
 }
 
+const STARTERS = [
+  "A birthday cake for 15 people",
+  "Something chocolate for an anniversary",
+  "Cupcakes for an office party",
+];
+
 export function ChatPanel({ sessionId }: { sessionId: string }) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
   const [orderSummary, setOrderSummary] = useState<PendingOrder | undefined>();
+  const threadRef = useRef<HTMLDivElement>(null);
 
-  async function sendMessage() {
-    const text = input.trim();
-    if (!text || sending) return;
+  useEffect(() => {
+    threadRef.current?.scrollTo({ top: threadRef.current.scrollHeight, behavior: "smooth" });
+  }, [messages, sending, orderSummary]);
+
+  async function send(text: string) {
+    if (!text.trim() || sending) return;
 
     setMessages((prev) => [...prev, { role: "user", content: text }]);
     setInput("");
@@ -29,9 +41,7 @@ export function ChatPanel({ sessionId }: { sessionId: string }) {
       const data = await res.json();
       const reply = res.ok ? data.reply : `Error: ${data.error}`;
       setMessages((prev) => [...prev, { role: "assistant", content: reply }]);
-      if (res.ok && data.orderSummary) {
-        setOrderSummary(data.orderSummary);
-      }
+      if (res.ok && data.orderSummary) setOrderSummary(data.orderSummary);
     } catch {
       setMessages((prev) => [...prev, { role: "assistant", content: "Couldn't reach the server." }]);
     } finally {
@@ -39,26 +49,74 @@ export function ChatPanel({ sessionId }: { sessionId: string }) {
     }
   }
 
+  const empty = messages.length === 0;
+
   return (
-    <section>
-      <div>
-        {messages.map((m, i) => (
-          <p key={i}>
-            <strong>{m.role === "user" ? "You" : "Agent"}:</strong> {m.content}
-          </p>
-        ))}
-        {sending && <p>Agent is thinking...</p>}
+    <section className="cp">
+      <div className={`cp-thread${empty && !sending ? " empty" : ""}`} ref={threadRef}>
+        {empty ? (
+          <div className="cp-intro">
+            <span className="eyebrow">Merchant sales agent</span>
+            <h1 className="cp-head">
+              Tell it the occasion.
+              <br />
+              <em>It sells the rest.</em>
+            </h1>
+            <p className="cp-lede">
+              A bakery assistant that recommends, cross-sells and upsells — then stops at a confirmation step before any
+              money moves. Every decision is logged beside you.
+            </p>
+            <div className="cp-starters">
+              {STARTERS.map((s) => (
+                <button key={s} type="button" className="cp-starter" onClick={() => send(s)}>
+                  {s}
+                </button>
+              ))}
+            </div>
+          </div>
+        ) : (
+          messages.map((m, i) => (
+            <div key={i} className={`cp-msg ${m.role}`}>
+              <span className="cp-who">{m.role === "user" ? "You" : "Agent"}</span>
+              <div className="cp-bubble">
+                {m.role === "assistant" ? <RichText text={m.content} /> : m.content}
+              </div>
+            </div>
+          ))
+        )}
+
+        {sending && (
+          <div className="cp-msg assistant">
+            <span className="cp-who">Agent</span>
+            <div className="cp-bubble cp-thinking">
+              <span />
+              <span />
+              <span />
+            </div>
+          </div>
+        )}
+
+        {orderSummary && <OrderSummaryCard order={orderSummary} />}
       </div>
-      <input
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
-        onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-        placeholder="Ask about a cake for a birthday..."
-      />
-      <button type="button" onClick={sendMessage} disabled={sending}>
-        Send
-      </button>
-      {orderSummary && <OrderSummaryCard order={orderSummary} />}
+
+      <form
+        className="cp-composer"
+        onSubmit={(e) => {
+          e.preventDefault();
+          send(input);
+        }}
+      >
+        <input
+          className="cp-input"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          placeholder="What are you shopping for?"
+          aria-label="Message the sales agent"
+        />
+        <button className="cp-send" type="submit" disabled={sending || !input.trim()}>
+          Send
+        </button>
+      </form>
     </section>
   );
 }
