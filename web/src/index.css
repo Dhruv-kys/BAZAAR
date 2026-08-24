@@ -4,9 +4,14 @@
   --panel-2: #fbf8f0;
   --line: rgba(30, 24, 10, 0.1);
   --line-2: rgba(30, 24, 10, 0.16);
-  --blue: #3d4ee6;
-  --blue-2: #5b6cff;
+  --blue: #305eff;
+  --blue-2: #4d7fff;
   --cyan: #0ea5b7;
+  --shadow-sm: rgba(19, 38, 68, 0.06) 0 2px 4px -2px, rgba(19, 38, 68, 0.1) 0 4px 8px -2px;
+  --shadow-md: rgba(25, 40, 57, 0.09) 0 2px 16px 0;
+  --shadow-lift: rgba(48, 94, 255, 0.18) 0 6px 20px -6px;
+  --ray-1: rgba(48, 94, 255, 0.13);
+  --ray-2: rgba(14, 165, 183, 0.1);
   --go: #17a673;
   --warn: #b4791a;
   --stop: #cc4433;
@@ -33,9 +38,14 @@ html.dark {
   --panel-2: #232016;
   --line: rgba(251, 246, 232, 0.12);
   --line-2: rgba(251, 246, 232, 0.2);
-  --blue: #6b7dff;
-  --blue-2: #8a97ff;
+  --blue: #7d9bff;
+  --blue-2: #9db4ff;
   --cyan: #63e6ff;
+  --shadow-sm: rgba(0, 0, 0, 0.4) 0 2px 4px -2px, rgba(0, 0, 0, 0.3) 0 4px 8px -2px;
+  --shadow-md: rgba(0, 0, 0, 0.35) 0 2px 16px 0;
+  --shadow-lift: rgba(125, 155, 255, 0.22) 0 6px 20px -6px;
+  --ray-1: rgba(125, 155, 255, 0.13);
+  --ray-2: rgba(99, 230, 255, 0.08);
   --go: #3fe0a0;
   --warn: #e0b055;
   --stop: #ff8f7a;
@@ -99,6 +109,6 @@ a {
   font-size: 10px;
   font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 0.24em;
-  color: var(--blue-2);
+  letter-spacing: 0.2em;
+  color: var(--blue);
 }

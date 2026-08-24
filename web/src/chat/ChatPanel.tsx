@@ -14,6 +14,12 @@ const STARTERS = [
   "Cupcakes for an office party",
 ];
 
+const PROOF_CHIPS = [
+  { lead: "Caps", rest: "in code" },
+  { lead: "Decisions", rest: "logged live" },
+  { lead: "Razorpay", rest: "test mode" },
+];
+
 export function ChatPanel({ sessionId }: { sessionId: string }) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
@@ -71,6 +77,15 @@ export function ChatPanel({ sessionId }: { sessionId: string }) {
                 <button key={s} type="button" className="cp-starter" onClick={() => send(s)}>
                   {s}
                 </button>
+              ))}
+            </div>
+
+            <div className="cp-chips" aria-hidden="true">
+              {PROOF_CHIPS.map((chip, i) => (
+                <span key={chip.lead} className="cp-chip" style={{ animationDelay: `${i * 0.7}s` }}>
+                  <i />
+                  <strong>{chip.lead}</strong> {chip.rest}
+                </span>
               ))}
             </div>
           </div>

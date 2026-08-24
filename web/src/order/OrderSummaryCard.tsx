@@ -102,7 +102,11 @@ export function OrderSummaryCard({ order }: { order: PendingOrder }) {
           <a className="os-pay" href={paymentUrl} target="_blank" rel="noreferrer">
             Pay {rupees(order.totalInPaise)} securely →
           </a>
-          <p className="os-note">Razorpay test mode — a real payment link, no real money moves.</p>
+          <p className="os-secured">
+            <span aria-hidden="true" />
+            Secured by Razorpay · test mode
+          </p>
+          <p className="os-note">A real payment link — no real money moves.</p>
           <DemoControls summaryId={order.summaryId} />
         </div>
       ) : (

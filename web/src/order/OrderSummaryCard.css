@@ -4,6 +4,7 @@
   background: var(--panel-2);
   border: 1.5px solid var(--head);
   border-radius: 16px;
+  box-shadow: var(--shadow-sm);
   animation: os-in 0.42s ease both;
 }
 
@@ -144,15 +145,36 @@
   text-align: center;
   text-decoration: none;
   color: #fff;
-  background: var(--go);
-  border: 1.5px solid var(--go);
+  background: var(--blue);
+  border: 1.5px solid var(--blue);
   border-radius: 11px;
+  box-shadow: var(--shadow-lift);
   transition: transform 0.15s ease, filter 0.2s ease;
 }
 
 .os-pay:hover {
   transform: translateY(-1px);
-  filter: brightness(1.06);
+  filter: brightness(1.08);
+}
+
+.os-secured {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 11px;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+}
+
+.os-secured span {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--go);
 }
 
 .os-note {

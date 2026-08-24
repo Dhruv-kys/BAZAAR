@@ -6,6 +6,7 @@
   background: var(--panel);
   border: 1px solid var(--line-2);
   border-radius: 999px;
+  box-shadow: var(--shadow-sm);
 }
 
 .gb-shield {

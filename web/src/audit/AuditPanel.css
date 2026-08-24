@@ -6,6 +6,7 @@
   border: 1px solid var(--line);
   border-radius: 16px;
   overflow: hidden;
+  box-shadow: var(--shadow-md);
 }
 
 .ap-head {
