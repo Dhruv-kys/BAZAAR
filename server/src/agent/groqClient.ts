@@ -27,7 +27,11 @@ export async function createChatCompletion(
 ): Promise<Groq.Chat.Completions.ChatCompletion> {
   for (let attempt = 0; ; attempt++) {
     try {
-      return await getGroqClient().chat.completions.create({ model: CHAT_MODEL, messages, tools });
+      return await getGroqClient().chat.completions.create({
+        model: CHAT_MODEL,
+        messages,
+        ...(tools.length ? { tools } : {}),
+      });
     } catch (error) {
       if (attempt >= MAX_RETRIES) throw error;
 

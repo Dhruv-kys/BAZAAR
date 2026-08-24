@@ -39,7 +39,14 @@ export async function runChatTurn(sessionId: string, userMessage: string): Promi
     }
   }
 
-  return { reply: "I'm having trouble completing that right now - could you try again?", orderSummary };
+  const closing = await createChatCompletion(history, []);
+  const closingMessage = closing.choices[0].message;
+  history.push(closingMessage);
+
+  return {
+    reply: closingMessage.content?.trim() || "I'm having trouble completing that right now - could you try again?",
+    orderSummary,
+  };
 }
 
 function runTool(name: string, rawArgs: string, ctx: { sessionId: string }): ToolResult {
