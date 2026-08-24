@@ -48,7 +48,7 @@ function App() {
 
       <main className="app-grid">
         <ChatPanel sessionId={sessionId} />
-        <AuditPanel events={events} />
+        <AuditPanel events={events} sessionId={sessionId} />
       </main>
     </div>
   );

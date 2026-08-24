@@ -2,167 +2,235 @@
   display: flex;
   flex-direction: column;
   min-height: 0;
-  background: var(--panel);
-  border: 1px solid var(--line);
-  border-radius: 16px;
+  background: var(--term-bg);
+  border: 1px solid var(--term-line);
+  border-radius: 14px;
   overflow: hidden;
   box-shadow: var(--shadow-md);
+  font-family: var(--mono);
 }
 
-.ap-head {
-  padding: 18px 20px 14px;
-  border-bottom: 1px solid var(--line);
+.ap-bar {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 10px 14px;
+  background: var(--term-bar);
+  border-bottom: 1px solid var(--term-line);
 }
 
-.ap-sub {
-  margin: 7px 0 0;
-  font-size: 13.5px;
-  line-height: 1.5;
-  color: var(--muted);
+.ap-dots {
+  display: flex;
+  gap: 6px;
 }
 
-.ap-empty {
-  padding: 34px 22px;
-  text-align: center;
-  color: var(--muted);
+.ap-dots i {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
 }
 
-.ap-empty-mark {
-  display: block;
-  font-size: 26px;
-  margin-bottom: 12px;
-  opacity: 0.5;
+.ap-dots i:first-child {
+  background: #ff6157;
+}
+.ap-dots i:nth-child(2) {
+  background: #ffbd2e;
+}
+.ap-dots i:last-child {
+  background: #28c840;
 }
 
-.ap-empty p {
-  margin: 0;
-  font-size: 14px;
+.ap-title {
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--term-dim);
+}
+
+.ap-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 14px 16px 16px;
+  font-size: 12.5px;
   line-height: 1.6;
-  max-width: 30ch;
-  margin-inline: auto;
+  color: var(--term-text);
+}
+
+.ap-prompt {
+  color: var(--term-go);
+  margin-right: 7px;
+}
+
+.ap-boot {
+  margin: 0 0 12px;
+  color: var(--term-dim);
+  overflow-wrap: anywhere;
+}
+
+.ap-waiting {
+  margin: 0;
+  color: var(--term-dim);
+  opacity: 0.75;
 }
 
 .ap-list {
   list-style: none;
   margin: 0;
-  padding: 8px 20px 20px;
-  overflow-y: auto;
-  flex: 1;
+  padding: 0;
 }
 
 .ap-item {
-  position: relative;
-  padding: 14px 0 14px 18px;
-  border-bottom: 1px solid var(--line);
-  animation: ap-in 0.4s ease both;
+  margin-bottom: 13px;
+  animation: ap-in 0.32s ease both;
 }
 
-.ap-item:last-child {
-  border-bottom: none;
-}
-
-.ap-item::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 19px;
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--faint);
-}
-
-.ap-item.tone-blue::before {
-  background: var(--blue-2);
-}
-.ap-item.tone-cyan::before {
-  background: var(--cyan);
-}
-.ap-item.tone-warn::before {
-  background: var(--warn);
-}
-.ap-item.tone-stop::before {
-  background: var(--stop);
-}
-.ap-item.tone-go::before {
-  background: var(--go);
-}
-
-.ap-item-head {
+.ap-line {
   display: flex;
   align-items: baseline;
-  justify-content: space-between;
-  gap: 10px;
-}
-
-.ap-type {
-  font-family: var(--mono);
-  font-size: 10.5px;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.13em;
-  color: var(--head);
+  gap: 9px;
+  flex-wrap: wrap;
 }
 
 .ap-time {
-  font-family: var(--mono);
-  font-size: 10.5px;
-  color: var(--faint);
+  color: var(--term-dim);
   flex: none;
 }
 
+.ap-type {
+  font-weight: 500;
+  letter-spacing: 0.04em;
+}
+
+.ap-item.tone-blue .ap-type {
+  color: var(--term-blue);
+}
+.ap-item.tone-cyan .ap-type {
+  color: var(--term-cyan);
+}
+.ap-item.tone-warn .ap-type {
+  color: var(--term-warn);
+}
+.ap-item.tone-stop .ap-type {
+  color: var(--term-stop);
+}
+.ap-item.tone-go .ap-type {
+  color: var(--term-go);
+}
+.ap-item.tone-dim .ap-type {
+  color: var(--term-dim);
+}
+
+.ap-flag {
+  color: var(--term-warn);
+  font-weight: 700;
+}
+
 .ap-reason {
-  margin: 8px 0 0;
-  font-size: 14px;
-  line-height: 1.58;
-  color: var(--body);
+  display: flex;
+  gap: 8px;
+  margin: 3px 0 0;
+  padding-left: 2px;
+  color: var(--term-text);
+  opacity: 0.92;
+  overflow-wrap: anywhere;
+}
+
+.ap-arrow {
+  color: var(--term-dim);
+  flex: none;
 }
 
 .ap-clamp {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 10px;
-  padding: 9px 11px;
-  background: var(--warn-soft);
-  border: 1px solid rgba(180, 121, 26, 0.25);
-  border-radius: 9px;
+  gap: 9px;
+  margin: 8px 0 0 14px;
+  padding: 7px 11px;
+  background: rgba(230, 184, 98, 0.1);
+  border-left: 2px solid var(--term-warn);
+  border-radius: 0 6px 6px 0;
+}
+
+.ap-clamp-key {
+  color: var(--term-dim);
+  font-size: 11px;
 }
 
 .ap-clamp-was {
-  font-family: var(--mono);
-  font-size: 13px;
-  color: var(--muted);
+  color: var(--term-dim);
   text-decoration: line-through;
-  text-decoration-thickness: 1.5px;
 }
 
 .ap-clamp-arrow {
-  color: var(--faint);
-  font-size: 12px;
+  color: var(--term-dim);
 }
 
 .ap-clamp-now {
-  font-family: var(--mono);
-  font-size: 14px;
+  color: var(--term-warn);
   font-weight: 500;
-  color: var(--warn);
 }
 
 .ap-clamp-tag {
-  font-family: var(--mono);
-  font-size: 9px;
-  text-transform: uppercase;
-  letter-spacing: 0.16em;
-  color: var(--warn);
   margin-left: auto;
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  color: var(--term-warn);
+}
+
+.ap-cursor {
+  display: flex;
+  align-items: center;
+  margin: 4px 0 0;
+}
+
+.ap-caret {
+  display: inline-block;
+  width: 8px;
+  height: 15px;
+  background: var(--term-go);
+  animation: ap-blink 1.15s step-end infinite;
+}
+
+.ap-status {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 8px 14px;
+  background: var(--term-bar);
+  border-top: 1px solid var(--term-line);
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--term-dim);
+}
+
+.ap-live {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--term-go);
+}
+
+.ap-live i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--term-go);
+  animation: ap-pulse 2s ease-in-out infinite;
+}
+
+.ap-sess {
+  margin-left: auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 @keyframes ap-in {
   from {
     opacity: 0;
-    transform: translateY(6px);
+    transform: translateY(5px);
   }
   to {
     opacity: 1;
@@ -170,8 +238,31 @@
   }
 }
 
+@keyframes ap-blink {
+  0%,
+  50% {
+    opacity: 1;
+  }
+  51%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes ap-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .ap-item {
+  .ap-item,
+  .ap-caret,
+  .ap-live i {
     animation: none;
   }
 }

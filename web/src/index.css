@@ -25,6 +25,17 @@
   --stop-soft: rgba(204, 68, 51, 0.1);
   --blue-soft: rgba(91, 108, 255, 0.1);
 
+  --term-bg: #17150f;
+  --term-bar: #201d15;
+  --term-line: rgba(251, 246, 232, 0.11);
+  --term-text: #e7e1d2;
+  --term-dim: #9d9682;
+  --term-blue: #8aa5ff;
+  --term-cyan: #63e6ff;
+  --term-go: #4fe3a8;
+  --term-warn: #e6b862;
+  --term-stop: #ff9b87;
+
   --sans: "Hanken Grotesk", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --serif: "Instrument Serif", Georgia, serif;
   --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;

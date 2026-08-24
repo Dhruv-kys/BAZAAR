@@ -58,7 +58,9 @@ export function TrustRail({ events }: { events: AuditEvent[] }) {
         const proof = g.provenBy(events);
         return (
           <div key={g.key} className={`tr-item${proof ? " proven" : ""}`}>
-            <span className="tr-dot" aria-hidden="true" />
+            <span className="tr-check" aria-hidden="true">
+              [{proof ? "✓" : " "}]
+            </span>
             <span className="tr-text">
               <span className="tr-label">{g.label}</span>
               <span className="tr-proof">{proof ?? g.idle}</span>

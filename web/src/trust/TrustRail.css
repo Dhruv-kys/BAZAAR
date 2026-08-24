@@ -18,24 +18,23 @@
   transition: background 0.4s ease;
 }
 
-.tr-dot {
-  width: 7px;
-  height: 7px;
-  margin-top: 5px;
+.tr-check {
+  font-family: var(--mono);
+  font-size: 13px;
+  line-height: 1.2;
+  margin-top: 1px;
   flex: none;
-  border-radius: 50%;
-  border: 1.5px dashed var(--faint);
-  transition: all 0.35s ease;
+  color: var(--faint);
+  white-space: pre;
+  transition: color 0.35s ease;
 }
 
 .tr-item.proven {
   background: var(--go-soft);
 }
 
-.tr-item.proven .tr-dot {
-  border: none;
-  background: var(--go);
-  box-shadow: 0 0 0 3px var(--go-soft);
+.tr-item.proven .tr-check {
+  color: var(--go);
 }
 
 .tr-text {
