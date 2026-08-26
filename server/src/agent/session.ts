@@ -3,12 +3,17 @@ import type OpenAI from "openai";
 type Message = OpenAI.Chat.Completions.ChatCompletionMessageParam;
 
 const MAX_HISTORY_MESSAGES = 20;
+const MAX_SESSIONS = 500;
 
 const sessions = new Map<string, Message[]>();
 
 export function getSessionMessages(sessionId: string): Message[] {
   let history = sessions.get(sessionId);
   if (!history) {
+    if (sessions.size >= MAX_SESSIONS) {
+      const oldest = sessions.keys().next().value;
+      if (oldest !== undefined) sessions.delete(oldest);
+    }
     history = [];
     sessions.set(sessionId, history);
   }

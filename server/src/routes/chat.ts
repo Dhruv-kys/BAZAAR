@@ -8,6 +8,9 @@ function waitHint(seconds?: number): string {
   return `in about ${Math.ceil(seconds / 60)} min`;
 }
 
+const MAX_MESSAGE_CHARS = 2000;
+const SESSION_ID_PATTERN = /^[A-Za-z0-9-]{8,64}$/;
+
 export const chatRouter = Router();
 
 chatRouter.post("/", async (req, res) => {
@@ -15,6 +18,14 @@ chatRouter.post("/", async (req, res) => {
 
   if (typeof sessionId !== "string" || typeof message !== "string" || !message.trim()) {
     res.status(400).json({ error: "sessionId and message are required strings" });
+    return;
+  }
+  if (!SESSION_ID_PATTERN.test(sessionId)) {
+    res.status(400).json({ error: "sessionId must be 8-64 characters of letters, digits or dashes" });
+    return;
+  }
+  if (message.length > MAX_MESSAGE_CHARS) {
+    res.status(400).json({ error: `Messages are limited to ${MAX_MESSAGE_CHARS} characters` });
     return;
   }
 

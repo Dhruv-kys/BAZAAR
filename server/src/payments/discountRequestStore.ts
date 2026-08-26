@@ -10,9 +10,15 @@ export interface DiscountRequest {
   wasClamped: boolean;
 }
 
+const MAX_DISCOUNT_REQUESTS = 2000;
+
 const discountRequests = new Map<string, DiscountRequest>();
 
 export function createDiscountRequest(request: Omit<DiscountRequest, "discountRequestId">): DiscountRequest {
+  if (discountRequests.size >= MAX_DISCOUNT_REQUESTS) {
+    const oldest = discountRequests.keys().next().value;
+    if (oldest !== undefined) discountRequests.delete(oldest);
+  }
   const discountRequestId = crypto.randomUUID();
   const record: DiscountRequest = { discountRequestId, ...request };
   discountRequests.set(discountRequestId, record);

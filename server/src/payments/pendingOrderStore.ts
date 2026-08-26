@@ -30,11 +30,17 @@ export interface PendingOrder {
   attemptCount: number;
 }
 
+const MAX_PENDING_ORDERS = 1000;
+
 const pendingOrders = new Map<string, PendingOrder>();
 
 export function createPendingOrder(
   order: Omit<PendingOrder, "summaryId" | "attemptCount">,
 ): PendingOrder {
+  if (pendingOrders.size >= MAX_PENDING_ORDERS) {
+    const oldest = pendingOrders.keys().next().value;
+    if (oldest !== undefined) pendingOrders.delete(oldest);
+  }
   const summaryId = crypto.randomUUID();
   const pendingOrder: PendingOrder = { summaryId, attemptCount: 0, ...order };
   pendingOrders.set(summaryId, pendingOrder);
