@@ -22,8 +22,15 @@ export function navigate(to: string) {
     if (event.metaKey || event.ctrlKey || event.shiftKey || event.button !== 0) return;
     event.preventDefault();
     if (window.location.pathname === to) return;
-    window.history.pushState({}, "", to);
-    window.dispatchEvent(new Event("bazaar:navigate"));
-    window.scrollTo({ top: 0 });
+    const go = () => {
+      window.history.pushState({}, "", to);
+      window.dispatchEvent(new Event("bazaar:navigate"));
+      window.scrollTo({ top: 0 });
+    };
+    if (document.startViewTransition && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      document.startViewTransition(go);
+    } else {
+      go();
+    }
   };
 }

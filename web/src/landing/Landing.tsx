@@ -1,7 +1,9 @@
 import { GitHubIcon, LockIcon } from "../icons";
 import { navigate } from "../router";
 import { ProductFrame } from "./ProductFrame";
+import { SpecNumber } from "./SpecNumber";
 import { useReveal } from "./useReveal";
+import { useTilt } from "./useTilt";
 import { useTheme } from "../useTheme";
 import "./Landing.css";
 
@@ -72,10 +74,12 @@ const STEPS = [
 
 export function Landing() {
   const { theme, toggleTheme } = useTheme();
+  const { ref: shotRef, onPointerMove: onShotPointerMove, onPointerLeave: onShotPointerLeave } = useTilt();
   useReveal();
 
   return (
     <div className="lp">
+      <div className="lp-progress" aria-hidden="true" />
       <nav className="lp-nav">
         <a className="app-brand" href="/" onClick={navigate("/")}>
           <span className="app-mark" aria-hidden="true">
@@ -113,9 +117,14 @@ export function Landing() {
         <div className="lp-hero-copy">
           <span className="eyebrow">Track 01 · Agentic commerce</span>
           <h1 className="lp-head">
-            A sales agent you can
-            <br />
-            <em>actually let near money.</em>
+            <span className="lp-head-line">
+              <span className="lp-head-text">A sales agent you can</span>
+            </span>
+            <span className="lp-head-line">
+              <span className="lp-head-text">
+                <em>actually let near money.</em>
+              </span>
+            </span>
           </h1>
           <p className="lp-lede">
             It recommends, cross-sells and upsells a real catalog — then stops dead at a confirmation step, because
@@ -134,11 +143,11 @@ export function Landing() {
 
         <aside className="lp-hero-specs" aria-label="Guardrail limits">
           <div className="lp-spec">
-            <b>15%</b>
+            <SpecNumber target={15} render={(v) => `${v}%`} />
             <span>discount ceiling</span>
           </div>
           <div className="lp-spec">
-            <b>₹5,000</b>
+            <SpecNumber target={5000} render={(v) => `₹${v.toLocaleString("en-IN")}`} />
             <span>order cap</span>
           </div>
           <div className="lp-spec">
@@ -147,7 +156,12 @@ export function Landing() {
           </div>
         </aside>
 
-        <div className="lp-hero-shot">
+        <div
+          className="lp-hero-shot"
+          ref={shotRef}
+          onPointerMove={onShotPointerMove}
+          onPointerLeave={onShotPointerLeave}
+        >
           <ProductFrame />
         </div>
       </header>
