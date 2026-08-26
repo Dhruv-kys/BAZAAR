@@ -1,46 +1,39 @@
 .gb {
   display: flex;
   align-items: center;
-  gap: 9px;
-  padding: 7px 13px;
-  background: var(--glass);
-  -webkit-backdrop-filter: var(--glass-blur);
-  backdrop-filter: var(--glass-blur);
-  border: 1px solid var(--glass-edge);
-  border-radius: 999px;
-  box-shadow: var(--shadow-sm), var(--glass-sheen);
+  gap: var(--step);
+  padding: 6px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
 }
 
 .gb-shield {
   display: inline-flex;
-  color: var(--go);
+  color: var(--positive);
 }
 
 .gb-items {
   display: flex;
   align-items: center;
-  gap: 9px;
+  gap: var(--step);
   flex-wrap: wrap;
 }
 
 .gb-item {
-  font-family: var(--mono);
-  font-size: 10.5px;
-  text-transform: uppercase;
-  letter-spacing: 0.07em;
-  color: var(--muted);
+  font-size: var(--t-xs);
+  color: var(--ink-3);
   white-space: nowrap;
 }
 
 .gb-item strong {
-  color: var(--head);
   font-weight: 500;
+  color: var(--ink-2);
 }
 
 .gb-sep {
   width: 1px;
   height: 10px;
-  background: var(--line-2);
+  background: var(--line);
 }
 
 @media (max-width: 760px) {

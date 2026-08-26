@@ -1,157 +1,81 @@
 .app {
-  position: relative;
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  max-width: 1320px;
+  gap: calc(var(--step) * 2);
+  max-width: 1240px;
   min-height: 100vh;
   margin: 0 auto;
-  padding: 20px 24px 26px;
-}
-
-.app::before,
-.app::after {
-  content: "";
-  position: fixed;
-  inset: -30%;
-  z-index: -1;
-  pointer-events: none;
-  will-change: transform;
-}
-
-.app::before {
-  background:
-    radial-gradient(30% 26% at 20% 24%, var(--ray-1), transparent 68%),
-    radial-gradient(28% 24% at 80% 66%, var(--ray-2), transparent 68%);
-  filter: blur(40px);
-  animation: drift-a 34s ease-in-out infinite;
-}
-
-.app::after {
-  background:
-    radial-gradient(26% 22% at 64% 20%, var(--ray-3), transparent 70%),
-    radial-gradient(24% 20% at 34% 78%, var(--ray-2), transparent 70%);
-  filter: blur(48px);
-  animation: drift-b 46s ease-in-out infinite;
-}
-
-.app-nav,
-.tr,
-.app-grid > * {
-  animation: rise 0.62s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-.tr {
-  animation-delay: 0.06s;
-}
-
-.app-grid > *:first-child {
-  animation-delay: 0.12s;
-}
-
-.app-grid > *:last-child {
-  animation-delay: 0.18s;
-}
-
-@keyframes rise {
-  from {
-    opacity: 0;
-    transform: translateY(14px);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
+  padding: calc(var(--step) * 3) calc(var(--step) * 4) calc(var(--step) * 4);
 }
 
 .app-nav {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
+  gap: calc(var(--step) * 2);
   flex-wrap: wrap;
 }
 
 .app-brand {
   display: flex;
   align-items: baseline;
-  gap: 8px;
+  gap: var(--step);
   text-decoration: none;
-  transition: opacity 0.2s ease;
-}
-
-.app-brand:hover {
-  opacity: 0.72;
 }
 
 .app-mark {
-  font-size: 15px;
-  color: var(--blue);
+  font-size: var(--t-sm);
+  color: var(--accent);
 }
 
 .app-name {
   font-family: var(--serif);
-  font-size: 25px;
-  letter-spacing: -0.01em;
-  color: var(--head);
+  font-size: var(--t-lg);
+  color: var(--ink);
+  transition: color 0.15s ease;
 }
 
 .app-slash {
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: 0.14em;
-  color: var(--faint);
+  font-size: var(--t-xs);
+  color: var(--ink-3);
+}
+
+.app-brand:hover .app-name {
+  color: var(--accent);
 }
 
 .app-nav-right {
   display: flex;
   align-items: center;
-  gap: 11px;
+  gap: calc(var(--step) * 1.5);
   flex-wrap: wrap;
 }
 
-.app-icon {
+.app-icon,
+.app-theme {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 33px;
-  height: 33px;
-  color: var(--muted);
-  background: var(--panel);
-  border: 1px solid var(--line-2);
-  border-radius: 999px;
-  transition: color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+  width: 32px;
+  height: 32px;
+  font-size: var(--t-sm);
+  color: var(--ink-3);
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  transition: color 0.15s ease, border-color 0.15s ease;
 }
 
-.app-icon:hover {
-  color: var(--head);
-  border-color: var(--head);
-  transform: translateY(-1px);
-}
-
-.app-theme {
-  width: 33px;
-  height: 33px;
-  display: grid;
-  place-items: center;
-  font-size: 13px;
-  color: var(--muted);
-  background: var(--panel);
-  border: 1px solid var(--line-2);
-  border-radius: 999px;
-  transition: all 0.2s ease;
-}
-
+.app-icon:hover,
 .app-theme:hover {
-  color: var(--head);
-  border-color: var(--head);
-  transform: rotate(-18deg) scale(1.08);
+  color: var(--ink);
+  border-color: var(--line-strong);
 }
 
 .app-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
-  gap: 16px;
+  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+  gap: calc(var(--step) * 2);
   flex: 1;
   min-height: 0;
 }
@@ -168,19 +92,6 @@
 
 @media (max-width: 560px) {
   .app {
-    padding: 16px 14px 20px;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .app-nav,
-  .tr,
-  .app-grid > * {
-    animation: none;
-  }
-
-  .app::before,
-  .app::after {
-    animation: none;
+    padding: calc(var(--step) * 2) calc(var(--step) * 2) calc(var(--step) * 3);
   }
 }

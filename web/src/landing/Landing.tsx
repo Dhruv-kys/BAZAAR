@@ -1,7 +1,7 @@
 import { GitHubIcon, LockIcon, ShieldIcon } from "../icons";
 import { navigate } from "../router";
-import { CurrencyRail } from "./CurrencyRail";
-import { ClampMeter, GateFlow, LiveLog } from "./Live";
+import { LiveLog } from "./Live";
+import { useReveal } from "./useReveal";
 import { useTheme } from "../useTheme";
 import "./Landing.css";
 
@@ -45,12 +45,10 @@ const STEPS = [
 
 export function Landing() {
   const { theme, toggleTheme } = useTheme();
+  useReveal();
 
   return (
     <div className="lp">
-      <CurrencyRail side="left" />
-      <CurrencyRail side="right" />
-
       <nav className="lp-nav">
         <a className="app-brand" href="/" onClick={navigate("/")}>
           <span className="app-mark" aria-hidden="true">
@@ -84,7 +82,7 @@ export function Landing() {
         </div>
       </nav>
 
-      <header className="lp-hero">
+      <header className="lp-hero" data-reveal>
         <div className="lp-hero-grid">
         <div className="lp-hero-copy">
           <span className="eyebrow">Track 01 · Agentic commerce</span>
@@ -108,14 +106,13 @@ export function Landing() {
             </span>
           </div>
         </div>
-        <div className="lp-hero-stickers">
+        <div className="lp-hero-aside">
           <LiveLog />
-          <GateFlow />
         </div>
         </div>
       </header>
 
-      <section className="lp-section lp-split">
+      <section className="lp-section lp-split" data-reveal>
         <div className="lp-section-head">
           <span className="eyebrow">The problem</span>
           <h2 className="lp-h2">An agent that can spend is a liability until it can be audited.</h2>
@@ -127,20 +124,17 @@ export function Landing() {
             without being asked. Bazaar treats those four properties as structural constraints, not prompt
             instructions.
           </p>
-          <div className="lp-split-sticker">
-            <ClampMeter />
-          </div>
         </div>
       </section>
 
-      <section className="lp-section">
+      <section className="lp-section" data-reveal>
         <div className="lp-section-head">
           <span className="eyebrow">Four guarantees</span>
           <h2 className="lp-h2">Enforced in code. Visible while you use it.</h2>
         </div>
         <div className="lp-grid">
           {GUARANTEES.map((g) => (
-            <article key={g.key} className="lp-card">
+            <article key={g.key} className="lp-card" data-reveal>
               <div className="lp-card-head">
                 <ShieldIcon size={14} />
                 <span className="lp-card-label">{g.label}</span>
@@ -152,14 +146,14 @@ export function Landing() {
         </div>
       </section>
 
-      <section className="lp-section">
+      <section className="lp-section" data-reveal>
         <div className="lp-section-head">
           <span className="eyebrow">How a sale runs</span>
           <h2 className="lp-h2">Four steps, one of which is a full stop.</h2>
         </div>
         <ol className="lp-steps">
           {STEPS.map((s) => (
-            <li key={s.n} className="lp-step">
+            <li key={s.n} className="lp-step" data-reveal>
               <span className="lp-step-n">{s.n}</span>
               <h3 className="lp-step-title">{s.title}</h3>
               <p className="lp-step-body">{s.body}</p>
@@ -168,7 +162,23 @@ export function Landing() {
         </ol>
       </section>
 
-      <section className="lp-section">
+      <section className="lp-clamp" data-reveal>
+        <div className="lp-clamp-inner">
+          <span className="eyebrow">The moment that matters</span>
+          <p className="lp-clamp-said">The agent asked for</p>
+          <p className="lp-clamp-big">
+            <span className="lp-clamp-was">50%</span>
+            <span className="lp-clamp-rule" aria-hidden="true" />
+            <span className="lp-clamp-got">15%</span>
+          </p>
+          <p className="lp-clamp-note">
+            It got fifteen — the ceiling written in server code. The customer was told fifteen, the log recorded both
+            numbers, and no prompt was asked to police itself.
+          </p>
+        </div>
+      </section>
+
+      <section className="lp-section" data-reveal>
         <div className="lp-section-head">
           <span className="eyebrow">The differentiator</span>
           <h2 className="lp-h2">Watch it clamp itself in real time.</h2>
@@ -177,7 +187,7 @@ export function Landing() {
           Ask for half off. The model requests it, the server refuses it, and the log records both numbers side by side —
           which is the difference between claiming a guardrail exists and showing one working.
         </p>
-        <div className="lp-term">
+        <div className="lp-term" data-reveal>
           <div className="lp-term-bar">
             <span className="lp-term-dots" aria-hidden="true">
               <i />
@@ -214,7 +224,7 @@ export function Landing() {
         </div>
       </section>
 
-      <section className="lp-final">
+      <section className="lp-final" data-reveal>
         <h2 className="lp-final-head">See it sell, then stop.</h2>
         <p className="lp-final-note">
           Runs on Razorpay test mode — a real payment link is created, but no real money moves.

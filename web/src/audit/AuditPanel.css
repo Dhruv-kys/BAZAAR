@@ -2,22 +2,18 @@
   display: flex;
   flex-direction: column;
   min-height: 0;
-  background: rgba(23, 21, 15, 0.82);
-  -webkit-backdrop-filter: saturate(140%) blur(20px);
-  backdrop-filter: saturate(140%) blur(20px);
+  background: var(--term-bg);
   border: 1px solid var(--term-line);
-  border-radius: 16px;
+  border-radius: var(--r-lg);
   overflow: hidden;
-  box-shadow: var(--shadow-md), var(--glass-sheen);
   font-family: var(--mono);
 }
 
 .ap-bar {
   display: flex;
   align-items: center;
-  gap: 11px;
-  padding: 10px 14px;
-  background: rgba(32, 29, 21, 0.72);
+  gap: calc(var(--step) * 1.5);
+  padding: calc(var(--step) * 1.5) calc(var(--step) * 2);
   border-bottom: 1px solid var(--term-line);
 }
 
@@ -27,24 +23,14 @@
 }
 
 .ap-dots i {
-  width: 9px;
-  height: 9px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
-}
-
-.ap-dots i:first-child {
-  background: #ff6157;
-}
-.ap-dots i:nth-child(2) {
-  background: #ffbd2e;
-}
-.ap-dots i:last-child {
-  background: #28c840;
+  background: var(--term-line);
 }
 
 .ap-title {
-  font-size: 11px;
-  letter-spacing: 0.06em;
+  font-size: var(--t-xs);
   color: var(--term-dim);
 }
 
@@ -52,19 +38,19 @@
   flex: 1;
   min-height: 0;
   overflow-y: auto;
-  padding: 16px 18px 18px;
-  font-size: 13px;
-  line-height: 1.68;
-  color: var(--term-text);
+  padding: calc(var(--step) * 2);
+  font-size: var(--t-sm);
+  line-height: 1.65;
+  color: var(--term-ink);
 }
 
 .ap-prompt {
   color: var(--term-go);
-  margin-right: 7px;
+  margin-right: 6px;
 }
 
 .ap-boot {
-  margin: 0 0 12px;
+  margin: 0 0 calc(var(--step) * 2);
   color: var(--term-dim);
   overflow-wrap: anywhere;
 }
@@ -72,7 +58,6 @@
 .ap-waiting {
   margin: 0;
   color: var(--term-dim);
-  opacity: 0.75;
 }
 
 .ap-list {
@@ -82,14 +67,13 @@
 }
 
 .ap-item {
-  margin-bottom: 13px;
-  animation: ap-in 0.32s ease both;
+  margin-bottom: calc(var(--step) * 2);
 }
 
 .ap-line {
   display: flex;
   align-items: baseline;
-  gap: 9px;
+  gap: var(--step);
   flex-wrap: wrap;
 }
 
@@ -100,7 +84,6 @@
 
 .ap-type {
   font-weight: 500;
-  letter-spacing: 0.04em;
 }
 
 .ap-item.tone-blue .ap-type {
@@ -124,16 +107,13 @@
 
 .ap-flag {
   color: var(--term-warn);
-  font-weight: 700;
 }
 
 .ap-reason {
   display: flex;
-  gap: 8px;
-  margin: 3px 0 0;
-  padding-left: 2px;
-  color: var(--term-text);
-  opacity: 0.92;
+  gap: 7px;
+  margin: 2px 0 0;
+  color: var(--term-ink);
   overflow-wrap: anywhere;
 }
 
@@ -146,17 +126,15 @@
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 9px;
-  margin: 8px 0 0 14px;
-  padding: 7px 11px;
-  background: rgba(230, 184, 98, 0.1);
+  gap: var(--step);
+  margin: var(--step) 0 0 14px;
+  padding: 6px 10px;
   border-left: 2px solid var(--term-warn);
-  border-radius: 0 6px 6px 0;
 }
 
-.ap-clamp-key {
+.ap-clamp-key,
+.ap-clamp-arrow {
   color: var(--term-dim);
-  font-size: 11px;
 }
 
 .ap-clamp-was {
@@ -164,46 +142,37 @@
   text-decoration: line-through;
 }
 
-.ap-clamp-arrow {
-  color: var(--term-dim);
-}
-
 .ap-clamp-now {
   color: var(--term-warn);
-  font-weight: 500;
 }
 
 .ap-clamp-tag {
   margin-left: auto;
-  font-size: 10px;
-  letter-spacing: 0.16em;
+  font-size: var(--t-xs);
   color: var(--term-warn);
 }
 
 .ap-cursor {
   display: flex;
   align-items: center;
-  margin: 4px 0 0;
+  margin: 0;
 }
 
 .ap-caret {
   display: inline-block;
-  width: 8px;
-  height: 15px;
+  width: 7px;
+  height: 14px;
   background: var(--term-go);
-  animation: ap-blink 1.15s step-end infinite;
+  animation: ap-blink 1.1s step-end infinite;
 }
 
 .ap-status {
   display: flex;
   align-items: center;
-  gap: 16px;
-  padding: 8px 14px;
-  background: rgba(32, 29, 21, 0.72);
+  gap: calc(var(--step) * 2);
+  padding: var(--step) calc(var(--step) * 2);
   border-top: 1px solid var(--term-line);
-  font-size: 10.5px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  font-size: var(--t-xs);
   color: var(--term-dim);
 }
 
@@ -215,11 +184,10 @@
 }
 
 .ap-live i {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
   border-radius: 50%;
   background: var(--term-go);
-  animation: ap-pulse 2s ease-in-out infinite;
 }
 
 .ap-sess {
@@ -227,17 +195,6 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-}
-
-@keyframes ap-in {
-  from {
-    opacity: 0;
-    transform: translateY(5px);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
 }
 
 @keyframes ap-blink {
@@ -251,20 +208,8 @@
   }
 }
 
-@keyframes ap-pulse {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.35;
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
-  .ap-item,
-  .ap-caret,
-  .ap-live i {
+  .ap-caret {
     animation: none;
   }
 }
