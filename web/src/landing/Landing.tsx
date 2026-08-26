@@ -217,7 +217,16 @@ export function Landing() {
           <span className="eyebrow">Four guarantees</span>
           <h2 className="lp-h2">Enforced in code. Visible while you use it.</h2>
         </div>
-        <ul className="lp-ledger">
+        <ul
+          className="lp-ledger"
+          onPointerMove={(event) => {
+            const row = (event.target as HTMLElement).closest<HTMLElement>(".lp-row");
+            if (!row) return;
+            const rect = row.getBoundingClientRect();
+            row.style.setProperty("--mx", `${event.clientX - rect.left}px`);
+            row.style.setProperty("--my", `${event.clientY - rect.top}px`);
+          }}
+        >
           {GUARANTEES.map((g) => (
             <li key={g.n} className="lp-row" data-reveal>
               <span className="lp-row-n" aria-hidden="true">
