@@ -33,11 +33,6 @@
   max-width: 52ch;
 }
 
-.cp-intro > *:not(.orb) {
-  position: relative;
-  z-index: 1;
-}
-
 .cp-head {
   margin: 14px 0 0;
   font-family: var(--serif);
@@ -57,9 +52,9 @@
 }
 
 .cp-lede {
-  margin: 16px 0 0;
-  font-size: 15px;
-  line-height: 1.65;
+  margin: 18px 0 0;
+  font-size: 16px;
+  line-height: 1.7;
   color: var(--muted);
 }
 
@@ -71,16 +66,12 @@
 }
 
 .cp-starter {
-  padding: 9px 14px;
-  font-size: 14px;
+  padding: 10px 15px;
+  font-size: 14.5px;
   color: var(--body);
   background: var(--panel-2);
   border: 1px solid var(--line-2);
   border-radius: 999px;
-  transition: all 0.2s ease;
-}
-
-.cp-starter {
   transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease,
     transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.25s ease;
 }
@@ -108,8 +99,8 @@
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  padding: 7px 13px;
-  font-size: 12px;
+  padding: 8px 14px;
+  font-size: 12.5px;
   color: var(--muted);
   background: var(--glass);
   -webkit-backdrop-filter: blur(10px);
@@ -175,10 +166,10 @@
 }
 
 .cp-bubble {
-  max-width: 68ch;
-  padding: 13px 16px;
-  font-size: 15px;
-  line-height: 1.65;
+  max-width: 64ch;
+  padding: 14px 17px;
+  font-size: 15.5px;
+  line-height: 1.7;
   border-radius: 14px;
   overflow-wrap: anywhere;
 }

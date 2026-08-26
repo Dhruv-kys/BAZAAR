@@ -1,6 +1,6 @@
-import { AgentOrb } from "../chat/AgentOrb";
 import { LockIcon, ShieldIcon } from "../icons";
 import { navigate } from "../router";
+import { ClampSticker, GateSticker, LimitsSticker, ReceiptSticker } from "./Stickers";
 import { useTheme } from "../useTheme";
 import "./Landing.css";
 
@@ -79,7 +79,7 @@ export function Landing() {
       </nav>
 
       <header className="lp-hero">
-        <AgentOrb />
+        <div className="lp-hero-grid">
         <div className="lp-hero-copy">
           <span className="eyebrow">Track 01 · Agentic commerce</span>
           <h1 className="lp-head">
@@ -102,18 +102,30 @@ export function Landing() {
             </span>
           </div>
         </div>
+        <div className="lp-hero-stickers" aria-hidden="true">
+          <ReceiptSticker />
+          <GateSticker />
+          <LimitsSticker />
+        </div>
+        </div>
       </header>
 
-      <section className="lp-section">
+      <section className="lp-section lp-split">
         <div className="lp-section-head">
           <span className="eyebrow">The problem</span>
           <h2 className="lp-h2">An agent that can spend is a liability until it can be audited.</h2>
         </div>
-        <p className="lp-body">
-          Handing a language model a payments API is the easy part. The hard part is proving — to a customer, to a
-          merchant, to a reviewer — that it cannot quietly invent a discount, exceed a limit, or charge someone without
-          being asked. Bazaar treats those four properties as structural constraints, not prompt instructions.
-        </p>
+        <div className="lp-split-body">
+          <p className="lp-body">
+            Handing a language model a payments API is the easy part. The hard part is proving — to a customer, to a
+            merchant, to a reviewer — that it cannot quietly invent a discount, exceed a limit, or charge someone
+            without being asked. Bazaar treats those four properties as structural constraints, not prompt
+            instructions.
+          </p>
+          <div className="lp-split-sticker" aria-hidden="true">
+            <ClampSticker />
+          </div>
+        </div>
       </section>
 
       <section className="lp-section">
