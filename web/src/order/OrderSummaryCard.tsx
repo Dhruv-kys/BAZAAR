@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { DemoControls } from "../demo/DemoControls";
-import { LockIcon, ShieldIcon } from "../icons";
+import { CheckIcon, LockIcon, ShieldIcon } from "../icons";
 import "./OrderSummaryCard.css";
 
 export interface PendingOrderItem {
@@ -34,7 +34,23 @@ function rupees(paise: number) {
 export function OrderSummaryCard({ order }: { order: PendingOrder }) {
   const [confirming, setConfirming] = useState(false);
   const [paymentUrl, setPaymentUrl] = useState<string>();
+  const [paid, setPaid] = useState(false);
   const [error, setError] = useState<string>();
+
+  useEffect(() => {
+    if (!paymentUrl || paid) return;
+    const id = setInterval(async () => {
+      try {
+        const res = await fetch(`/api/orders/${order.summaryId}/status`);
+        if (!res.ok) return;
+        const data = await res.json();
+        if (data.status === "paid") setPaid(true);
+      } catch {
+        // transient; keep polling
+      }
+    }, 5000);
+    return () => clearInterval(id);
+  }, [paymentUrl, paid, order.summaryId]);
 
   async function confirmAndPay() {
     setConfirming(true);
@@ -101,7 +117,15 @@ export function OrderSummaryCard({ order }: { order: PendingOrder }) {
         </div>
       </div>
 
-      {paymentUrl ? (
+      {paid ? (
+        <div className="os-paid" role="status">
+          <span className="os-paid-badge">
+            <CheckIcon size={14} />
+            Payment received
+          </span>
+          <p className="os-note">Order confirmed and recorded in the audit log. No further action needed.</p>
+        </div>
+      ) : paymentUrl ? (
         <div className="os-live">
           <a className="os-pay" href={paymentUrl} target="_blank" rel="noreferrer">
             <LockIcon size={15} />

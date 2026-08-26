@@ -71,3 +71,11 @@ export function SpeakerOffIcon({ size = 15 }: { size?: number }) {
     </svg>
   );
 }
+
+export function CheckIcon({ size = 15 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" {...base} aria-hidden="true">
+      <path d="M4.5 12.5l5 5L19.5 6.5" />
+    </svg>
+  );
+}

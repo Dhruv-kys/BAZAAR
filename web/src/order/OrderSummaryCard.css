@@ -167,3 +167,25 @@
   background: var(--critical-soft);
   border-radius: var(--r-sm);
 }
+
+.os-paid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--step);
+  padding-top: calc(var(--step) * 2);
+  border-top: 1px solid var(--line);
+}
+
+.os-paid-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  align-self: flex-start;
+  padding: 7px 14px;
+  font-size: var(--t-sm);
+  font-weight: 600;
+  color: var(--positive);
+  background: var(--positive-soft);
+  border: 1px solid var(--positive);
+  border-radius: 999px;
+}

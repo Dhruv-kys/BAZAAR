@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { logAuditEvent } from "../audit/auditStore.js";
 import { GUARDRAILS } from "../guardrails/config.js";
+import { watchPaymentLink } from "../payments/paymentWatcher.js";
 import { getPendingOrder, recordPaymentAttempt } from "../payments/pendingOrderStore.js";
 import { createPaymentLink } from "../payments/razorpay.js";
 
@@ -20,6 +21,7 @@ ordersRouter.post("/:summaryId/confirm", async (req, res) => {
   }
 
   if (order.paymentAttempt) {
+    if (!order.paidAt) watchPaymentLink(summaryId, order.paymentAttempt.paymentLinkId);
     res.json({ paymentUrl: order.paymentAttempt.url });
     return;
   }
@@ -27,6 +29,7 @@ ordersRouter.post("/:summaryId/confirm", async (req, res) => {
   try {
     const paymentLink = await createPaymentLink(order);
     recordPaymentAttempt(summaryId, { paymentLinkId: paymentLink.id, url: paymentLink.shortUrl });
+    watchPaymentLink(summaryId, paymentLink.id);
     logAuditEvent({
       sessionId: order.sessionId,
       type: "payment_link_created",
@@ -39,4 +42,16 @@ ordersRouter.post("/:summaryId/confirm", async (req, res) => {
     console.error("payment link creation failed:", error);
     res.status(502).json({ error: "Couldn't create the payment link right now. Please try again." });
   }
+});
+
+ordersRouter.get("/:summaryId/status", (req, res) => {
+  const order = getPendingOrder(req.params.summaryId);
+  if (!order) {
+    res.status(404).json({ error: "Unknown or expired order summary" });
+    return;
+  }
+  res.json({
+    status: order.paidAt ? "paid" : order.paymentAttempt ? "awaiting_payment" : "staged",
+    paymentUrl: order.paymentAttempt?.url,
+  });
 });

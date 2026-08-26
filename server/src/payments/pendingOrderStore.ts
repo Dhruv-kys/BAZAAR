@@ -28,6 +28,7 @@ export interface PendingOrder {
   totalInPaise: number;
   paymentAttempt?: PaymentAttempt;
   attemptCount: number;
+  paidAt?: number;
 }
 
 const MAX_PENDING_ORDERS = 1000;
@@ -49,6 +50,13 @@ export function createPendingOrder(
 
 export function getPendingOrder(summaryId: string): PendingOrder | undefined {
   return pendingOrders.get(summaryId);
+}
+
+export function markOrderPaid(summaryId: string): boolean {
+  const order = pendingOrders.get(summaryId);
+  if (!order || order.paidAt) return false;
+  order.paidAt = Date.now();
+  return true;
 }
 
 export function recordPaymentAttempt(summaryId: string, attempt: PaymentAttempt): void {

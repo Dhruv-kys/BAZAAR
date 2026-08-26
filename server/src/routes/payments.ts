@@ -1,7 +1,8 @@
 import express, { Router } from "express";
 import { logAuditEvent } from "../audit/auditStore.js";
 import { handlePaymentFailure } from "../payments/handlePaymentFailure.js";
-import { getPendingOrder } from "../payments/pendingOrderStore.js";
+import { watchPaymentLink } from "../payments/paymentWatcher.js";
+import { getPendingOrder, markOrderPaid } from "../payments/pendingOrderStore.js";
 import { summaryIdFromReference, verifyWebhookSignature } from "../payments/razorpay.js";
 
 export const paymentsRouter = Router();
@@ -48,16 +49,19 @@ paymentsRouter.post("/webhook", express.raw({ type: "application/json" }), async
   const order = summaryId ? getPendingOrder(summaryId) : undefined;
 
   if (order && event.event === "payment_link.paid") {
-    logAuditEvent({
-      sessionId: order.sessionId,
-      type: "payment_result",
-      toolName: "webhook",
-      reasoning: `Payment succeeded for order ${summaryId}`,
-      payload: { summaryId, paymentId: event.payload?.payment?.entity?.id, status: "success" },
-    });
-  } else if (order && FAILURE_EVENTS.has(event.event)) {
+    if (markOrderPaid(summaryId!)) {
+      logAuditEvent({
+        sessionId: order.sessionId,
+        type: "payment_result",
+        toolName: "webhook",
+        reasoning: `Payment succeeded for order ${summaryId}`,
+        payload: { summaryId, paymentId: event.payload?.payment?.entity?.id, status: "success" },
+      });
+    }
+  } else if (order && !order.paidAt && FAILURE_EVENTS.has(event.event)) {
     try {
-      await handlePaymentFailure(summaryId!, `Received "${event.event}" from Razorpay`);
+      const retry = await handlePaymentFailure(summaryId!, `Received "${event.event}" from Razorpay`);
+      watchPaymentLink(summaryId!, retry.paymentLinkId);
     } catch (error) {
       console.error("handlePaymentFailure failed for webhook event:", error);
     }
@@ -70,6 +74,7 @@ paymentsRouter.post("/:summaryId/simulate-failure", async (req, res) => {
   const { summaryId } = req.params;
   try {
     const result = await handlePaymentFailure(summaryId, "Simulated failure (demo trigger)");
+    watchPaymentLink(summaryId, result.paymentLinkId);
     res.json(result);
   } catch (error) {
     console.error("simulate-failure failed:", error);

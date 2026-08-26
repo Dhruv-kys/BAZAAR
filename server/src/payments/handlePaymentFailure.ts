@@ -2,7 +2,10 @@ import { logAuditEvent } from "../audit/auditStore.js";
 import { getPendingOrder, recordPaymentAttempt } from "./pendingOrderStore.js";
 import { createPaymentLink } from "./razorpay.js";
 
-export async function handlePaymentFailure(summaryId: string, reason: string): Promise<{ retryUrl: string }> {
+export async function handlePaymentFailure(
+  summaryId: string,
+  reason: string,
+): Promise<{ retryUrl: string; paymentLinkId: string }> {
   const order = getPendingOrder(summaryId);
   if (!order) {
     throw new Error(`Unknown order: ${summaryId}`);
@@ -27,5 +30,5 @@ export async function handlePaymentFailure(summaryId: string, reason: string): P
     payload: { summaryId, paymentLinkId: paymentLink.id, retryUrl: paymentLink.shortUrl },
   });
 
-  return { retryUrl: paymentLink.shortUrl };
+  return { retryUrl: paymentLink.shortUrl, paymentLinkId: paymentLink.id };
 }

@@ -47,6 +47,24 @@ export async function createPaymentLink(order: PendingOrder): Promise<{ id: stri
   return { id: data.id, shortUrl: data.short_url };
 }
 
+export async function getPaymentLinkStatus(paymentLinkId: string): Promise<string> {
+  const keyId = process.env.RAZORPAY_KEY_ID;
+  const keySecret = process.env.RAZORPAY_KEY_SECRET;
+  if (!keyId || !keySecret) {
+    throw new Error("RAZORPAY_KEY_ID/RAZORPAY_KEY_SECRET are not configured");
+  }
+
+  const res = await fetch(`https://api.razorpay.com/v1/payment_links/${paymentLinkId}`, {
+    headers: { Authorization: `Basic ${Buffer.from(`${keyId}:${keySecret}`).toString("base64")}` },
+  });
+  if (!res.ok) {
+    throw new Error(`Razorpay payment link fetch failed: ${res.status} ${(await res.text()).slice(0, 300)}`);
+  }
+
+  const data = (await res.json()) as { status: string };
+  return data.status;
+}
+
 export function verifyWebhookSignature(rawBody: string, signature: string): boolean {
   const secret = process.env.RAZORPAY_WEBHOOK_SECRET;
   if (!secret) throw new Error("RAZORPAY_WEBHOOK_SECRET is not configured");
