@@ -1,7 +1,6 @@
 import { GitHubIcon, LockIcon, ShieldIcon } from "../icons";
 import { navigate } from "../router";
-import { LiveLog } from "./Live";
-import { PaymentScene } from "./PaymentScene";
+import { ProductFrame } from "./ProductFrame";
 import { useReveal } from "./useReveal";
 import { useTheme } from "../useTheme";
 import "./Landing.css";
@@ -50,8 +49,6 @@ export function Landing() {
 
   return (
     <div className="lp">
-      <PaymentScene />
-
       <nav className="lp-nav">
         <a className="app-brand" href="/" onClick={navigate("/")}>
           <span className="app-mark" aria-hidden="true">
@@ -86,7 +83,6 @@ export function Landing() {
       </nav>
 
       <header className="lp-hero" data-reveal>
-        <div className="lp-hero-grid">
         <div className="lp-hero-copy">
           <span className="eyebrow">Track 01 · Agentic commerce</span>
           <h1 className="lp-head">
@@ -95,9 +91,8 @@ export function Landing() {
             <em>actually let near money.</em>
           </h1>
           <p className="lp-lede">
-            Most merchant bots take orders. This one sells — recommending, cross-selling and upselling a real catalog —
-            and then stops dead at a confirmation step, because every rupee it can move is fenced in by server-side code
-            rather than good intentions.
+            It recommends, cross-sells and upsells a real catalog — then stops dead at a confirmation step, because
+            every rupee it can move is fenced in by server-side code rather than good intentions.
           </p>
           <div className="lp-actions">
             <a className="lp-cta lp-cta-lg" href="/app" onClick={navigate("/app")}>
@@ -109,9 +104,9 @@ export function Landing() {
             </span>
           </div>
         </div>
-        <div className="lp-hero-aside">
-          <LiveLog />
-        </div>
+
+        <div className="lp-hero-shot">
+          <ProductFrame />
         </div>
       </header>
 

@@ -3,7 +3,9 @@ import { useEffect } from "react";
 export function useReveal() {
   useEffect(() => {
     const targets = document.querySelectorAll("[data-reveal]");
-    if (!targets.length) return;
+    if (!targets.length || typeof IntersectionObserver === "undefined") return;
+
+    document.documentElement.classList.add("reveal-ready");
 
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       targets.forEach((el) => el.classList.add("is-in"));
@@ -22,6 +24,9 @@ export function useReveal() {
     );
 
     targets.forEach((el) => io.observe(el));
-    return () => io.disconnect();
+    return () => {
+      io.disconnect();
+      document.documentElement.classList.remove("reveal-ready");
+    };
   }, []);
 }
