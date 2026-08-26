@@ -1,5 +1,6 @@
 import { GitHubIcon, LockIcon, ShieldIcon } from "../icons";
 import { navigate } from "../router";
+import { CurrencyRail } from "./CurrencyRail";
 import { ClampMeter, GateFlow, LiveLog } from "./Live";
 import { useTheme } from "../useTheme";
 import "./Landing.css";
@@ -47,6 +48,9 @@ export function Landing() {
 
   return (
     <div className="lp">
+      <CurrencyRail side="left" />
+      <CurrencyRail side="right" />
+
       <nav className="lp-nav">
         <a className="app-brand" href="/" onClick={navigate("/")}>
           <span className="app-mark" aria-hidden="true">

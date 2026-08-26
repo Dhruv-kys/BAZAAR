@@ -3,6 +3,7 @@ import { useAuditEvents } from "./audit/useAuditEvents";
 import { ChatPanel } from "./chat/ChatPanel";
 import { GuardrailsBadge } from "./guardrails/GuardrailsBadge";
 import { TrustRail } from "./trust/TrustRail";
+import { GitHubIcon } from "./icons";
 import { navigate } from "./router";
 import { useTheme } from "./useTheme";
 import "./App.css";
@@ -16,7 +17,7 @@ export function Workspace() {
   return (
     <div className="app">
       <nav className="app-nav">
-        <a className="app-brand" href="/" onClick={navigate("/")}>
+        <a className="app-brand" href="/" onClick={navigate("/")} title="Back to overview">
           <span className="app-mark" aria-hidden="true">
             ❖
           </span>
@@ -25,6 +26,16 @@ export function Workspace() {
         </a>
         <div className="app-nav-right">
           <GuardrailsBadge />
+          <a
+            className="app-icon"
+            href="https://github.com/Dhruv-kys/BAZAAR"
+            target="_blank"
+            rel="noreferrer"
+            aria-label="View source on GitHub"
+            title="View source on GitHub"
+          >
+            <GitHubIcon />
+          </a>
           <button
             className="app-theme"
             type="button"
