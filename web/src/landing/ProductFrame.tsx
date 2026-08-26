@@ -14,13 +14,12 @@ const LOG = [
 ];
 
 export function ProductFrame() {
-  const [step, setStep] = useState(0);
+  const [step, setStep] = useState(() =>
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches ? LOG.length + 2 : 0,
+  );
 
   useEffect(() => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      setStep(LOG.length + 2);
-      return;
-    }
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const id = setInterval(() => setStep((s) => (s >= LOG.length + 2 ? 0 : s + 1)), 1300);
     return () => clearInterval(id);
   }, []);
