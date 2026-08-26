@@ -1,6 +1,6 @@
-import { LockIcon, ShieldIcon } from "../icons";
+import { GitHubIcon, LockIcon, ShieldIcon } from "../icons";
 import { navigate } from "../router";
-import { ClampSticker, GateSticker, LimitsSticker, ReceiptSticker } from "./Stickers";
+import { ClampMeter, GateFlow, LiveLog } from "./Live";
 import { useTheme } from "../useTheme";
 import "./Landing.css";
 
@@ -57,12 +57,14 @@ export function Landing() {
         </a>
         <div className="lp-nav-right">
           <a
-            className="lp-nav-link"
+            className="lp-nav-icon"
             href="https://github.com/Dhruv-kys/BAZAAR"
             target="_blank"
             rel="noreferrer"
+            aria-label="View source on GitHub"
+            title="View source on GitHub"
           >
-            Source
+            <GitHubIcon />
           </a>
           <button
             className="app-theme"
@@ -102,10 +104,9 @@ export function Landing() {
             </span>
           </div>
         </div>
-        <div className="lp-hero-stickers" aria-hidden="true">
-          <ReceiptSticker />
-          <GateSticker />
-          <LimitsSticker />
+        <div className="lp-hero-stickers">
+          <LiveLog />
+          <GateFlow />
         </div>
         </div>
       </header>
@@ -122,8 +123,8 @@ export function Landing() {
             without being asked. Bazaar treats those four properties as structural constraints, not prompt
             instructions.
           </p>
-          <div className="lp-split-sticker" aria-hidden="true">
-            <ClampSticker />
+          <div className="lp-split-sticker">
+            <ClampMeter />
           </div>
         </div>
       </section>
