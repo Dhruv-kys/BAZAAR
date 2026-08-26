@@ -11,6 +11,8 @@ const FEATURE_KEYS = {
   chat: ["OPENAI_API_KEY"],
   payments: ["RAZORPAY_KEY_ID", "RAZORPAY_KEY_SECRET"],
   webhooks: ["RAZORPAY_WEBHOOK_SECRET"],
+  stt: ["DEEPGRAM_API_KEY"],
+  tts: ["ELEVENLABS_API_KEY"],
 } as const;
 
 export type Feature = keyof typeof FEATURE_KEYS;

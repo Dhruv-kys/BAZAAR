@@ -41,3 +41,33 @@ export function GitHubIcon({ size = 17 }: { size?: number }) {
     </svg>
   );
 }
+
+export function MicIcon({ size = 15 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" {...base} aria-hidden="true">
+      <rect x="9" y="3.5" width="6" height="11" rx="3" />
+      <path d="M5.5 11.5a6.5 6.5 0 0013 0" />
+      <path d="M12 18v2.5" />
+    </svg>
+  );
+}
+
+export function SpeakerIcon({ size = 15 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" {...base} aria-hidden="true">
+      <path d="M4.5 9.5v5h3.2l4.3 3.7V5.8L7.7 9.5H4.5z" />
+      <path d="M15.3 9.2a4 4 0 010 5.6" />
+      <path d="M17.7 6.9a7.2 7.2 0 010 10.2" />
+    </svg>
+  );
+}
+
+export function SpeakerOffIcon({ size = 15 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" {...base} aria-hidden="true">
+      <path d="M4.5 9.5v5h3.2l4.3 3.7V5.8L7.7 9.5H4.5z" />
+      <path d="M15.5 9.8l5 5" />
+      <path d="M20.5 9.8l-5 5" />
+    </svg>
+  );
+}

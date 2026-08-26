@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { OrderSummaryCard, type PendingOrder } from "../order/OrderSummaryCard";
-import { AlertIcon } from "../icons";
+import { AlertIcon, MicIcon, SpeakerIcon, SpeakerOffIcon } from "../icons";
 import { RichText } from "./RichText";
+import { useVoice } from "../voice/useVoice";
 import "./ChatPanel.css";
 
 interface ChatMessage {
@@ -21,6 +22,14 @@ export function ChatPanel({ sessionId }: { sessionId: string }) {
   const [sending, setSending] = useState(false);
   const [orderSummary, setOrderSummary] = useState<PendingOrder | undefined>();
   const threadRef = useRef<HTMLDivElement>(null);
+
+  const voice = useVoice(
+    (text) => {
+      if (sending) setInput((prev) => (prev ? `${prev} ${text}` : text));
+      else void send(text);
+    },
+    (message) => setMessages((prev) => [...prev, { role: "notice", content: message }]),
+  );
 
   useEffect(() => {
     threadRef.current?.scrollTo({ top: threadRef.current.scrollHeight, behavior: "smooth" });
@@ -46,6 +55,7 @@ export function ChatPanel({ sessionId }: { sessionId: string }) {
       }
       setMessages((prev) => [...prev, { role: "assistant", content: data.reply }]);
       if (data.orderSummary) setOrderSummary(data.orderSummary);
+      void voice.speak(data.reply);
     } catch {
       setMessages((prev) => [...prev, { role: "notice", content: "Couldn't reach the server." }]);
     } finally {
@@ -121,9 +131,33 @@ export function ChatPanel({ sessionId }: { sessionId: string }) {
           className="cp-input"
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder="What are you shopping for?"
+          placeholder={voice.micStatus === "transcribing" ? "Transcribing…" : "What are you shopping for?"}
           aria-label="Message the sales agent"
         />
+        {voice.micAvailable && (
+          <button
+            className={`cp-tool cp-mic${voice.micStatus === "recording" ? " rec" : ""}`}
+            type="button"
+            disabled={voice.micStatus === "transcribing"}
+            aria-label={voice.micStatus === "recording" ? "Stop recording" : "Speak instead of typing"}
+            title={voice.micStatus === "recording" ? "Stop recording" : "Speak instead of typing"}
+            onClick={voice.toggleMic}
+          >
+            <MicIcon />
+          </button>
+        )}
+        {voice.ttsAvailable && (
+          <button
+            className={`cp-tool${voice.speakReplies ? " on" : ""}`}
+            type="button"
+            aria-pressed={voice.speakReplies}
+            aria-label={voice.speakReplies ? "Stop speaking replies aloud" : "Speak replies aloud"}
+            title={voice.speakReplies ? "Stop speaking replies aloud" : "Speak replies aloud"}
+            onClick={voice.toggleSpeakReplies}
+          >
+            {voice.speakReplies ? <SpeakerIcon /> : <SpeakerOffIcon />}
+          </button>
+        )}
         <button className="cp-send" type="submit" disabled={sending || !input.trim()}>
           Send
         </button>

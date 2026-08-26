@@ -6,6 +6,7 @@ import { chatRouter } from "./routes/chat.js";
 import { guardrailsRouter } from "./routes/guardrails.js";
 import { ordersRouter } from "./routes/orders.js";
 import { paymentsRouter } from "./routes/payments.js";
+import { voiceRouter } from "./routes/voice.js";
 
 const app = express();
 app.use(cors());
@@ -22,6 +23,7 @@ app.use("/api/chat", chatRouter);
 app.use("/api/guardrails", guardrailsRouter);
 app.use("/api/audit", auditRouter);
 app.use("/api/orders", ordersRouter);
+app.use("/api/voice", voiceRouter);
 
 app.listen(config.port, () => {
   console.log(`server listening on http://localhost:${config.port}`);
