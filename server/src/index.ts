@@ -9,10 +9,18 @@ import { ordersRouter } from "./routes/orders.js";
 import { paymentsRouter } from "./routes/payments.js";
 import { voiceRouter } from "./routes/voice.js";
 
+function allowedOrigins(): string[] {
+  const configured = (process.env.APP_ORIGIN ?? "")
+    .split(",")
+    .map((origin) => origin.trim())
+    .filter(Boolean);
+  return ["http://localhost:5173", ...configured];
+}
+
 const app = express();
 app.disable("x-powered-by");
 app.use(securityHeaders);
-app.use(cors({ origin: ["http://localhost:5173", process.env.APP_ORIGIN].filter((o): o is string => Boolean(o)) }));
+app.use(cors({ origin: allowedOrigins() }));
 
 app.use("/api/payments", rateLimit(60, 60_000), paymentsRouter);
 

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { apiUrl } from "../api";
 
 export interface AuditEvent {
   id: number;
@@ -17,14 +18,14 @@ export function useAuditEvents(sessionId: string): AuditEvent[] {
   useEffect(() => {
     let cancelled = false;
 
-    fetch(`/api/audit?sessionId=${sessionId}`)
+    fetch(apiUrl(`/api/audit?sessionId=${sessionId}`))
       .then((res) => res.json())
       .then((data) => {
         if (!cancelled && Array.isArray(data)) setEvents(data);
       })
       .catch(() => {});
 
-    const source = new EventSource("/api/audit/stream");
+    const source = new EventSource(apiUrl("/api/audit/stream"));
     source.onmessage = (message) => {
       const event: AuditEvent = JSON.parse(message.data);
       if (event.sessionId !== sessionId) return;

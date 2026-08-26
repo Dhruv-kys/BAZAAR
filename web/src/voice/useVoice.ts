@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { apiUrl } from "../api";
 
 const MAX_RECORDING_MS = 30000;
 
@@ -61,7 +62,7 @@ export function useVoice(onTranscript: (text: string) => void, onNotice: (messag
   });
 
   useEffect(() => {
-    fetch("/api/voice/config")
+    fetch(apiUrl("/api/voice/config"))
       .then((res) => (res.ok ? res.json() : { stt: false, tts: false }))
       .then(setServerVoice)
       .catch(() => {});
@@ -110,7 +111,7 @@ export function useVoice(onTranscript: (text: string) => void, onNotice: (messag
 
       const blob = new Blob(chunks, { type: recorder.mimeType || "audio/webm" });
       try {
-        const res = await fetch("/api/voice/transcribe", {
+        const res = await fetch(apiUrl("/api/voice/transcribe"), {
           method: "POST",
           headers: { "Content-Type": blob.type },
           body: blob,
@@ -195,7 +196,7 @@ export function useVoice(onTranscript: (text: string) => void, onNotice: (messag
 
     if (serverVoice.tts) {
       try {
-        const res = await fetch("/api/voice/speak", {
+        const res = await fetch(apiUrl("/api/voice/speak"), {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ text: plain }),

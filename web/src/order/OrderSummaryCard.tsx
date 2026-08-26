@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { DemoControls } from "../demo/DemoControls";
 import { CheckIcon, LockIcon, ShieldIcon } from "../icons";
 import "./OrderSummaryCard.css";
+import { apiUrl } from "../api";
 
 export interface PendingOrderItem {
   productId: string;
@@ -41,7 +42,7 @@ export function OrderSummaryCard({ order }: { order: PendingOrder }) {
     if (!paymentUrl || paid) return;
     const id = setInterval(async () => {
       try {
-        const res = await fetch(`/api/orders/${order.summaryId}/status`);
+        const res = await fetch(apiUrl(`/api/orders/${order.summaryId}/status`));
         if (!res.ok) return;
         const data = await res.json();
         if (data.status === "paid") setPaid(true);
@@ -56,7 +57,7 @@ export function OrderSummaryCard({ order }: { order: PendingOrder }) {
     setConfirming(true);
     setError(undefined);
     try {
-      const res = await fetch(`/api/orders/${order.summaryId}/confirm`, { method: "POST" });
+      const res = await fetch(apiUrl(`/api/orders/${order.summaryId}/confirm`), { method: "POST" });
       const data = await res.json();
       if (!res.ok) {
         setError(data.error ?? "Couldn't confirm the order.");

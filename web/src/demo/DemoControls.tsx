@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "./DemoControls.css";
+import { apiUrl } from "../api";
 
 export function DemoControls({ summaryId }: { summaryId: string }) {
   const [loading, setLoading] = useState(false);
@@ -10,7 +11,7 @@ export function DemoControls({ summaryId }: { summaryId: string }) {
     setLoading(true);
     setError(undefined);
     try {
-      const res = await fetch(`/api/payments/${summaryId}/simulate-failure`, { method: "POST" });
+      const res = await fetch(apiUrl(`/api/payments/${summaryId}/simulate-failure`), { method: "POST" });
       const data = await res.json();
       if (!res.ok) {
         setError(data.error ?? "Couldn't simulate a failure.");

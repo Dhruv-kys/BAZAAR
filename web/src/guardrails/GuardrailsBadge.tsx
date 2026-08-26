@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { ShieldIcon } from "../icons";
 import "./GuardrailsBadge.css";
+import { apiUrl } from "../api";
 
 interface Guardrails {
   maxDiscountPercent: number;
@@ -17,7 +18,7 @@ export function GuardrailsBadge() {
   const [guardrails, setGuardrails] = useState<Guardrails>();
 
   useEffect(() => {
-    fetch("/api/guardrails")
+    fetch(apiUrl("/api/guardrails"))
       .then((res) => res.json())
       .then(setGuardrails)
       .catch(() => {});

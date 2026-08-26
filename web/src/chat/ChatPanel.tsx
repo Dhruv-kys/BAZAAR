@@ -4,6 +4,7 @@ import { AlertIcon, MicIcon, SpeakerIcon, SpeakerOffIcon } from "../icons";
 import { RichText } from "./RichText";
 import { useVoice } from "../voice/useVoice";
 import "./ChatPanel.css";
+import { apiUrl } from "../api";
 
 interface ChatMessage {
   role: "user" | "assistant" | "notice";
@@ -43,7 +44,7 @@ export function ChatPanel({ sessionId }: { sessionId: string }) {
     setSending(true);
 
     try {
-      const res = await fetch("/api/chat", {
+      const res = await fetch(apiUrl("/api/chat"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ sessionId, message: text }),
