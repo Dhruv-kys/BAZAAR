@@ -1,9 +1,9 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import type OpenAI from "openai";
+import type { ChatCompletionMessageParam } from "openai/resources/chat/completions";
 import { trimHistory } from "./session.js";
 
-type Message = OpenAI.Chat.Completions.ChatCompletionMessageParam;
+type Message = ChatCompletionMessageParam;
 
 function turn(n: number): Message[] {
   return [

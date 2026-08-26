@@ -1,6 +1,6 @@
-import type OpenAI from "openai";
+import type { ChatCompletionMessageParam } from "openai/resources/chat/completions";
 
-type Message = OpenAI.Chat.Completions.ChatCompletionMessageParam;
+type Message = ChatCompletionMessageParam;
 
 const MAX_HISTORY_MESSAGES = 20;
 const MAX_SESSIONS = 500;

@@ -1,4 +1,9 @@
-import OpenAI from "openai";
+import { BadRequestError, OpenAI, RateLimitError } from "openai";
+import type {
+  ChatCompletion,
+  ChatCompletionMessageParam,
+  ChatCompletionTool,
+} from "openai/resources/chat/completions";
 import { missingKeysFor } from "../config.js";
 
 export const CHAT_MODEL = process.env.OPENAI_MODEL ?? "gpt-4o-mini";
@@ -39,13 +44,13 @@ function sleep(ms: number) {
 }
 
 function isMalformedToolCall(error: unknown): boolean {
-  return error instanceof OpenAI.BadRequestError;
+  return error instanceof BadRequestError;
 }
 
 export async function createChatCompletion(
-  messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[],
-  tools: OpenAI.Chat.Completions.ChatCompletionTool[],
-): Promise<OpenAI.Chat.Completions.ChatCompletion> {
+  messages: ChatCompletionMessageParam[],
+  tools: ChatCompletionTool[],
+): Promise<ChatCompletion> {
   for (let attempt = 0; ; attempt++) {
     try {
       return await getClient().chat.completions.create({
@@ -55,7 +60,7 @@ export async function createChatCompletion(
         ...(tools.length ? { tools } : {}),
       });
     } catch (error) {
-      if (!(error instanceof OpenAI.RateLimitError)) {
+      if (!(error instanceof RateLimitError)) {
         if (isMalformedToolCall(error) && attempt < MAX_RETRIES) {
           await sleep(250 * (attempt + 1));
           continue;
