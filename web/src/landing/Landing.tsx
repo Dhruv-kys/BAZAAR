@@ -218,6 +218,9 @@ export function Landing() {
             It got fifteen — the ceiling written in server code. The customer was told fifteen, the log recorded both
             numbers, and no prompt was asked to police itself.
           </p>
+          <div className="lp-clamp-stamp" aria-hidden="true">
+            Capped · server-enforced
+          </div>
         </div>
       </section>
 

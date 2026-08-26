@@ -4,6 +4,27 @@
   padding: 0 calc(var(--step) * 4);
 }
 
+.lp .eyebrow {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--step) * 2);
+}
+
+.lp .eyebrow::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+}
+
+.lp-clamp .eyebrow::after {
+  background: rgba(180, 83, 42, 0.25);
+}
+
+.lp-receipt .eyebrow::after {
+  background: var(--term-line);
+}
+
 .lp-nav {
   display: flex;
   align-items: center;
@@ -60,7 +81,20 @@
 }
 
 .lp-hero {
+  position: relative;
   padding: calc(var(--step) * 7) 0 calc(var(--step) * 10);
+}
+
+.lp-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0 -30vw 30%;
+  background-image: radial-gradient(var(--line-strong) 1px, transparent 1px);
+  background-size: 26px 26px;
+  -webkit-mask-image: radial-gradient(ellipse 50% 55% at 74% 40%, black, transparent 72%);
+  mask-image: radial-gradient(ellipse 50% 55% at 74% 40%, black, transparent 72%);
+  pointer-events: none;
+  z-index: -1;
 }
 
 
@@ -72,6 +106,11 @@
 .lp-hero-shot .pf {
   transform: rotateX(3deg);
   transform-origin: top center;
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.lp-hero-shot:hover .pf {
+  transform: rotateX(0deg);
 }
 
 .lp-head {
@@ -358,8 +397,32 @@
 }
 
 .lp-clamp-inner {
+  position: relative;
   max-width: 1080px;
   margin: 0 auto;
+}
+
+.lp-clamp-stamp {
+  position: absolute;
+  top: 0;
+  right: calc(var(--step) * 2);
+  padding: 10px 16px;
+  font-family: var(--mono);
+  font-size: var(--t-xs);
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--critical);
+  border: 2px solid var(--critical);
+  border-radius: 6px;
+  transform: rotate(-7deg) scale(1.7);
+  opacity: 0;
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) 1s, opacity 0.25s ease 1s;
+}
+
+.lp-clamp.is-in .lp-clamp-stamp {
+  transform: rotate(-7deg) scale(1);
+  opacity: 1;
 }
 
 .lp-clamp .eyebrow {
@@ -633,6 +696,12 @@
     display: none;
   }
 
+  .lp-clamp-stamp {
+    position: static;
+    display: inline-block;
+    margin-top: calc(var(--step) * 3);
+  }
+
   .lp-row {
     grid-template-columns: 1fr;
     gap: calc(var(--step) * 1.5);
@@ -704,6 +773,16 @@ html.reveal-ready [data-reveal].is-in {
   .lp-step::before,
   .lp-clamp-was::after {
     transform: scaleX(1);
+    transition: none;
+  }
+
+  .lp-clamp-stamp {
+    transform: rotate(-7deg) scale(1);
+    opacity: 1;
+    transition: none;
+  }
+
+  .lp-hero-shot .pf {
     transition: none;
   }
 }
