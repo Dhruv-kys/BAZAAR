@@ -118,17 +118,17 @@ export function Landing() {
           <span className="eyebrow">Track 01 · Agentic commerce</span>
           <h1 className="lp-head">
             <span className="lp-head-line">
-              <span className="lp-head-text">A sales agent you can</span>
+              <span className="lp-head-text">See it sell,</span>
             </span>
             <span className="lp-head-line">
               <span className="lp-head-text">
-                <em>actually let near money.</em>
+                then <em>stop.</em>
               </span>
             </span>
           </h1>
           <p className="lp-lede">
-            It recommends, cross-sells and upsells a real catalog — then stops dead at a confirmation step, because
-            every rupee it can move is fenced in by server-side code rather than good intentions.
+            A sales agent that recommends, cross-sells and upsells a real catalog — then stops dead at a confirmation
+            step, because every rupee it can move is fenced in by server-side code rather than good intentions.
           </p>
           <div className="lp-actions">
             <a className="lp-cta lp-cta-lg" href="/app" onClick={navigate("/app")}>
@@ -327,9 +327,10 @@ export function Landing() {
       </section>
 
       <section className="lp-final" data-reveal>
-        <h2 className="lp-final-head">See it sell, then stop.</h2>
+        <h2 className="lp-final-head">Try talking it past the cap.</h2>
         <p className="lp-final-note">
-          Runs on Razorpay test mode — a real payment link is created, but no real money moves.
+          Ask for half off and watch the log refuse you. Runs on Razorpay test mode — a real payment link is created,
+          but no real money moves.
         </p>
         <a className="lp-cta lp-cta-lg" href="/app" onClick={navigate("/app")}>
           Open the agent →
