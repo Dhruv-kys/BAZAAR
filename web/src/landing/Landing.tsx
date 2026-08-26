@@ -1,6 +1,7 @@
 import { GitHubIcon, LockIcon, ShieldIcon } from "../icons";
 import { navigate } from "../router";
 import { LiveLog } from "./Live";
+import { PaymentScene } from "./PaymentScene";
 import { useReveal } from "./useReveal";
 import { useTheme } from "../useTheme";
 import "./Landing.css";
@@ -49,6 +50,8 @@ export function Landing() {
 
   return (
     <div className="lp">
+      <PaymentScene />
+
       <nav className="lp-nav">
         <a className="app-brand" href="/" onClick={navigate("/")}>
           <span className="app-mark" aria-hidden="true">
