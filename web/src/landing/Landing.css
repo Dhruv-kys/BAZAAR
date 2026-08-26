@@ -82,7 +82,49 @@
 
 .lp-hero {
   position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 280px;
+  gap: 0 calc(var(--step) * 8);
+  align-items: end;
   padding: calc(var(--step) * 7) 0 calc(var(--step) * 10);
+}
+
+.lp-hero-copy {
+  grid-column: 1;
+}
+
+.lp-hero-specs {
+  grid-column: 2;
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--step) * 3.5);
+  margin-bottom: 6px;
+  padding-left: calc(var(--step) * 3);
+  border-left: 1px solid var(--line-strong);
+}
+
+.lp-spec b {
+  display: block;
+  font-family: var(--serif);
+  font-size: 34px;
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+
+.lp-spec b.lp-spec-zero {
+  color: var(--signal);
+}
+
+.lp-spec span {
+  display: block;
+  margin-top: 5px;
+  font-family: var(--mono);
+  font-size: var(--t-xs);
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--ink-3);
 }
 
 .lp-hero::before {
@@ -99,6 +141,7 @@
 
 
 .lp-hero-shot {
+  grid-column: 1 / -1;
   margin-top: calc(var(--step) * 7);
   perspective: 1600px;
 }
@@ -200,7 +243,36 @@
 }
 
 .lp-statement {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+  gap: calc(var(--step) * 8);
+  align-items: end;
   padding: calc(var(--step) * 13) 0 calc(var(--step) * 12);
+}
+
+.lp-statement-index {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: calc(var(--step) * 1.5) calc(var(--step) * 4);
+  margin: calc(var(--step) * 6) 0 0;
+  padding: 0;
+}
+
+.lp-statement-index li {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-size: var(--t-sm);
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.lp-statement-index b {
+  font-family: var(--mono);
+  font-size: var(--t-xs);
+  font-weight: 500;
+  color: var(--signal);
 }
 
 .lp-statement-quote {
@@ -220,7 +292,7 @@
 }
 
 .lp-statement-body {
-  margin: calc(var(--step) * 5) 0 0 auto;
+  margin: 0;
   max-width: 52ch;
   font-size: var(--t-md);
   line-height: 1.7;
@@ -646,7 +718,20 @@
 
 @media (max-width: 1040px) {
   .lp-hero {
+    display: block;
     padding: calc(var(--step) * 7) 0 calc(var(--step) * 9);
+  }
+
+  .lp-hero-specs {
+    display: none;
+  }
+
+  .lp-statement {
+    display: block;
+  }
+
+  .lp-statement-body {
+    margin-top: calc(var(--step) * 5);
   }
 }
 

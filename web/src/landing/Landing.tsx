@@ -132,6 +132,21 @@ export function Landing() {
           </div>
         </div>
 
+        <aside className="lp-hero-specs" aria-label="Guardrail limits">
+          <div className="lp-spec">
+            <b>15%</b>
+            <span>discount ceiling</span>
+          </div>
+          <div className="lp-spec">
+            <b>₹5,000</b>
+            <span>order cap</span>
+          </div>
+          <div className="lp-spec">
+            <b className="lp-spec-zero">0</b>
+            <span>charge tools exposed to the model</span>
+          </div>
+        </aside>
+
         <div className="lp-hero-shot">
           <ProductFrame />
         </div>
@@ -157,9 +172,25 @@ export function Landing() {
       </div>
 
       <section className="lp-statement" data-reveal>
-        <p className="lp-statement-quote">
-          An agent that can spend is a <em>liability</em> until it can be audited.
-        </p>
+        <div className="lp-statement-main">
+          <p className="lp-statement-quote">
+            An agent that can spend is a <em>liability</em> until it can be audited.
+          </p>
+          <ol className="lp-statement-index">
+            <li>
+              <b>01</b>Explainable
+            </li>
+            <li>
+              <b>02</b>Bounded
+            </li>
+            <li>
+              <b>03</b>Gated
+            </li>
+            <li>
+              <b>04</b>Resilient
+            </li>
+          </ol>
+        </div>
         <p className="lp-statement-body">
           Handing a language model a payments API is the easy part. The hard part is proving — to a customer, to a
           merchant, to a reviewer — that it cannot quietly invent a discount, exceed a limit, or charge someone without

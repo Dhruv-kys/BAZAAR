@@ -89,6 +89,7 @@ html.dark {
 }
 
 html {
+  overflow-x: clip;
   background: var(--bg);
 }
 
