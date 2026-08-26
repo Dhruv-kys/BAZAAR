@@ -35,29 +35,6 @@
   animation: drift-b 46s ease-in-out infinite;
 }
 
-@keyframes drift-a {
-  0%,
-  100% {
-    transform: translate3d(0, 0, 0) scale(1);
-  }
-  33% {
-    transform: translate3d(4%, 3%, 0) scale(1.09);
-  }
-  66% {
-    transform: translate3d(-3%, 5%, 0) scale(1.04);
-  }
-}
-
-@keyframes drift-b {
-  0%,
-  100% {
-    transform: translate3d(0, 0, 0) scale(1.05);
-  }
-  50% {
-    transform: translate3d(-5%, -4%, 0) scale(1.14);
-  }
-}
-
 .app-nav,
 .tr,
 .app-grid > * {
@@ -99,6 +76,12 @@
   display: flex;
   align-items: baseline;
   gap: 8px;
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+
+.app-brand:hover {
+  opacity: 0.72;
 }
 
 .app-mark {
