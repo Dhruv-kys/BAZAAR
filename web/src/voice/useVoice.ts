@@ -85,7 +85,7 @@ export function useVoice(onTranscript: (text: string) => void, onNotice: (messag
       setSpeakReplies(true);
       callbacksRef.current.onTranscript(text);
     } else {
-      callbacksRef.current.onNotice("Didn't catch that — try again, or type instead.");
+      callbacksRef.current.onNotice("Didn't catch that. Try again, or type instead.");
     }
   }
 
@@ -157,7 +157,7 @@ export function useVoice(onTranscript: (text: string) => void, onNotice: (messag
       } else if (event.error !== "aborted" && event.error !== "no-speech") {
         callbacksRef.current.onNotice("Voice input failed. Try again, or type instead.");
       } else if (event.error === "no-speech") {
-        callbacksRef.current.onNotice("Didn't catch that — try again, or type instead.");
+        callbacksRef.current.onNotice("Didn't catch that. Try again, or type instead.");
       }
     };
     recognition.onend = () => {

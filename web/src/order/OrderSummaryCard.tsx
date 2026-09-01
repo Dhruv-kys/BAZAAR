@@ -137,7 +137,7 @@ export function OrderSummaryCard({ order }: { order: PendingOrder }) {
             </a>
             <p className="os-secured">
               <ShieldIcon size={12} />
-              Card details are entered on Razorpay — never on this site
+              Card details are entered on Razorpay, never on this site
             </p>
             <p className="os-note">Razorpay test mode: a real payment link, but no real money moves.</p>
             <DemoControls summaryId={order.summaryId} />
@@ -152,7 +152,7 @@ export function OrderSummaryCard({ order }: { order: PendingOrder }) {
             </button>
             <p className="os-secured">
               <ShieldIcon size={12} />
-              Card details are entered on Razorpay — never on this site
+              Card details are entered on Razorpay, never on this site
             </p>
             <p className="os-note">Confirming only creates a payment link. You choose when to pay.</p>
           </div>

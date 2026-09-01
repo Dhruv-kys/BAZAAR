@@ -74,7 +74,7 @@ export function AuditPanel({ events, sessionId }: { events: AuditEvent[]; sessio
             <i />
             <i />
           </span>
-          <span className="ap-title">audit.log — agent decisions</span>
+          <span className="ap-title">audit.log / agent decisions</span>
         </header>
 
         <div className="ap-body" ref={bodyRef}>

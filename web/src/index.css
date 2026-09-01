@@ -21,11 +21,6 @@
   --critical: #a34030;
   --critical-soft: #faeeeb;
 
-  --hero-bg: #1a1917;
-  --hero-ink: #f4f1ea;
-  --hero-dim: #a8a399;
-  --hero-accent: #e58e5f;
-
   --term-bg: #201f1c;
   --term-line: #35332e;
   --term-ink: #e6e3db;
@@ -37,7 +32,6 @@
   --term-stop: #dc9382;
 
   --sans: "Hanken Grotesk", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  --serif: "Instrument Serif", Georgia, serif;
   --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
 
   --t-xs: 12px;

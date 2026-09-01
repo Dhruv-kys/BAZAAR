@@ -31,7 +31,7 @@ export function DemoControls({ summaryId }: { summaryId: string }) {
         <div className="dc-recovered">
           <div className="dc-recovered-head">
             <span className="dc-badge">Payment declined</span>
-            <span className="dc-recovered-note">Handled — a fresh link is ready</span>
+            <span className="dc-recovered-note">Handled. A fresh link is ready</span>
           </div>
           <a className="dc-retry" href={retryUrl} target="_blank" rel="noreferrer">
             Retry payment →

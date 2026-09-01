@@ -1,6 +1,5 @@
-import { GitHubIcon, LockIcon } from "../icons";
+import { ArrowUpRightIcon, GitHubIcon, LockIcon, MoonIcon, SunIcon } from "../icons";
 import { navigate } from "../router";
-import { ProductFrame } from "./ProductFrame";
 import { SpecNumber } from "./SpecNumber";
 import { useReveal } from "./useReveal";
 import { useTilt } from "./useTilt";
@@ -23,21 +22,21 @@ const GUARANTEES = [
     label: "Explainable",
     claim: "Every decision is logged with its reason",
     detail:
-      "Each recommendation, cross-sell, upsell and discount is written to an audit log with the reasoning behind it — streamed to the screen as it happens, not buried in a server file.",
+      "Each recommendation, cross-sell, upsell and discount is written to an audit log with the reasoning behind it, streamed to the screen as it happens rather than buried in a server file.",
   },
   {
     n: "02",
     label: "Bounded",
     claim: "Caps the agent cannot talk its way past",
     detail:
-      "Discount and order limits live in server code. Ask for 50% off and the request is clamped to the real ceiling before it touches a total — the log shows both numbers.",
+      "Discount and order limits live in server code. Ask for 50% off and the request is clamped to the real ceiling before it touches a total. The log records both numbers.",
   },
   {
     n: "03",
     label: "Gated",
     claim: "The model has no tool that can charge you",
     detail:
-      "There is deliberately no charge function exposed to the agent. It can only stage a summary; a payment link exists only after a human presses confirm.",
+      "There is deliberately no charge function exposed to the agent. It can only stage a summary. A payment link exists only after a human presses confirm.",
   },
   {
     n: "04",
@@ -52,7 +51,7 @@ const STEPS = [
   {
     n: "01",
     title: "Reads the occasion",
-    body: "Birthday for fifteen, chocolate, first order — the agent turns plain language into catalog filters.",
+    body: "Birthday for fifteen, chocolate, first order. The agent turns plain language into catalog filters.",
   },
   {
     n: "02",
@@ -68,9 +67,20 @@ const STEPS = [
   {
     n: "04",
     title: "Charges on Razorpay",
-    body: "Confirming creates a Razorpay payment link. Card details are entered there — never on this site.",
+    body: "Confirming creates a Razorpay payment link. Card details are entered there, never on this site.",
   },
 ];
+
+function OpenAgent({ large }: { large?: boolean }) {
+  return (
+    <a className={`lp-cta${large ? " lp-cta-lg" : ""}`} href="/app" onClick={navigate("/app")}>
+      <span>Open the agent</span>
+      <span className="lp-cta-orb" aria-hidden="true">
+        <ArrowUpRightIcon size={large ? 15 : 13} />
+      </span>
+    </a>
+  );
+}
 
 export function Landing() {
   const { theme, toggleTheme } = useTheme();
@@ -105,17 +115,15 @@ export function Landing() {
             aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
             onClick={toggleTheme}
           >
-            {theme === "dark" ? "☀" : "☾"}
+            {theme === "dark" ? <SunIcon /> : <MoonIcon />}
           </button>
-          <a className="lp-cta" href="/app" onClick={navigate("/app")}>
-            Open the agent →
-          </a>
+          <OpenAgent />
         </div>
       </nav>
 
       <header className="lp-hero" data-reveal>
         <div className="lp-hero-copy">
-          <span className="eyebrow">Track 01 · Agentic commerce</span>
+          <span className="eyebrow">Track 01, agentic commerce</span>
           <h1 className="lp-head">
             <span className="lp-head-line">
               <span className="lp-head-text">See it sell,</span>
@@ -127,34 +135,13 @@ export function Landing() {
             </span>
           </h1>
           <p className="lp-lede">
-            A sales agent that recommends, cross-sells and upsells a real catalog — then stops dead at a confirmation
-            step, because every rupee it can move is fenced in by server-side code rather than good intentions.
+            A sales agent that recommends, cross-sells and upsells a real catalog, then stops dead at a confirmation
+            step.
           </p>
           <div className="lp-actions">
-            <a className="lp-cta lp-cta-lg" href="/app" onClick={navigate("/app")}>
-              Open the agent →
-            </a>
-            <span className="lp-actions-note">
-              <LockIcon size={13} />
-              Razorpay test mode · no real money moves
-            </span>
+            <OpenAgent large />
           </div>
         </div>
-
-        <aside className="lp-hero-specs" aria-label="Guardrail limits">
-          <div className="lp-spec">
-            <SpecNumber target={15} render={(v) => `${v}%`} />
-            <span>discount ceiling</span>
-          </div>
-          <div className="lp-spec">
-            <SpecNumber target={5000} render={(v) => `₹${v.toLocaleString("en-IN")}`} />
-            <span>order cap</span>
-          </div>
-          <div className="lp-spec">
-            <b className="lp-spec-zero">0</b>
-            <span>charge tools exposed to the model</span>
-          </div>
-        </aside>
 
         <div
           className="lp-hero-shot"
@@ -162,7 +149,14 @@ export function Landing() {
           onPointerMove={onShotPointerMove}
           onPointerLeave={onShotPointerLeave}
         >
-          <ProductFrame />
+          <img
+            className="lp-shot-img lp-shot-light"
+            src="/agent-light.webp"
+            width={1600}
+            height={1006}
+            alt="The Bazaar agent mid-sale: the customer asks for 50% off, the agent applies 15%, and the audit log records the discount being capped at the server ceiling."
+          />
+          <img className="lp-shot-img lp-shot-dark" src="/agent-dark.webp" width={1600} height={1006} alt="" />
         </div>
       </header>
 
@@ -185,29 +179,28 @@ export function Landing() {
         </div>
       </div>
 
-      <section className="lp-statement" data-reveal>
-        <div className="lp-statement-main">
-          <p className="lp-statement-quote">
-            An agent that can spend is a <em>liability</em> until it can be audited.
-          </p>
-          <ol className="lp-statement-index">
-            <li>
-              <b>01</b>Explainable
-            </li>
-            <li>
-              <b>02</b>Bounded
-            </li>
-            <li>
-              <b>03</b>Gated
-            </li>
-            <li>
-              <b>04</b>Resilient
-            </li>
-          </ol>
+      <section className="lp-limits" data-reveal aria-label="Guardrail limits">
+        <div className="lp-limit">
+          <SpecNumber target={15} render={(v) => `${v}%`} />
+          <span>discount ceiling, enforced in server code</span>
         </div>
+        <div className="lp-limit">
+          <SpecNumber target={5000} render={(v) => `₹${v.toLocaleString("en-IN")}`} />
+          <span>order cap the agent cannot exceed</span>
+        </div>
+        <div className="lp-limit lp-limit-zero">
+          <b className="lp-spec-zero">0</b>
+          <span>charge tools exposed to the model</span>
+        </div>
+      </section>
+
+      <section className="lp-statement" data-reveal>
+        <p className="lp-statement-quote">
+          An agent that can spend is a <em>liability</em> until it can be audited.
+        </p>
         <p className="lp-statement-body">
-          Handing a language model a payments API is the easy part. The hard part is proving — to a customer, to a
-          merchant, to a reviewer — that it cannot quietly invent a discount, exceed a limit, or charge someone without
+          Handing a language model a payments API is the easy part. The hard part is proving, to a customer, to a
+          merchant, to a reviewer, that it cannot quietly invent a discount, exceed a limit, or charge someone without
           being asked. Bazaar treats those four properties as structural constraints, not prompt instructions.
         </p>
       </section>
@@ -244,7 +237,6 @@ export function Landing() {
 
       <section className="lp-section" data-reveal>
         <div className="lp-section-head">
-          <span className="eyebrow">How a sale runs</span>
           <h2 className="lp-h2">Four steps, one of which is a full stop.</h2>
         </div>
         <ol className="lp-steps">
@@ -261,7 +253,6 @@ export function Landing() {
 
       <section className="lp-clamp" data-reveal>
         <div className="lp-clamp-inner">
-          <span className="eyebrow">The moment that matters</span>
           <p className="lp-clamp-said">The agent asked for</p>
           <p className="lp-clamp-big">
             <span className="lp-clamp-was">50%</span>
@@ -269,11 +260,11 @@ export function Landing() {
             <span className="lp-clamp-got">15%</span>
           </p>
           <p className="lp-clamp-note">
-            It got fifteen — the ceiling written in server code. The customer was told fifteen, the log recorded both
+            It got fifteen, the ceiling written in server code. The customer was told fifteen, the log recorded both
             numbers, and no prompt was asked to police itself.
           </p>
           <div className="lp-clamp-stamp" aria-hidden="true">
-            Capped · server-enforced
+            Capped, server-enforced
           </div>
         </div>
       </section>
@@ -286,7 +277,7 @@ export function Landing() {
           </div>
           <p className="lp-receipt-body">
             Ask for half off. The model requests it, the server refuses it, and the log records both numbers side by
-            side — the difference between claiming a guardrail exists and showing one working.
+            side. That is the difference between claiming a guardrail exists and showing one working.
           </p>
           <div className="lp-term">
             <div className="lp-term-bar">
@@ -295,7 +286,7 @@ export function Landing() {
                 <i />
                 <i />
               </span>
-              <span className="lp-term-title">audit.log — agent decisions</span>
+              <span className="lp-term-title">audit.log</span>
             </div>
             <pre className="lp-term-body">
               <code>
@@ -329,19 +320,23 @@ export function Landing() {
       <section className="lp-final" data-reveal>
         <h2 className="lp-final-head">Try talking it past the cap.</h2>
         <p className="lp-final-note">
-          Ask for half off and watch the log refuse you. Runs on Razorpay test mode — a real payment link is created,
-          but no real money moves.
+          Ask for half off and watch the log refuse you. Runs on Razorpay test mode: a real payment link is created, but
+          no real money moves.
         </p>
-        <a className="lp-cta lp-cta-lg" href="/app" onClick={navigate("/app")}>
-          Open the agent →
-        </a>
+        <div className="lp-final-actions">
+          <OpenAgent large />
+          <span className="lp-final-safe">
+            <LockIcon size={13} />
+            No real money moves
+          </span>
+        </div>
         <span className="lp-ghost" aria-hidden="true">
           Bazaar
         </span>
       </section>
 
       <footer className="lp-foot">
-        <span>Bazaar · Track 01 — AI Growth &amp; Agentic Commerce</span>
+        <span>Bazaar. Track 01, AI Growth and Agentic Commerce.</span>
         <a href="https://github.com/Dhruv-kys/BAZAAR" target="_blank" rel="noreferrer">
           Source on GitHub
         </a>

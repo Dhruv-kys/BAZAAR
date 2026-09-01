@@ -79,7 +79,7 @@ export function ChatPanel({ sessionId }: { sessionId: string }) {
                 <em>It sells the rest.</em>
               </h1>
               <p className="cp-lede">
-                A bakery assistant that recommends, cross-sells and upsells — then stops at a confirmation step before any
+                A bakery assistant that recommends, cross-sells and upsells, then stops at a confirmation step before any
                 money moves. Every decision is logged beside you.
               </p>
               <div className="cp-starters">
