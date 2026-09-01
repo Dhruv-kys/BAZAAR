@@ -1,10 +1,21 @@
 .ap {
+  min-height: 0;
+  padding: 6px;
+  background: var(--shell);
+  border: 1px solid var(--shell-line);
+  border-radius: var(--r-shell);
+  box-shadow: var(--ambient);
+}
+
+.ap-core {
   display: flex;
   flex-direction: column;
+  height: 100%;
   min-height: 0;
   background: var(--term-bg);
-  border: 1px solid var(--term-line);
-  border-radius: var(--r-lg);
+  border: 1px solid var(--core-line);
+  border-radius: var(--r-core);
+  box-shadow: var(--core-lift);
   overflow: hidden;
   font-family: var(--mono);
 }

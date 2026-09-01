@@ -79,3 +79,37 @@ export function CheckIcon({ size = 15 }: { size?: number }) {
     </svg>
   );
 }
+
+const light = {
+  fill: "none",
+  stroke: "currentColor",
+  strokeWidth: 1.35,
+  strokeLinecap: "round" as const,
+  strokeLinejoin: "round" as const,
+};
+
+export function SunIcon({ size = 15 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" {...light} aria-hidden="true">
+      <circle cx="12" cy="12" r="4.1" />
+      <path d="M12 2.6v2.3M12 19.1v2.3M21.4 12h-2.3M4.9 12H2.6M18.6 5.4l-1.6 1.6M7 17l-1.6 1.6M18.6 18.6L17 17M7 7L5.4 5.4" />
+    </svg>
+  );
+}
+
+export function MoonIcon({ size = 15 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" {...light} aria-hidden="true">
+      <path d="M20.5 14.2A8.6 8.6 0 019.8 3.5a8.6 8.6 0 1010.7 10.7z" />
+    </svg>
+  );
+}
+
+export function ArrowUpRightIcon({ size = 14 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" {...light} aria-hidden="true">
+      <path d="M7.5 16.5L16.5 7.5" />
+      <path d="M9.2 7.5h7.3v7.3" />
+    </svg>
+  );
+}
