@@ -2,9 +2,10 @@
   display: flex;
   align-items: center;
   gap: var(--step);
-  padding: 6px 12px;
-  border: 1px solid var(--line);
-  border-radius: var(--r-sm);
+  padding: 7px 14px;
+  background: var(--core);
+  border: 1px solid var(--core-line);
+  border-radius: 999px;
 }
 
 .gb-shield {
@@ -21,23 +22,24 @@
 
 .gb-item {
   font-size: var(--t-xs);
-  color: var(--ink-3);
+  color: var(--glass-ink-3);
   white-space: nowrap;
 }
 
 .gb-item strong {
-  font-weight: 500;
-  color: var(--ink-2);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--glass-ink);
 }
 
 .gb-sep {
   width: 1px;
   height: 10px;
-  background: var(--line);
+  background: var(--shell-line);
 }
 
-@media (max-width: 760px) {
-  .gb-sep {
+@media (max-width: 1040px) {
+  .gb {
     display: none;
   }
 }

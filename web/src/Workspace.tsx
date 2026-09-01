@@ -3,7 +3,8 @@ import { useAuditEvents } from "./audit/useAuditEvents";
 import { ChatPanel } from "./chat/ChatPanel";
 import { GuardrailsBadge } from "./guardrails/GuardrailsBadge";
 import { TrustRail } from "./trust/TrustRail";
-import { GitHubIcon } from "./icons";
+import { GitHubIcon, MoonIcon, SunIcon } from "./icons";
+import { useReveal } from "./landing/useReveal";
 import { navigate } from "./router";
 import { useTheme } from "./useTheme";
 import "./App.css";
@@ -13,6 +14,7 @@ const sessionId = crypto.randomUUID();
 export function Workspace() {
   const { theme, toggleTheme } = useTheme();
   const events = useAuditEvents(sessionId);
+  useReveal();
 
   return (
     <div className="app">
@@ -42,15 +44,14 @@ export function Workspace() {
             aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
             onClick={toggleTheme}
           >
-            {theme === "dark" ? "☀" : "☾"}
+            {theme === "dark" ? <SunIcon /> : <MoonIcon />}
           </button>
         </div>
       </nav>
 
-      <TrustRail events={events} />
-
       <main className="app-grid">
         <ChatPanel sessionId={sessionId} />
+        <TrustRail events={events} />
         <AuditPanel events={events} sessionId={sessionId} />
       </main>
     </div>

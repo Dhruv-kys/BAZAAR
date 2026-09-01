@@ -1,4 +1,5 @@
 import type { AuditEvent } from "../audit/useAuditEvents";
+import { CheckIcon } from "../icons";
 import "./TrustRail.css";
 
 interface Guarantee {
@@ -52,22 +53,34 @@ const GUARANTEES: Guarantee[] = [
 ];
 
 export function TrustRail({ events }: { events: AuditEvent[] }) {
+  const proven = GUARANTEES.filter((g) => g.provenBy(events)).length;
+
   return (
-    <div className="tr">
-      {GUARANTEES.map((g) => {
-        const proof = g.provenBy(events);
-        return (
-          <div key={g.key} className={`tr-item${proof ? " proven" : ""}`}>
-            <span className="tr-check" aria-hidden="true">
-              [{proof ? "✓" : " "}]
-            </span>
-            <span className="tr-text">
-              <span className="tr-label">{g.label}</span>
-              <span className="tr-proof">{proof ?? g.idle}</span>
-            </span>
-          </div>
-        );
-      })}
+    <div className="tr" data-reveal data-delay="1">
+      <div className="tr-core">
+        <header className="tr-head">
+          <span className="tr-head-label">Guarantees</span>
+          <span className="tr-head-count">
+            {proven}<i>/{GUARANTEES.length}</i>
+          </span>
+        </header>
+        <div className="tr-list">
+          {GUARANTEES.map((g) => {
+            const proof = g.provenBy(events);
+            return (
+              <div key={g.key} className={`tr-item${proof ? " proven" : ""}`}>
+                <span className="tr-orb" aria-hidden="true">
+                  <CheckIcon size={11} />
+                </span>
+                <span className="tr-text">
+                  <span className="tr-label">{g.label}</span>
+                  <span className="tr-proof">{proof ?? g.idle}</span>
+                </span>
+              </div>
+            );
+          })}
+        </div>
+      </div>
     </div>
   );
 }
