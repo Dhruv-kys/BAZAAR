@@ -13,3 +13,7 @@ CLAUDE.md
 
 .DS_Store
 *.log
+
+.agents/
+.claude/skills/
+skills-lock.json
