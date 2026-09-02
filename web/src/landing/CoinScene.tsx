@@ -163,7 +163,7 @@ function Halo({ state, level }: { state: CoinState; level: number }) {
   return (
     <mesh ref={ring}>
       <ringGeometry args={[0.92, 1, 96]} />
-      <meshBasicMaterial ref={mat} color="#8baed8" transparent opacity={0} depthWrite={false} />
+      <meshBasicMaterial ref={mat} color="#7a78f0" transparent opacity={0} depthWrite={false} />
     </mesh>
   );
 }

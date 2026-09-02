@@ -30,7 +30,7 @@
   position: absolute;
   inset: -14%;
   border-radius: 50%;
-  background: radial-gradient(circle at 50% 45%, rgba(139, 174, 216, 0.24), transparent 68%);
+  background: radial-gradient(circle at 50% 45%, rgba(122, 120, 240, 0.26), transparent 68%);
   opacity: 0;
   transition: opacity 320ms ease;
   pointer-events: none;
@@ -70,8 +70,8 @@
   font-weight: 700;
   font-size: 42%;
   color: var(--ink-2);
-  background: radial-gradient(circle at 38% 32%, var(--surface), var(--surface-2) 62%, var(--line) 100%);
-  border: 1px solid var(--line-strong);
+  background: radial-gradient(circle at 38% 32%, var(--panel, var(--surface)), var(--raise, var(--surface-2)) 62%, var(--rule, var(--line)) 100%);
+  border: 1px solid var(--rule-2, var(--line-strong));
 }
 
 .vc-wave {
@@ -87,14 +87,14 @@
   width: 3px;
   height: 22px;
   border-radius: 2px;
-  background: var(--line-strong);
+  background: var(--rule-2, var(--line-strong));
   transform: scaleY(0.16);
   transform-origin: center;
   transition: transform 90ms linear, background-color 260ms ease;
 }
 
 .vc-wave.is-active i {
-  background: var(--signal);
+  background: var(--live, var(--signal));
 }
 
 .vc-wave[data-state="speaking"] i {
