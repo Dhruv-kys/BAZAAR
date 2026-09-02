@@ -87,19 +87,22 @@ function Coin() {
   useFrame((state) => {
     if (!group.current) return;
     const t = state.clock.elapsedTime;
+    // The coin is struck vertically (face normal points at the camera), then
+    // slowly yaws to reveal its milled edge. Pointer steering is handled by
+    // the parent rig so the motion remains damped instead of snapping.
     group.current.rotation.y = t * 0.55;
-    group.current.rotation.x = -0.28 + Math.sin(t * 0.7) * 0.09;
-    group.current.rotation.z = Math.sin(t * 0.45) * 0.05;
+    group.current.rotation.x = Math.sin(t * 0.7) * 0.035;
+    group.current.rotation.z = Math.sin(t * 0.45) * 0.025;
     group.current.position.y = Math.sin(t * 0.9) * 0.08;
   });
 
   return (
     <group ref={group}>
-      <mesh material={materials} castShadow>
+      <mesh rotation={[Math.PI / 2, 0, 0]} material={materials} castShadow>
         <cylinderGeometry args={[1.28, 1.28, 0.19, 96, 1]} />
       </mesh>
       {/* A milled band sitting proud of the edge. */}
-      <mesh rotation={[Math.PI / 2, 0, 0]}>
+      <mesh>
         <torusGeometry args={[1.28, 0.035, 12, 96]} />
         <meshStandardMaterial color="#dfe6e8" metalness={0.95} roughness={0.22} />
       </mesh>
