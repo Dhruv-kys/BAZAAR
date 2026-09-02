@@ -2797,6 +2797,7 @@ html.dark .lp {
   will-change: opacity, transform;
 }
 .lp-mac-device.is-open { opacity: 1; transform: scale(1) translateY(0); }
+.lp-mac-device.is-open.is-bumping { transform: scale(1.008) translateY(-2px); }
 .lp-mac-screen { overflow: hidden; contain: layout paint; }
 .lp-mac-story,
 .lp-mac-viewport,
@@ -2831,6 +2832,30 @@ html.dark .lp {
 .lp-payment-aura::before { animation-duration: 11s; border-color: rgba(201,166,209,.16); }
 .lp-payment-aura::after { animation-duration: 15s; border-color: rgba(97,212,161,.12); }
 
+.lp-payment-network {
+  position: absolute;
+  z-index: 0;
+  inset: 8% 0 10%;
+  width: 100%;
+  height: 82%;
+  pointer-events: none;
+  opacity: .44;
+  filter: blur(.1px);
+}
+.lp-rail {
+  fill: none;
+  stroke-width: 1.1;
+  stroke-dasharray: .02 .035;
+  animation: lp-rail-flow 7s linear infinite;
+}
+.lp-rail-a { stroke: url(#lp-rail-a); }
+.lp-rail-b { stroke: url(#lp-rail-b); animation-duration: 9s; animation-direction: reverse; }
+.lp-rail-c { stroke: rgba(123,184,170,.24); animation-duration: 12s; }
+.lp-network-nodes circle { fill: #b99bc2; opacity: .5; filter: drop-shadow(0 0 5px rgba(185,155,194,.75)); }
+.lp-rail-packet { fill: #d4f4e8; filter: drop-shadow(0 0 7px rgba(97,212,161,.85)); }
+.packet-b { fill: #e8d9ed; filter: drop-shadow(0 0 7px rgba(201,166,209,.8)); }
+@keyframes lp-rail-flow { to { stroke-dashoffset: -.22; } }
+
 @media (max-width: 700px) {
   .lp-mac-stage { padding-inline: 2px; }
   .lp-mac-device { width: min(1120px, 96vw); margin-inline: auto; }
@@ -2840,6 +2865,8 @@ html.dark .lp {
 
 @media (prefers-reduced-motion: reduce) {
   .lp-mac-device { transition: none; transform: none; opacity: 1; }
+  .lp-rail { animation: none; }
+  .lp-rail-packet { display: none; }
 }
 
 /* Cursor companion: a quiet chromatic signal instead of diagnostic text. */
@@ -2866,3 +2893,4 @@ html.dark .lp {
 .lp-cursor-ghost span { display: none; }
 @keyframes lp-ghost-breathe { 50% { transform: scale(1.35); opacity: .35; } }
 @media (prefers-reduced-motion: reduce) { .lp-cursor-ghost::before { animation: none; } }
+@media (hover: none), (pointer: coarse) { .lp-cursor-ghost { display: none !important; } }
