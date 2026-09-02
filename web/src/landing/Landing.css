@@ -769,7 +769,7 @@
   text-align: center;
   /* Half of it lives below the cut, the way it did before. */
   color: rgba(255, 240, 224, 0.09);
-  transform: translateY(42%);
+  transform: translateY(58%);
   user-select: none;
   pointer-events: none;
 }
@@ -2280,7 +2280,7 @@ html.dark .band-deep { background: #121112; }
 
 .band-deep mark {
   color: #ffffff;
-  box-shadow: inset 0 -0.32em 0 rgba(143, 176, 255, 0.28);
+  box-shadow: inset 0 -0.32em 0 rgba(217, 135, 98, 0.36);
 }
 
 .band-deep .lp-ghost { color: rgba(255, 255, 255, 0.06); }
@@ -2301,12 +2301,12 @@ html.dark .band-deep { background: #121112; }
 /* Keep the accent singular: coral carries emphasis without turning the page gold. */
 .lp mark {
   color: var(--ink);
-  box-shadow: inset 0 -0.32em 0 rgba(217, 164, 65, 0.3);
+  box-shadow: inset 0 -0.32em 0 rgba(196, 102, 63, 0.25);
 }
 
 html.dark .lp mark {
   color: var(--ink);
-  box-shadow: inset 0 -0.32em 0 rgba(217, 164, 65, 0.26);
+  box-shadow: inset 0 -0.32em 0 rgba(217, 135, 98, 0.3);
 }
 
 .lp-row-n,

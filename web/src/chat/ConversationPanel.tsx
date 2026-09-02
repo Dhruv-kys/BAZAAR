@@ -105,6 +105,7 @@ export function ConversationPanel({
       <div className="cp-thread" ref={threadRef}>
         {empty ? (
           <div className="cp-intro">
+            <div className="cp-kicker"><i /> LIVE SALES AGENT <span>TEST MODE</span></div>
             <h1 className="cp-lead">
               What are we
               <br />
@@ -114,6 +115,11 @@ export function ConversationPanel({
               Tell me the occasion and I will put an order together. Nothing gets charged until you say so, and you can
               see every choice I make on the right.
             </p>
+            <div className="cp-metrics" aria-label="Agent operating principles">
+              <div className="cp-metric"><b>01</b><strong>Reads intent</strong><span>occasion → basket</span></div>
+              <div className="cp-metric"><b>02</b><strong>Grows the cart</strong><span>offers with reasons</span></div>
+              <div className="cp-metric"><b>03</b><strong>Stops at proof</strong><span>human-confirmed</span></div>
+            </div>
             <div className="cp-starters">
               {STARTERS.map((s) => (
                 <button key={s} type="button" className="cp-starter" onClick={() => send(s)}>

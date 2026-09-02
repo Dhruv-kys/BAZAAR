@@ -63,6 +63,36 @@
   max-width: 40ch;
 }
 
+.cp-kicker {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 18px;
+  font-family: var(--sys);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  color: var(--live);
+}
+
+.cp-kicker i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow: 0 0 0 4px color-mix(in srgb, currentColor 14%, transparent);
+}
+
+.cp-kicker span {
+  margin-left: auto;
+  padding: 4px 7px;
+  color: var(--ink-3);
+  border: 1px solid var(--rule-2);
+  border-radius: 999px;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+}
+
 .cp-lead {
   margin: 0;
   font-size: clamp(24px, 2.6vw, 34px);
@@ -84,6 +114,45 @@
   line-height: 1.6;
   color: var(--ink-2);
   text-wrap: pretty;
+}
+
+.cp-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 7px;
+  margin-top: 24px;
+}
+
+.cp-metric {
+  min-height: 88px;
+  padding: 11px 10px;
+  background: var(--raise);
+  border: 1px solid var(--rule);
+  border-radius: var(--r);
+}
+
+.cp-metric b {
+  display: block;
+  margin-bottom: 13px;
+  font-family: var(--sys);
+  font-size: 9px;
+  color: var(--signal);
+}
+
+.cp-metric strong {
+  display: block;
+  font-size: 12px;
+  line-height: 1.1;
+  color: var(--ink);
+}
+
+.cp-metric span {
+  display: block;
+  margin-top: 5px;
+  font-family: var(--sys);
+  font-size: 9px;
+  line-height: 1.25;
+  color: var(--ink-3);
 }
 
 .cp-starters {
@@ -289,4 +358,9 @@
   .cp-state i {
     animation: none;
   }
+}
+
+@media (max-width: 560px) {
+  .cp-metrics { grid-template-columns: 1fr; }
+  .cp-metric { min-height: 0; }
 }

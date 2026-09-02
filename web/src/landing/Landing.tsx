@@ -340,7 +340,7 @@ export function Landing() {
           </span>
         </div>
         <span className="lp-ghost" aria-hidden="true">
-          Bazaar
+          BAAZAR
         </span>
       </section>
 
