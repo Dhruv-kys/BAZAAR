@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { apiUrl } from "../api";
 
 const MAX_RECORDING_MS = 30000;
-const SILENCE_HOLD_MS = 1400;
+const SILENCE_HOLD_MS = 900;
 const SPEECH_LEVEL = 0.11;
 
 interface VoiceConfig {
@@ -73,6 +73,8 @@ export function useVoice(onTranscript: (text: string) => void, onNotice: (messag
   const audioCtxRef = useRef<AudioContext | null>(null);
   const levelFrameRef = useRef(0);
   const startMicRef = useRef<() => void>(() => {});
+  const turnRef = useRef(0);
+  const speakGuardRef = useRef<number | undefined>(undefined);
   const callbacksRef = useRef({ onTranscript, onNotice });
 
   useEffect(() => {
@@ -268,6 +270,8 @@ export function useVoice(onTranscript: (text: string) => void, onNotice: (messag
   });
 
   function stopPlayback() {
+    turnRef.current += 1;
+    window.clearTimeout(speakGuardRef.current);
     audioRef.current?.pause();
     audioRef.current = null;
     window.speechSynthesis?.cancel();
@@ -297,17 +301,30 @@ export function useVoice(onTranscript: (text: string) => void, onNotice: (messag
     startMic();
   }
 
-  function endTurn() {
-    if (!voiceModeRef.current) return;
-    startMicRef.current();
+  function finishSpeaking(token: number) {
+    if (token !== turnRef.current) return;
+    turnRef.current += 1;
+    window.clearTimeout(speakGuardRef.current);
+    audioRef.current = null;
+    setIsSpeaking(false);
+    if (voiceModeRef.current) startMicRef.current();
   }
 
   async function speak(text: string) {
     if (!voiceModeRef.current) return;
     const plain = stripForSpeech(text);
-    if (!plain) return;
+    if (!plain) {
+      if (voiceModeRef.current) startMicRef.current();
+      return;
+    }
 
     stopPlayback();
+    const token = turnRef.current;
+
+    const guard = (ms: number) => {
+      window.clearTimeout(speakGuardRef.current);
+      speakGuardRef.current = window.setTimeout(() => finishSpeaking(token), ms);
+    };
 
     if (serverVoice.tts) {
       try {
@@ -319,14 +336,21 @@ export function useVoice(onTranscript: (text: string) => void, onNotice: (messag
         if (res.ok) {
           const url = URL.createObjectURL(await res.blob());
           const audio = new Audio(url);
-          audio.onended = () => {
+          const done = () => {
             URL.revokeObjectURL(url);
-            setIsSpeaking(false);
-            endTurn();
+            finishSpeaking(token);
           };
+          audio.onended = done;
+          audio.onerror = done;
+          audio.onloadedmetadata = () => guard((audio.duration || 30) * 1000 + 2500);
           audioRef.current = audio;
           setIsSpeaking(true);
-          await audio.play();
+          guard(45000);
+          try {
+            await audio.play();
+          } catch {
+            done();
+          }
           return;
         }
       } catch {
@@ -338,20 +362,15 @@ export function useVoice(onTranscript: (text: string) => void, onNotice: (messag
       const voice = preferredVoice("en-IN");
       utterance.lang = "en-IN";
       if (voice) utterance.voice = voice;
-      utterance.onend = () => {
-        setIsSpeaking(false);
-        endTurn();
-      };
-      utterance.onerror = () => {
-        setIsSpeaking(false);
-        endVoiceMode();
-      };
+      utterance.onend = () => finishSpeaking(token);
+      utterance.onerror = () => finishSpeaking(token);
       setIsSpeaking(true);
-      window.speechSynthesis.speak(utterance);
+      guard(plain.split(/\s+/).length * 420 + 6000);
+      window.setTimeout(() => window.speechSynthesis.speak(utterance), 60);
       return;
     }
 
-    endVoiceMode();
+    finishSpeaking(token);
   }
 
   function stopVoiceMode() {
