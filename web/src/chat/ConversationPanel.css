@@ -116,6 +116,28 @@
   text-wrap: pretty;
 }
 
+.cp-trustline {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-top: 22px;
+  padding: 10px 0;
+  border-block: 1px solid var(--rule);
+  color: var(--ink-3);
+  font-family: var(--sys);
+  font-size: 10px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.cp-trustline i {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--ok);
+  box-shadow: 0 0 0 4px var(--ok-bg);
+}
+
 .cp-metrics {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));

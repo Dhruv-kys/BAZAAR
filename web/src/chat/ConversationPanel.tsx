@@ -112,13 +112,12 @@ export function ConversationPanel({
               <em>baking today?</em>
             </h1>
             <p className="cp-sub">
-              Tell me the occasion and I will put an order together. Nothing gets charged until you say so, and you can
-              see every choice I make on the right.
+              Share an occasion and I&rsquo;ll build the basket. You approve before anything moves.
             </p>
-            <div className="cp-metrics" aria-label="Agent operating principles">
-              <div className="cp-metric"><b>01</b><strong>Reads intent</strong><span>occasion → basket</span></div>
-              <div className="cp-metric"><b>02</b><strong>Grows the cart</strong><span>offers with reasons</span></div>
-              <div className="cp-metric"><b>03</b><strong>Stops at proof</strong><span>human-confirmed</span></div>
+            <div className="cp-trustline" aria-label="Agent safeguards">
+              <span>3 safeguards active</span>
+              <i aria-hidden="true" />
+              <span>human approval required</span>
             </div>
             <div className="cp-starters">
               {STARTERS.map((s) => (
