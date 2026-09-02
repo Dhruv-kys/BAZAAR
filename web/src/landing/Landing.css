@@ -924,28 +924,27 @@ html.reveal-ready [data-reveal].is-in {
 
   --grain: 0.03;
 
-  /* Razorpay's own language: white ground, navy ink, one electric blue.
-     Declared in full here so nothing inherits a flipping :root token. */
+  /* Landing tokens are explicit so theme changes never leak a stale colour. */
   --bg: #ffffff;
   --ground: #ffffff;
-  --tint: #f8fafc;
-  --ink: #192839;
-  --ink-deep: #080d29;
-  --ink-2: #40566d;
-  --ink-3: #768ea7;
-  --line: #dfe3e9;
-  --line-strong: #c7cfda;
+  --tint: #edf3ef;
+  --ink: #1d2924;
+  --ink-deep: #243630;
+  --ink-2: #4d5d55;
+  --ink-3: #7b8b83;
+  --line: #d9e1dc;
+  --line-strong: #bdcbc2;
   --surface: #ffffff;
-  --surface-2: #f8fafc;
-  --blue: #305eff;
-  --blue-deep: #0052b4;
-  --blue-soft: #eaf0ff;
-  --signal: #305eff;
-  --signal-soft: #eaf0ff;
+  --surface-2: #edf3ef;
+  --blue: #317c73;
+  --blue-deep: #245f58;
+  --blue-soft: #e6f1ed;
+  --signal: #c4663f;
+  --signal-soft: #f8ece6;
   --positive: #0f9d58;
   --caution: #b06a00;
   --critical: #f0263c;
-  --term-bg: #080d29;
+  --term-bg: #243630;
   --term-line: rgba(255, 255, 255, 0.12);
   --term-ink: #eef2f8;
   --term-dim: rgba(238, 242, 248, 0.55);
@@ -953,18 +952,18 @@ html.reveal-ready [data-reveal].is-in {
   --term-stop: #ff7a6b;
   --term-go: #5fd39a;
 
-  --amber: #305eff;
-  --amber-dim: #eaf0ff;
-  --shell: #f8fafc;
-  --shell-line: #dfe3e9;
+  --amber: #c89532;
+  --amber-dim: #f6edd9;
+  --shell: #edf3ef;
+  --shell-line: #d9e1dc;
   --core: #ffffff;
-  --core-line: #dfe3e9;
+  --core-line: #d9e1dc;
   --core-lift: none;
-  --ambient: 0 18px 40px -24px rgba(25, 40, 57, 0.22);
-  --glass-ink: #192839;
-  --glass-ink-2: #40566d;
-  --glass-ink-3: #768ea7;
-  --accent: #305eff;
+  --ambient: 0 18px 40px -24px rgba(29, 41, 36, 0.22);
+  --glass-ink: #1d2924;
+  --glass-ink-2: #4d5d55;
+  --glass-ink-3: #7b8b83;
+  --accent: #c4663f;
   --accent-ink: #ffffff;
   --grain: 0;
 
@@ -980,38 +979,38 @@ html.reveal-ready [data-reveal].is-in {
 /* The landing follows the app's theme again. Every colour it uses is declared
    in both modes here, so nothing is left inheriting a flipping :root token. */
 html.dark .lp {
-  --bg: #080d29;
-  --ground: #080d29;
-  --tint: #0e1533;
+  --bg: #111816;
+  --ground: #111816;
+  --tint: #1b2924;
   --ink: #f2f5fb;
-  --ink-deep: #ffffff;
-  --ink-2: #a9b6cc;
-  --ink-3: #7183a0;
+  --ink-deep: #eaf2ed;
+  --ink-2: #b1c0b8;
+  --ink-3: #81958b;
   --line: rgba(242, 245, 251, 0.12);
   --line-strong: rgba(242, 245, 251, 0.22);
-  --surface: #0e1533;
-  --surface-2: #131b3d;
-  --blue: #6d8dff;
-  --blue-deep: #305eff;
-  --blue-soft: rgba(109, 141, 255, 0.16);
-  --signal: #6d8dff;
-  --signal-soft: rgba(109, 141, 255, 0.16);
+  --surface: #17211e;
+  --surface-2: #1d2a25;
+  --blue: #79c4b2;
+  --blue-deep: #317c73;
+  --blue-soft: rgba(121, 196, 178, 0.16);
+  --signal: #d98762;
+  --signal-soft: rgba(217, 135, 98, 0.16);
   --positive: #5fd39a;
   --caution: #f5b544;
   --critical: #ff7a6b;
-  --term-bg: #05091c;
-  --amber: #6d8dff;
-  --amber-dim: rgba(109, 141, 255, 0.16);
-  --shell: rgba(242, 245, 251, 0.04);
-  --shell-line: rgba(242, 245, 251, 0.1);
-  --core: #0e1533;
-  --core-line: rgba(242, 245, 251, 0.09);
+  --term-bg: #0d1311;
+  --amber: #d4a94f;
+  --amber-dim: rgba(212, 169, 79, 0.16);
+  --shell: rgba(235, 242, 237, 0.04);
+  --shell-line: rgba(235, 242, 237, 0.1);
+  --core: #17211e;
+  --core-line: rgba(235, 242, 237, 0.09);
   --ambient: 0 24px 52px -28px rgba(0, 0, 0, 0.7);
-  --glass-ink: #f2f5fb;
-  --glass-ink-2: #a9b6cc;
-  --glass-ink-3: #7183a0;
-  --accent: #6d8dff;
-  --accent-ink: #080d29;
+  --glass-ink: #eaf2ed;
+  --glass-ink-2: #b1c0b8;
+  --glass-ink-3: #81958b;
+  --accent: #d98762;
+  --accent-ink: #111816;
   --grain: 0;
 }
 
@@ -2084,7 +2083,7 @@ html.dark .lp-doorway-grid li { border-color: var(--line); }
   color: var(--ink-3);
 }
 
-/* Buttons: solid blue, modest radius, no glass. */
+/* Buttons: one solid accent, modest radius, no glass. */
 .lp-cta {
   color: #ffffff;
   background: var(--blue);
@@ -2113,12 +2112,12 @@ html.dark .lp-doorway-grid li { border-color: var(--line); }
 
 html.dark .lp-cta,
 html.dark .lp-nav .lp-cta {
-  color: #080d29;
+  color: #111816;
   background: var(--blue);
 }
 
 html.dark .lp-cta .lp-cta-orb,
-html.dark .lp-nav .lp-cta .lp-cta-orb { background: rgba(8, 13, 41, 0.18); }
+html.dark .lp-nav .lp-cta .lp-cta-orb { background: rgba(17, 24, 22, 0.18); }
 
 /* Display type across the page follows the reference: tight sans, not serif. */
 .lp-h2,
@@ -2195,7 +2194,7 @@ html.dark .lp-brief mark { color: var(--ink); }
 }
 
 html.dark .band-tint { background: var(--surface); }
-html.dark .band-deep { background: #05091c; }
+html.dark .band-deep { background: #0d1311; }
 
 /* Inverted bands carry their own type colours. */
 .band-deep .lp-h2,
@@ -2206,7 +2205,7 @@ html.dark .band-deep { background: #05091c; }
 .band-deep .lp-doorway-grid p,
 .band-deep .lp-final-note { color: rgba(255, 255, 255, 0.72); }
 
-.band-deep .eyebrow { color: #8fb0ff; }
+.band-deep .eyebrow { color: #d4a94f; }
 .band-deep .eyebrow::after { background: rgba(255, 255, 255, 0.18); }
 .band-deep .lp-doorway-grid li { border-color: rgba(255, 255, 255, 0.16); }
 
@@ -2219,12 +2218,13 @@ html.dark .band-deep { background: #05091c; }
 
 /* The closing button must never sit white-on-white. */
 .lp-final .lp-cta {
-  color: var(--ink-deep);
-  background: #ffffff;
+  color: #ffffff;
+  background: var(--signal);
+  border-color: var(--signal);
 }
 
-.lp-final .lp-cta:hover { background: #e8eefc; }
-.lp-final .lp-cta .lp-cta-orb { background: rgba(8, 13, 41, 0.14); }
+.lp-final .lp-cta:hover { background: color-mix(in srgb, var(--signal) 84%, #000); }
+.lp-final .lp-cta .lp-cta-orb { background: rgba(255, 255, 255, 0.22); }
 
 .lp-final-actions { justify-content: center; }
 .lp-final-safe { color: rgba(255, 255, 255, 0.6); }

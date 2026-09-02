@@ -124,7 +124,7 @@ const LINE_FRAG = `
     float core = pow(y, 70.0);
     float glow = pow(y, 5.0) * 0.09;
     float fade = 1.0 - smoothstep(0.18, 0.5, abs(vUv.x - 0.5));
-    gl_FragColor = vec4(vec3(0.188, 0.369, 1.0), (core + glow) * fade * uPulse);
+    gl_FragColor = vec4(vec3(0.77, 0.42, 0.22), (core + glow) * fade * uPulse);
   }
 `;
 
@@ -175,7 +175,7 @@ export default function CoinScene() {
       {/* Three-point-ish rig: metal needs moving highlights to read as metal. */}
       <ambientLight intensity={0.55} color="#fff6e2" />
       <directionalLight position={[3, 4, 5]} intensity={2.1} color="#fff3d6" />
-      <directionalLight position={[-4, 1.5, 2]} intensity={1.0} color="#7fa2ff" />
+      <directionalLight position={[-4, 1.5, 2]} intensity={1.0} color="#76b6a4" />
       <directionalLight position={[0, -3, 3]} intensity={0.55} color="#ffd9a0" />
       <pointLight position={[0, 0, 3]} intensity={12} distance={12} color="#ffffff" />
       <Rig>

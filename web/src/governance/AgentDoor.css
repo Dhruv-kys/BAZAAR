@@ -4,6 +4,14 @@
   color: var(--ink-3);
 }
 
+.ad {
+  background: color-mix(in srgb, var(--ok-bg) 72%, var(--panel));
+}
+
+.ad .cs-gov-head {
+  background: color-mix(in srgb, var(--ok-bg) 55%, var(--panel));
+}
+
 .ad-offline {
   margin: 0;
   padding: calc(var(--step) * 1.25) calc(var(--step) * 2.5);

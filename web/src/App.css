@@ -2,25 +2,25 @@
   --sys: var(--mono);
   --human: "Inter Tight", "Plus Jakarta Sans", system-ui, sans-serif;
 
-  --bg: #f8fafc;
+  --bg: #f4f6f3;
   --panel: #ffffff;
-  --raise: #f8fafc;
-  --rule: #dfe3e9;
-  --rule-2: #c7cfda;
+  --raise: #edf2ee;
+  --rule: #d9e1dc;
+  --rule-2: #bdcbc2;
 
-  --ink: #192839;
-  --ink-2: #40566d;
-  --ink-3: #768ea7;
+  --ink: #1d2924;
+  --ink-2: #4d5d55;
+  --ink-3: #7b8b83;
 
   --ok: #0f9d58;
   --warn: #b06a00;
   --stop: #f0263c;
-  --live: #305eff;
+  --live: #317c73;
 
   --ok-bg: rgba(26, 127, 55, 0.09);
   --warn-bg: rgba(154, 103, 0, 0.1);
   --stop-bg: rgba(207, 34, 46, 0.09);
-  --live-bg: #eaf0ff;
+  --live-bg: #e6f1ed;
 
   --r: 4px;
   --ease: cubic-bezier(0.32, 0.72, 0, 1);
@@ -36,25 +36,25 @@
 }
 
 html.dark .cs {
-  --bg: #080d29;
-  --panel: #0e1533;
-  --raise: #131b3d;
-  --rule: rgba(242, 245, 251, 0.12);
-  --rule-2: rgba(242, 245, 251, 0.22);
+  --bg: #111816;
+  --panel: #17211e;
+  --raise: #1d2a25;
+  --rule: rgba(235, 242, 237, 0.14);
+  --rule-2: rgba(235, 242, 237, 0.25);
 
   --ink: #f2f5fb;
-  --ink-2: #a9b6cc;
-  --ink-3: #7183a0;
+  --ink-2: #b1c0b8;
+  --ink-3: #81958b;
 
   --ok: #5fd39a;
   --warn: #f5b544;
   --stop: #ff7a6b;
-  --live: #6d8dff;
+  --live: #79c4b2;
 
   --ok-bg: rgba(63, 185, 80, 0.12);
   --warn-bg: rgba(210, 153, 34, 0.12);
   --stop-bg: rgba(248, 81, 73, 0.12);
-  --live-bg: rgba(109, 141, 255, 0.16);
+  --live-bg: rgba(121, 196, 178, 0.16);
 }
 
 .cs-label {
@@ -90,6 +90,15 @@ html.dark .cs {
 
 .cs-governance > section + section {
   border-top: 1px solid var(--rule);
+}
+
+/* Keep the rail scannable: each responsibility gets its own quiet ground. */
+.cs-governance > section:nth-of-type(even) {
+  background: var(--raise);
+}
+
+.cs-governance > section:last-child {
+  background: color-mix(in srgb, var(--ok-bg) 72%, var(--panel));
 }
 
 .cs-gov-head {
