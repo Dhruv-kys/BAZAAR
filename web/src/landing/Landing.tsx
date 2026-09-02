@@ -1,4 +1,4 @@
-import { Suspense, lazy, useEffect, useState } from "react";
+import { Suspense, lazy, useEffect, useRef, useState, type ReactNode } from "react";
 import { ArrowUpRightIcon, GitHubIcon, LockIcon, MoonIcon, SunIcon } from "../icons";
 import { navigate } from "../router";
 import { useReveal } from "./useReveal";
@@ -65,6 +65,42 @@ function TextRail() {
       <span className="lp-marquee-hint">scroll sideways →</span>
     </div>
   );
+}
+
+function StoryDeck({ children }: { children: ReactNode }) {
+  const deckRef = useRef<HTMLDivElement>(null);
+  const nudge = (direction: number) => deckRef.current?.scrollBy({ left: direction * window.innerWidth * 0.88, behavior: "smooth" });
+  return (
+    <div className="lp-story-wrap">
+      <div className="lp-story-controls">
+        <span><i /> SCROLL THE STORY</span>
+        <div>
+          <button type="button" onClick={() => nudge(-1)} aria-label="Previous story screen">←</button>
+          <button type="button" onClick={() => nudge(1)} aria-label="Next story screen">→</button>
+        </div>
+      </div>
+      <div className="lp-story-deck" ref={deckRef}>
+        <div className="lp-story-track">{children}</div>
+      </div>
+    </div>
+  );
+}
+
+function CursorGhost() {
+  const ghostRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    let frame = 0;
+    const onMove = (event: PointerEvent) => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        ghostRef.current?.style.setProperty("transform", `translate3d(${event.clientX + 16}px, ${event.clientY + 16}px, 0)`);
+      });
+    };
+    window.addEventListener("pointermove", onMove, { passive: true });
+    return () => { cancelAnimationFrame(frame); window.removeEventListener("pointermove", onMove); };
+  }, []);
+  return <div className="lp-cursor-ghost" ref={ghostRef} aria-hidden="true"><i /> follow the proof</div>;
 }
 
 
@@ -151,6 +187,7 @@ export function Landing() {
 
   return (
     <div className="lp">
+      <CursorGhost />
       <div className="lp-progress" aria-hidden="true" />
       <nav className="lp-nav">
         <a className="lp-brand" href="/" onClick={navigate("/")}>
@@ -241,6 +278,7 @@ export function Landing() {
 
       <TextRail />
 
+      <StoryDeck>
       <section className="lp-station lp-statement band-tint" data-reveal>
         <p className="lp-statement-quote">
           An agent that can spend is a <em>liability</em> until it can be audited.
@@ -381,6 +419,7 @@ export function Landing() {
           BAAZAR
         </span>
       </section>
+      </StoryDeck>
 
       <footer className="lp-foot">
         <span>Bazaar. Track 01, AI Growth and Agentic Commerce.</span>
