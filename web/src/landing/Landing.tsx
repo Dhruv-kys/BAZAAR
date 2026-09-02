@@ -1,4 +1,4 @@
-import { Suspense, lazy, useEffect, useRef, useState, type ReactNode } from "react";
+import { Children, Suspense, lazy, useEffect, useRef, useState, type ReactNode } from "react";
 import { ArrowUpRightIcon, GitHubIcon, LockIcon, MoonIcon, SunIcon } from "../icons";
 import { navigate } from "../router";
 import { useReveal } from "./useReveal";
@@ -53,34 +53,32 @@ function AuditReplay() {
   );
 }
 
-function TextRail() {
-  const lines = ["SELL WITH A BRAKE PEDAL", "EXPLAIN EVERY DECISION", "LET THE SERVER HOLD THE LINE"];
-  return (
-    <div className="lp-marquee" aria-label="Bazaar principles" tabIndex={0}>
-      <div className="lp-marquee-track">
-        {[...lines, ...lines].map((line, index) => (
-          <span key={`${line}-${index}`}><i />{line}</span>
-        ))}
-      </div>
-      <span className="lp-marquee-hint">scroll sideways →</span>
-    </div>
-  );
-}
-
 function StoryDeck({ children }: { children: ReactNode }) {
-  const deckRef = useRef<HTMLDivElement>(null);
-  const nudge = (direction: number) => deckRef.current?.scrollBy({ left: direction * window.innerWidth * 0.88, behavior: "smooth" });
+  const slides = Children.toArray(children);
+  const [active, setActive] = useState(0);
+  const move = (direction: number) => setActive((current) => Math.max(0, Math.min(slides.length - 1, current + direction)));
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "ArrowLeft") move(-1);
+      if (event.key === "ArrowRight") move(1);
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  });
   return (
     <div className="lp-story-wrap">
       <div className="lp-story-controls">
-        <span><i /> SCROLL THE STORY</span>
+        <span><i /> PROOF SCREEN {String(active + 1).padStart(2, "0")} / {String(slides.length).padStart(2, "0")}</span>
         <div>
-          <button type="button" onClick={() => nudge(-1)} aria-label="Previous story screen">←</button>
-          <button type="button" onClick={() => nudge(1)} aria-label="Next story screen">→</button>
+          <button type="button" onClick={() => move(-1)} disabled={active === 0} aria-label="Previous story screen">←</button>
+          <button type="button" onClick={() => move(1)} disabled={active === slides.length - 1} aria-label="Next story screen">→</button>
         </div>
       </div>
-      <div className="lp-story-deck" ref={deckRef}>
-        <div className="lp-story-track">{children}</div>
+      <div className="lp-story-deck" aria-live="polite">
+        <div className="lp-story-slide" key={active}>{slides[active]}</div>
+      </div>
+      <div className="lp-story-dots" role="tablist" aria-label="Proof screens">
+        {slides.map((_, index) => <button key={index} type="button" role="tab" aria-selected={index === active} aria-label={`Go to proof screen ${index + 1}`} className={index === active ? "is-active" : ""} onClick={() => setActive(index)} />)}
       </div>
     </div>
   );
@@ -90,13 +88,9 @@ function MacScreen({ children }: { children: ReactNode }) {
   return (
     <section className="lp-mac-stage" aria-label="Bazaar proof screens">
       <div className="lp-payment-aura" aria-hidden="true"><i /><i /><i /><i /></div>
-      <div className="lp-mac-shell">
-        <div className="lp-mac-bar">
-          <span className="lp-mac-dots"><i /><i /><i /></span>
-          <span className="lp-mac-address">bazaar / proof-of-commerce</span>
-          <span className="lp-mac-live"><i /> LIVE</span>
-        </div>
+      <div className="lp-mac-device">
         <div className="lp-mac-screen">{children}</div>
+        <img className="lp-mac-art" src="/macbook-mockup.png" alt="" aria-hidden="true" />
       </div>
     </section>
   );
@@ -304,8 +298,6 @@ export function Landing() {
           <li><span>03</span><strong>You approve</strong><p>Nothing charges until a person confirms the total.</p></li>
         </ol>
       </section>
-
-      <TextRail />
 
       <MacScreen>
       <StoryDeck>

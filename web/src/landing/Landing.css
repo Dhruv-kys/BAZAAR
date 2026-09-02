@@ -500,6 +500,68 @@ body:has(.lp:hover) .lp-cursor-ghost { opacity: 1; }
   .lp-tldr-grid li { padding-inline: 14px; }
 }
 
+/* Lightweight MacBook presentation: the supplied transparent mockup frames
+   one proof screen at a time, avoiding the nested horizontal scroll that used
+   to make this section jank on trackpads and mobile browsers. */
+.lp-mac-stage {
+  min-height: 0;
+  padding: clamp(44px, 8vw, 96px) 16px clamp(28px, 5vw, 64px);
+  background: color-mix(in srgb, var(--bg) 86%, var(--signal) 14%);
+}
+.lp-mac-device {
+  position: relative;
+  z-index: 1;
+  width: min(1120px, 100%);
+  aspect-ratio: 1;
+  margin: 0 auto;
+  filter: drop-shadow(0 44px 38px rgba(18, 14, 20, 0.28));
+}
+.lp-mac-art {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+  user-select: none;
+}
+.lp-mac-screen {
+  position: absolute;
+  z-index: 1;
+  top: 20.15%;
+  left: 15.15%;
+  width: 69.7%;
+  height: 42.05%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--signal) transparent;
+  border-radius: 5px 5px 2px 2px;
+  background: var(--bg);
+}
+.lp-mac-screen .lp-story-wrap { margin: 0; min-height: 100%; }
+.lp-mac-screen .lp-story-deck { overflow: hidden; }
+.lp-mac-screen .lp-story-slide { min-height: 100%; animation: lp-proof-in 420ms cubic-bezier(.22,.8,.24,1) both; }
+.lp-mac-screen .lp-station { min-height: 100%; padding-block: clamp(28px, 4vw, 62px); }
+.lp-mac-screen .lp-statement { padding-block: clamp(34px, 5vw, 70px); }
+.lp-mac-screen .lp-section { padding-block: clamp(34px, 5vw, 62px); }
+.lp-mac-screen .lp-receipt { padding-block: clamp(30px, 4vw, 56px); }
+.lp-mac-screen .lp-story-controls { top: 12px; right: 16px; }
+.lp-story-dots { display: flex; justify-content: center; gap: 6px; padding: 10px 0 2px; }
+.lp-story-dots button { width: 5px; height: 5px; padding: 0; border: 0; border-radius: 99px; background: var(--line-strong); }
+.lp-story-dots button.is-active { width: 18px; background: var(--signal); }
+.lp-story-controls button:disabled { opacity: .3; cursor: not-allowed; }
+@keyframes lp-proof-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+@media (max-width: 700px) {
+  .lp-mac-stage { padding-inline: 4px; }
+  .lp-mac-device { width: 120vw; max-width: none; margin-left: 50%; transform: translateX(-50%); }
+  .lp-mac-screen .lp-story-controls { top: 7px; right: 8px; }
+  .lp-mac-screen .lp-story-controls > span { display: none; }
+  .lp-mac-screen .lp-station { padding-inline: 16px; }
+}
+
 .lp-statement-quote {
   margin: 0;
   max-width: 24ch;
