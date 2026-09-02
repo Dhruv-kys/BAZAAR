@@ -2747,3 +2747,9 @@ html.dark .lp {
 .lp-mac-screen .lp-replay { font-size: 10px; }
 .lp-mac-screen .lp-term { box-shadow: none; }
 .lp-mac-screen .lp-station .eyebrow, .lp-mac-screen .eyebrow { color: #c8a2d1; }
+
+/* Let the closing wordmark peek a little higher above the lower cut. */
+.lp-final .lp-ghost { transform: translateY(49%); }
+@media (max-width: 700px) {
+  .lp-final .lp-ghost { transform: translateY(54%); }
+}
