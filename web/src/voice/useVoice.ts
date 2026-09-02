@@ -36,8 +36,6 @@ function speechRecognitionCtor(): SpeechRecognitionCtor | undefined {
   return w.SpeechRecognition ?? w.webkitSpeechRecognition;
 }
 
-const DEVANAGARI = /[\u0900-\u097F]/;
-
 function preferredVoice(lang: string): SpeechSynthesisVoice | undefined {
   const voices = window.speechSynthesis.getVoices();
   if (voices.length === 0) return undefined;
@@ -337,9 +335,8 @@ export function useVoice(onTranscript: (text: string) => void, onNotice: (messag
 
     if ("speechSynthesis" in window) {
       const utterance = new SpeechSynthesisUtterance(plain);
-      const lang = DEVANAGARI.test(plain) ? "hi-IN" : "en-IN";
-      const voice = preferredVoice(lang);
-      utterance.lang = lang;
+      const voice = preferredVoice("en-IN");
+      utterance.lang = "en-IN";
       if (voice) utterance.voice = voice;
       utterance.onend = () => {
         setIsSpeaking(false);
