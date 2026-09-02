@@ -13,12 +13,12 @@
   --ink-3: #7d8996;
 
   --ok: #426a98;
-  --warn: #94713a;
+  --warn: #6f7f91;
   --stop: #b95761;
   --live: #426a98;
 
   --ok-bg: rgba(66, 106, 152, 0.10);
-  --warn-bg: rgba(154, 103, 0, 0.1);
+  --warn-bg: rgba(111, 127, 145, 0.12);
   --stop-bg: rgba(207, 34, 46, 0.09);
   --live-bg: #e5edf8;
 
@@ -47,12 +47,12 @@ html.dark .cs {
   --ink-3: #8998aa;
 
   --ok: #8baed8;
-  --warn: #d8bb7a;
+  --warn: #a9bacd;
   --stop: #e1848c;
   --live: #8baed8;
 
   --ok-bg: rgba(139, 174, 216, 0.17);
-  --warn-bg: rgba(210, 153, 34, 0.12);
+  --warn-bg: rgba(169, 186, 205, 0.14);
   --stop-bg: rgba(248, 81, 73, 0.12);
   --live-bg: rgba(139, 174, 216, 0.17);
 }

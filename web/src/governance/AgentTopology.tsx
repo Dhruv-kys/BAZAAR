@@ -11,9 +11,9 @@ function readPalette(el: HTMLElement): Record<StageState, string> {
   return {
     idle: v("--ink-3", "#646d79"),
     active: v("--live", "#58a6ff"),
-    bounded: v("--warn", "#d29922"),
+    bounded: v("--warn", "#a9bacd"),
     locked: v("--ink-3", "#646d79"),
-    open: v("--ok", "#3fb950"),
+    open: v("--ok", "#8baed8"),
   };
 }
 
