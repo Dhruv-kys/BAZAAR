@@ -1,0 +1,74 @@
+.gt-count {
+  font-family: var(--human);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
+
+.gt-count i {
+  font-style: normal;
+  color: var(--ink-3);
+}
+
+.gt-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.gt-item {
+  display: flex;
+  align-items: flex-start;
+  gap: calc(var(--step) * 1.5);
+  padding: calc(var(--step) * 1.5) calc(var(--step) * 2.5);
+}
+
+.gt-item + .gt-item {
+  border-top: 1px solid var(--rule);
+}
+
+.gt-state {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-3);
+  border: 1px solid var(--rule-2);
+  border-radius: 999px;
+  transition: color 0.5s var(--ease), border-color 0.5s var(--ease), background 0.5s var(--ease);
+}
+
+.gt-item.is-proven .gt-state {
+  color: var(--ok);
+  background: var(--ok-bg);
+  border-color: color-mix(in srgb, var(--ok) 45%, transparent);
+}
+
+.gt-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.gt-label {
+  font-family: var(--human);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.gt-proof {
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--ink-3);
+  transition: color 0.5s var(--ease);
+}
+
+.gt-item.is-proven .gt-proof {
+  color: var(--ink-2);
+}

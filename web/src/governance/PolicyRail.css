@@ -1,0 +1,90 @@
+.pr-source {
+  font-size: 11.5px;
+  color: var(--ink-3);
+}
+
+.pr-offline {
+  margin: 0;
+  padding: calc(var(--step) * 1.25) calc(var(--step) * 2.5);
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--stop);
+  background: var(--stop-bg);
+  border-bottom: 1px solid var(--rule);
+}
+
+.pr-rows {
+  margin: 0;
+  padding: 0;
+}
+
+.pr-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: calc(var(--step) * 2);
+  padding: calc(var(--step) * 1.5) calc(var(--step) * 2.5);
+}
+
+.pr-row + .pr-row {
+  border-top: 1px solid var(--rule);
+}
+
+.pr-row dt {
+  font-size: 13.5px;
+  color: var(--ink-2);
+}
+
+.pr-row dd {
+  margin: 0;
+  font-family: var(--human);
+  font-size: 15px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  color: var(--ink);
+}
+
+.pr-row dd em {
+  display: block;
+  margin-top: 2px;
+  font-style: normal;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--ink-3);
+}
+
+.pr-ok dd {
+  color: var(--ok);
+}
+
+.pr-warn dd {
+  color: var(--warn);
+}
+
+.pr-pending {
+  display: inline-block;
+  width: 44px;
+  height: 11px;
+  background: var(--rule);
+  border-radius: 2px;
+  animation: pr-shimmer 1.4s var(--ease) infinite;
+}
+
+@keyframes pr-shimmer {
+  0%, 100% { opacity: 0.45; }
+  50% { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pr-pending {
+    animation: none;
+  }
+}
+
+.pr-unknown {
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  color: var(--stop);
+}

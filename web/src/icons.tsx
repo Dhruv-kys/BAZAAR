@@ -113,3 +113,20 @@ export function ArrowUpRightIcon({ size = 14 }: { size?: number }) {
     </svg>
   );
 }
+
+export function CoinIcon({ size = 15 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" {...light} aria-hidden="true">
+      <circle cx="12" cy="12" r="8.4" />
+      <path d="M9.2 8.6h5.6M9.2 11.4h5.6M13.4 8.6c1.5 0 2.2 1 2.2 2s-.7 2-2.2 2H10l4 4.8" />
+    </svg>
+  );
+}
+
+export function CloseIcon({ size = 14 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" {...light} aria-hidden="true">
+      <path d="M6 6l12 12M18 6L6 18" />
+    </svg>
+  );
+}

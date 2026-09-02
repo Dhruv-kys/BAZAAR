@@ -1,20 +1,13 @@
+import { Suspense, lazy, useState } from "react";
 import { ArrowUpRightIcon, GitHubIcon, LockIcon, MoonIcon, SunIcon } from "../icons";
 import { navigate } from "../router";
-import { SpecNumber } from "./SpecNumber";
 import { useReveal } from "./useReveal";
 import { useTilt } from "./useTilt";
 import { useTheme } from "../useTheme";
 import "./Landing.css";
 
-const TICKER = [
-  "Max discount 15%",
-  "Order cap ₹5,000",
-  "No charge tool exposed to the model",
-  "Confirm before money moves",
-  "Every decision logged with its reason",
-  "Declines recover with a fresh link",
-  "Razorpay test mode",
-];
+const CoinScene = lazy(() => import("./CoinScene"));
+
 
 const GUARANTEES = [
   {
@@ -82,21 +75,32 @@ function OpenAgent({ large }: { large?: boolean }) {
   );
 }
 
+function detectField() {
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return false;
+  try {
+    const c = document.createElement("canvas");
+    return Boolean(c.getContext("webgl2") ?? c.getContext("webgl"));
+  } catch {
+    return false;
+  }
+}
+
 export function Landing() {
   const { theme, toggleTheme } = useTheme();
   const { ref: shotRef, onPointerMove: onShotPointerMove, onPointerLeave: onShotPointerLeave } = useTilt();
+  const [field] = useState(detectField);
   useReveal();
 
   return (
     <div className="lp">
       <div className="lp-progress" aria-hidden="true" />
       <nav className="lp-nav">
-        <a className="app-brand" href="/" onClick={navigate("/")}>
-          <span className="app-mark" aria-hidden="true">
+        <a className="lp-brand" href="/" onClick={navigate("/")}>
+          <span className="lp-brand-mark" aria-hidden="true">
             ❖
           </span>
-          <span className="app-name">Bazaar</span>
-          <span className="app-slash">/agent</span>
+          <span className="lp-brand-name">Bazaar</span>
+          <span className="lp-brand-slash">/agent</span>
         </a>
         <div className="lp-nav-right">
           <a
@@ -115,34 +119,56 @@ export function Landing() {
             aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
             onClick={toggleTheme}
           >
-            {theme === "dark" ? <SunIcon /> : <MoonIcon />}
+            {theme === "dark" ? <SunIcon size={14} /> : <MoonIcon size={14} />}
           </button>
           <OpenAgent />
         </div>
       </nav>
 
-      <header className="lp-hero" data-reveal>
-        <div className="lp-hero-copy">
-          <span className="eyebrow">Track 01, agentic commerce</span>
+      <header className="lp-hero">
+        <div className="lp-stage">
           <h1 className="lp-head">
-            <span className="lp-head-line">
-              <span className="lp-head-text">See it sell,</span>
-            </span>
-            <span className="lp-head-line">
-              <span className="lp-head-text">
-                then <em>stop.</em>
-              </span>
-            </span>
+            <span className="lp-head-a">An agent that sells</span>
+            <span className="lp-head-b">and knows when to stop</span>
           </h1>
-          <p className="lp-lede">
-            A sales agent that recommends, cross-sells and upsells a real catalog, then stops dead at a confirmation
-            step.
+          <p className="lp-feats">
+            <span>Server-enforced limits</span>
+            <span>Human confirmation</span>
+            <span>Full audit trail</span>
+            <span>Agent-to-agent</span>
           </p>
-          <div className="lp-actions">
+          <div className="lp-cta-row">
             <OpenAgent large />
+            <a className="lp-link" href="#how" onClick={(e) => {
+              e.preventDefault();
+              document.querySelector("#how")?.scrollIntoView({ behavior: "smooth" });
+            }}>
+              See how it works
+            </a>
           </div>
+          <p className="lp-brief">
+            An AI agent runs the stall. It <mark>recommends</mark>, <mark>cross-sells</mark> and <mark>upsells</mark>,
+            then stops. It has <mark>no tool that can charge you</mark>, it cannot discount past a{" "}
+            <mark>server-enforced limit</mark>, and a <mark>human confirms</mark> before any money moves. Another agent
+            can buy here too, over <mark>agent-to-agent</mark> payment.
+          </p>
         </div>
 
+        <div className="lp-scene" aria-hidden="true">
+          {field && (
+            <Suspense fallback={null}>
+              <CoinScene />
+            </Suspense>
+          )}
+        </div>
+
+        <div className="lp-continue">
+          <span className="lp-continue-text">scroll to continue</span>
+          <span className="lp-continue-line" aria-hidden="true" />
+        </div>
+      </header>
+
+      <section className="lp-station lp-shot-band" data-reveal>
         <div
           className="lp-hero-shot"
           ref={shotRef}
@@ -150,51 +176,16 @@ export function Landing() {
           onPointerLeave={onShotPointerLeave}
         >
           <img
-            className="lp-shot-img lp-shot-light"
-            src="/agent-light.webp"
+            className="lp-shot-img"
+            src="/agent-dark.webp"
             width={1600}
             height={1006}
-            alt="The Bazaar agent mid-sale: the customer asks for 50% off, the agent applies 15%, and the audit log records the discount being capped at the server ceiling."
+            alt="The Bazaar control surface mid-sale: the customer asks for 50% off, the server allows 15%, and the audit stream records the clamp."
           />
-          <img className="lp-shot-img lp-shot-dark" src="/agent-dark.webp" width={1600} height={1006} alt="" />
-        </div>
-      </header>
-
-      <div className="lp-ticker" role="presentation">
-        <div className="lp-ticker-track">
-          <span className="lp-ticker-run">
-            {TICKER.map((t) => (
-              <span key={t} className="lp-ticker-item">
-                {t}
-              </span>
-            ))}
-          </span>
-          <span className="lp-ticker-run" aria-hidden="true">
-            {TICKER.map((t) => (
-              <span key={t} className="lp-ticker-item">
-                {t}
-              </span>
-            ))}
-          </span>
-        </div>
-      </div>
-
-      <section className="lp-limits" data-reveal aria-label="Guardrail limits">
-        <div className="lp-limit">
-          <SpecNumber target={15} render={(v) => `${v}%`} />
-          <span>discount ceiling, enforced in server code</span>
-        </div>
-        <div className="lp-limit">
-          <SpecNumber target={5000} render={(v) => `₹${v.toLocaleString("en-IN")}`} />
-          <span>order cap the agent cannot exceed</span>
-        </div>
-        <div className="lp-limit lp-limit-zero">
-          <b className="lp-spec-zero">0</b>
-          <span>charge tools exposed to the model</span>
         </div>
       </section>
 
-      <section className="lp-statement" data-reveal>
+      <section className="lp-station lp-statement band-tint" data-reveal>
         <p className="lp-statement-quote">
           An agent that can spend is a <em>liability</em> until it can be audited.
         </p>
@@ -205,7 +196,7 @@ export function Landing() {
         </p>
       </section>
 
-      <section className="lp-section" data-reveal>
+      <section className="lp-station lp-section band-plain" id="how" data-reveal>
         <div className="lp-section-head">
           <span className="eyebrow">Four guarantees</span>
           <h2 className="lp-h2">Enforced in code. Visible while you use it.</h2>
@@ -235,7 +226,7 @@ export function Landing() {
         </ul>
       </section>
 
-      <section className="lp-section" data-reveal>
+      <section className="lp-station lp-section band-tint" data-reveal>
         <div className="lp-section-head">
           <h2 className="lp-h2">Four steps, one of which is a full stop.</h2>
         </div>
@@ -251,25 +242,49 @@ export function Landing() {
         </ol>
       </section>
 
-      <section className="lp-clamp" data-reveal>
-        <div className="lp-clamp-inner">
-          <p className="lp-clamp-said">The agent asked for</p>
-          <p className="lp-clamp-big">
-            <span className="lp-clamp-was">50%</span>
-            <span className="lp-clamp-rule" aria-hidden="true" />
-            <span className="lp-clamp-got">15%</span>
-          </p>
-          <p className="lp-clamp-note">
-            It got fifteen, the ceiling written in server code. The customer was told fifteen, the log recorded both
-            numbers, and no prompt was asked to police itself.
-          </p>
-          <div className="lp-clamp-stamp" aria-hidden="true">
-            Capped, server-enforced
-          </div>
+      <section className="lp-station lp-section lp-doorway band-deep" data-reveal>
+        <div className="lp-section-head">
+          <span className="eyebrow">The second door</span>
+          <h2 className="lp-h2">When the buyer is not a person.</h2>
         </div>
+        <p className="lp-doorway-lede">
+          <mark>Agent-to-agent payment</mark>: a shopping agent buys here with no human in the conversation. Same
+          pricing, same limits, same audit log, reached over <mark>MCP</mark> instead of a chat box.
+        </p>
+
+        <ul className="lp-doorway-grid">
+          <li data-reveal>
+            <h3>The gate becomes a signature</h3>
+            <p>
+              Authorisation is an <mark>Ed25519-signed mandate</mark> with a ceiling and an expiry. The merchant holds
+              only the public key: it can verify one, never mint one.
+            </p>
+          </li>
+          <li data-reveal>
+            <h3>Bounds intersect, never union</h3>
+            <p>
+              The tighter of the mandate ceiling and the shop&rsquo;s cap wins. A mandate can never raise a merchant
+              limit.
+            </p>
+          </li>
+          <li data-reveal>
+            <h3>A mandate spends once</h3>
+            <p>
+              Spent mandate ids live in a durable table. In memory, every spent mandate would be replayable after a
+              restart.
+            </p>
+          </li>
+          <li data-reveal>
+            <h3>Authorisation is agentic, settlement stays human</h3>
+            <p>
+              A hosted checkout cannot be completed by a machine. The mandate is the authorisation gate; the card
+              step stays <mark>human</mark>.
+            </p>
+          </li>
+        </ul>
       </section>
 
-      <section className="lp-receipt" data-reveal>
+      <section className="lp-station lp-receipt band-plain" data-reveal>
         <div className="lp-receipt-inner">
           <div className="lp-section-head">
             <span className="eyebrow">The receipt</span>
@@ -317,7 +332,7 @@ export function Landing() {
         </div>
       </section>
 
-      <section className="lp-final" data-reveal>
+      <section className="lp-station lp-final band-deep" data-reveal>
         <h2 className="lp-final-head">Try talking it past the cap.</h2>
         <p className="lp-final-note">
           Ask for half off and watch the log refuse you. Runs on Razorpay test mode: a real payment link is created, but

@@ -1,0 +1,292 @@
+.cp {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  height: 100%;
+}
+
+.cp-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--step);
+  padding: calc(var(--step) * 1.25) calc(var(--step) * 2.5);
+  border-bottom: 1px solid var(--rule);
+}
+
+.cp-state {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+  color: var(--ink-3);
+}
+
+.cp-state i {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.cp-state-reasoning,
+.cp-state-listening,
+.cp-state-transcribing {
+  color: var(--live);
+}
+
+.cp-state-reasoning i,
+.cp-state-listening i {
+  animation: cp-blink 1.2s var(--ease) infinite;
+}
+
+@keyframes cp-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.2; }
+}
+
+.cp-thread {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: calc(var(--step) * 3) calc(var(--step) * 3.5);
+  scrollbar-width: thin;
+  scrollbar-color: var(--rule-2) transparent;
+}
+
+.cp-thread:has(.cp-intro) {
+  display: flex;
+  align-items: center;
+}
+
+.cp-intro {
+  max-width: 40ch;
+}
+
+.cp-lead {
+  margin: 0;
+  font-size: clamp(24px, 2.6vw, 34px);
+  font-weight: 800;
+  line-height: 1.12;
+  letter-spacing: -0.035em;
+  color: var(--ink-3);
+  text-wrap: balance;
+}
+
+.cp-lead em {
+  font-style: normal;
+  color: var(--ink);
+}
+
+.cp-sub {
+  margin: calc(var(--step) * 2) 0 0;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--ink-2);
+  text-wrap: pretty;
+}
+
+.cp-starters {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  margin-top: calc(var(--step) * 3);
+}
+
+.cp-starter {
+  padding: 10px 15px;
+  font-size: 13px;
+  text-align: left;
+  color: var(--ink-2);
+  background: transparent;
+  border: 1px solid var(--rule-2);
+  border-radius: var(--r);
+  transition: color 0.3s var(--ease), border-color 0.3s var(--ease), transform 0.3s var(--spring);
+}
+
+.cp-starter:hover {
+  color: var(--ink);
+  border-color: var(--ink-3);
+}
+
+.cp-starter:active {
+  transform: scale(0.98);
+}
+
+.cp-msg {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-bottom: calc(var(--step) * 2.5);
+  max-width: 62ch;
+}
+
+.cp-user {
+  margin-left: auto;
+  align-items: flex-end;
+}
+
+.cp-who {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--ink-3);
+}
+
+.cp-bubble {
+  padding: calc(var(--step) * 1.5) calc(var(--step) * 2);
+  font-size: 14px;
+  line-height: 1.6;
+  border: 1px solid var(--rule);
+  border-radius: var(--r);
+  overflow-wrap: anywhere;
+}
+
+.cp-assistant .cp-bubble {
+  color: var(--ink-2);
+  background: var(--panel);
+  border-left: 2px solid var(--live);
+}
+
+.cp-user .cp-bubble {
+  color: var(--ink);
+  background: var(--raise);
+  white-space: pre-wrap;
+}
+
+.cp-bubble p { margin: 0 0 var(--step); }
+.cp-bubble p:last-child { margin-bottom: 0; }
+.cp-bubble ul { margin: 0 0 var(--step); padding-left: 17px; }
+.cp-bubble ul:last-child { margin-bottom: 0; }
+.cp-bubble li { margin: 2px 0; }
+.cp-bubble strong { font-weight: 600; color: var(--ink); }
+
+.cp-bubble code {
+  font-family: var(--sys);
+  font-size: 11px;
+  padding: 1px 5px;
+  background: var(--raise);
+  border-radius: 2px;
+}
+
+.cp-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--step);
+  max-width: 62ch;
+  margin-bottom: calc(var(--step) * 2.5);
+  padding: calc(var(--step) * 1.25) calc(var(--step) * 1.75);
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--warn);
+  background: var(--warn-bg);
+  border-radius: var(--r);
+}
+
+.cp-notice svg { flex: none; margin-top: 1px; }
+
+.cp-thinking {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  width: max-content;
+}
+
+.cp-thinking span {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--ink-3);
+  animation: cp-pulse 1.3s var(--ease) infinite;
+}
+
+.cp-thinking span:nth-child(2) { animation-delay: 0.18s; }
+.cp-thinking span:nth-child(3) { animation-delay: 0.36s; }
+
+@keyframes cp-pulse {
+  0%, 100% { opacity: 0.25; }
+  50% { opacity: 1; }
+}
+
+.cp-composer {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: calc(var(--step) * 1.5) calc(var(--step) * 2.5);
+  border-top: 1px solid var(--rule);
+  background: var(--panel);
+}
+
+.cp-input {
+  flex: 1;
+  min-width: 0;
+  padding: 10px 12px;
+  font-family: var(--human);
+  font-size: 13px;
+  color: var(--ink);
+  background: var(--bg);
+  border: 1px solid var(--rule-2);
+  border-radius: var(--r);
+  outline: none;
+  transition: border-color 0.3s var(--ease);
+}
+
+.cp-input::placeholder { color: var(--ink-3); }
+.cp-input:focus { border-color: var(--live); }
+
+.cp-tool {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  flex: none;
+  color: var(--ink-3);
+  background: transparent;
+  border: 1px solid var(--rule-2);
+  border-radius: var(--r);
+  transition: color 0.3s var(--ease), border-color 0.3s var(--ease);
+}
+
+.cp-tool:hover:not(:disabled) { color: var(--ink); border-color: var(--ink-3); }
+.cp-tool:active:not(:disabled) { transform: scale(0.94); }
+.cp-tool:disabled { opacity: 0.45; cursor: progress; }
+
+.cp-tool.is-on {
+  color: var(--live);
+  border-color: color-mix(in srgb, var(--live) 55%, transparent);
+}
+
+.cp-tool.is-rec {
+  color: var(--stop);
+  border-color: color-mix(in srgb, var(--stop) 55%, transparent);
+  animation: cp-rec 1.5s var(--ease) infinite;
+}
+
+@keyframes cp-rec {
+  0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--stop) 40%, transparent); }
+  50% { box-shadow: 0 0 0 5px transparent; }
+}
+
+.cp-send {
+  padding: 11px 18px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--bg);
+  background: var(--ink);
+  border: none;
+  border-radius: var(--r);
+  transition: opacity 0.3s var(--ease), transform 0.3s var(--spring);
+}
+
+.cp-send:hover:not(:disabled) { opacity: 0.88; }
+.cp-send:active:not(:disabled) { transform: scale(0.97); }
+.cp-send:disabled { opacity: 0.3; cursor: not-allowed; }
+
+@media (prefers-reduced-motion: reduce) {
+  .cp-thinking span,
+  .cp-tool.is-rec,
+  .cp-state i {
+    animation: none;
+  }
+}

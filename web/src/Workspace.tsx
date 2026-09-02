@@ -1,11 +1,15 @@
-import { AuditPanel } from "./audit/AuditPanel";
+import { useState } from "react";
+import { AuditStream } from "./audit/AuditStream";
 import { useAuditEvents } from "./audit/useAuditEvents";
-import { ChatPanel } from "./chat/ChatPanel";
-import { GuardrailsBadge } from "./guardrails/GuardrailsBadge";
-import { TrustRail } from "./trust/TrustRail";
-import { GitHubIcon, MoonIcon, SunIcon } from "./icons";
-import { useReveal } from "./landing/useReveal";
-import { navigate } from "./router";
+import { ConversationPanel } from "./chat/ConversationPanel";
+import { AgentDoor } from "./governance/AgentDoor";
+import { AgentTopology } from "./governance/AgentTopology";
+import { Guarantees } from "./governance/Guarantees";
+import { PolicyBoundary } from "./governance/PolicyBoundary";
+import { PolicyRail } from "./governance/PolicyRail";
+import { HelpDock } from "./help/HelpDock";
+import { StagedOrder, type PendingOrder } from "./order/StagedOrder";
+import { SystemBar } from "./system/SystemBar";
 import { useTheme } from "./useTheme";
 import "./App.css";
 
@@ -13,47 +17,36 @@ const sessionId = crypto.randomUUID();
 
 export function Workspace() {
   const { theme, toggleTheme } = useTheme();
-  const events = useAuditEvents(sessionId);
-  useReveal();
+  const { events, status } = useAuditEvents(sessionId);
+  const [order, setOrder] = useState<PendingOrder>();
+
+  const settled = events.some(
+    (e) => e.type === "payment_result" && (e.payload as { status?: string })?.status === "success",
+  );
+  const authorized = events.some((e) => e.type === "payment_retry") || settled;
+  const gate = !order ? "none" : settled ? "settled" : authorized ? "authorized" : "staged";
 
   return (
-    <div className="app">
-      <nav className="app-nav">
-        <a className="app-brand" href="/" onClick={navigate("/")} title="Back to overview">
-          <span className="app-mark" aria-hidden="true">
-            ❖
-          </span>
-          <span className="app-name">Bazaar</span>
-          <span className="app-slash">/agent</span>
-        </a>
-        <div className="app-nav-right">
-          <GuardrailsBadge />
-          <a
-            className="app-icon"
-            href="https://github.com/Dhruv-kys/BAZAAR"
-            target="_blank"
-            rel="noreferrer"
-            aria-label="View source on GitHub"
-            title="View source on GitHub"
-          >
-            <GitHubIcon />
-          </a>
-          <button
-            className="app-theme"
-            type="button"
-            aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
-            onClick={toggleTheme}
-          >
-            {theme === "dark" ? <SunIcon /> : <MoonIcon />}
-          </button>
-        </div>
-      </nav>
+    <div className="cs">
+      <SystemBar sessionId={sessionId} stream={status} theme={theme} onToggleTheme={toggleTheme} />
 
-      <main className="app-grid">
-        <ChatPanel sessionId={sessionId} />
-        <TrustRail events={events} />
-        <AuditPanel events={events} sessionId={sessionId} />
-      </main>
+      <div className="cs-main">
+        <div className="cs-primary">
+          <ConversationPanel sessionId={sessionId} onOrderStaged={setOrder} />
+        </div>
+
+        <aside className="cs-governance" aria-label="Governance">
+          <PolicyBoundary events={events} />
+          {order && <StagedOrder order={order} />}
+          <PolicyRail />
+          <AgentTopology events={events} gate={gate} />
+          <Guarantees events={events} />
+          <AgentDoor />
+        </aside>
+      </div>
+
+      <AuditStream events={events} status={status} />
+      <HelpDock />
     </div>
   );
 }

@@ -12,8 +12,11 @@ export interface AuditEvent {
   wasClamped: boolean;
 }
 
-export function useAuditEvents(sessionId: string): AuditEvent[] {
+export type StreamStatus = "connecting" | "live" | "offline";
+
+export function useAuditEvents(sessionId: string): { events: AuditEvent[]; status: StreamStatus } {
   const [events, setEvents] = useState<AuditEvent[]>([]);
+  const [status, setStatus] = useState<StreamStatus>("connecting");
 
   useEffect(() => {
     let cancelled = false;
@@ -26,10 +29,18 @@ export function useAuditEvents(sessionId: string): AuditEvent[] {
       .catch(() => {});
 
     const source = new EventSource(apiUrl("/api/audit/stream"));
+    source.onopen = () => {
+      if (!cancelled) setStatus("live");
+    };
     source.onmessage = (message) => {
       const event: AuditEvent = JSON.parse(message.data);
       if (event.sessionId !== sessionId) return;
       setEvents((prev) => (prev.some((e) => e.id === event.id) ? prev : [...prev, event]));
+    };
+    // EventSource retries on its own, so an error means "not connected right now",
+    // not "give up". Reporting it is what keeps the LIVE badge honest.
+    source.onerror = () => {
+      if (!cancelled) setStatus(source.readyState === EventSource.CLOSED ? "offline" : "connecting");
     };
 
     return () => {
@@ -38,5 +49,5 @@ export function useAuditEvents(sessionId: string): AuditEvent[] {
     };
   }, [sessionId]);
 
-  return events;
+  return { events, status };
 }
