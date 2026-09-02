@@ -540,8 +540,8 @@ body:has(.lp:hover) .lp-cursor-ghost { opacity: 1; }
 }
 
 /* Final Mac display tuning (kept last so legacy landing rules cannot leak in). */
-.lp-mac-screen { background: #151318; color: #eee8ef; }
-.lp-mac-screen [data-reveal] { opacity: 1 !important; transform: none !important; }
+.lp-mac-screen { background: #151318; color: #eee8ef; overflow: hidden; }
+.lp-mac-screen [data-reveal] { opacity: 1 !important; transform: none !important; filter: none !important; }
 .lp-mac-screen .lp-station, .lp-mac-screen .lp-section, .lp-mac-screen .lp-receipt { background: #151318; color: #eee8ef; }
 .lp-mac-screen .lp-statement-quote, .lp-mac-screen .lp-h2, .lp-mac-screen .lp-final-head { color: #f4edf5; font-size: clamp(22px, 3.2vw, 42px); line-height: 1.06; }
 .lp-mac-screen .lp-statement-quote { max-width: 18ch; }
@@ -2753,6 +2753,9 @@ html.dark .lp {
 .lp-mac-screen .lp-replay { font-size: 10px; }
 .lp-mac-screen .lp-term { box-shadow: none; }
 .lp-mac-screen .lp-station .eyebrow, .lp-mac-screen .eyebrow { color: #c8a2d1; }
+.lp-mac-screen .lp-story-deck { overflow: hidden; }
+.lp-mac-screen .lp-story-slide { animation: lp-proof-slide-in 420ms cubic-bezier(.22,.8,.24,1) both; }
+@keyframes lp-proof-slide-in { from { opacity: 0; transform: translateX(22px); } to { opacity: 1; transform: none; } }
 
 /* Let the closing wordmark peek a little higher above the lower cut. */
 .lp-final .lp-ghost { transform: translateY(49%); }

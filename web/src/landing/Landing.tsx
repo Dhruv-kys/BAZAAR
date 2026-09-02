@@ -1,4 +1,4 @@
-import { Children, Suspense, lazy, useEffect, useRef, useState, type ReactNode } from "react";
+import { Children, Suspense, lazy, useEffect, useRef, useState, type ReactNode, type WheelEvent } from "react";
 import { ArrowUpRightIcon, GitHubIcon, LockIcon, MoonIcon, SunIcon } from "../icons";
 import { navigate } from "../router";
 import { useReveal } from "./useReveal";
@@ -56,7 +56,18 @@ function AuditReplay() {
 function StoryDeck({ children }: { children: ReactNode }) {
   const slides = Children.toArray(children);
   const [active, setActive] = useState(0);
+  const wheelLocked = useRef(false);
   const move = (direction: number) => setActive((current) => Math.max(0, Math.min(slides.length - 1, current + direction)));
+  const onWheel = (event: WheelEvent<HTMLDivElement>) => {
+    const direction = event.deltaY > 0 ? 1 : -1;
+    const canMove = direction > 0 ? active < slides.length - 1 : active > 0;
+    if (!canMove) return;
+    event.preventDefault();
+    if (wheelLocked.current) return;
+    wheelLocked.current = true;
+    move(direction);
+    window.setTimeout(() => { wheelLocked.current = false; }, 520);
+  };
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "ArrowLeft") move(-1);
@@ -74,7 +85,7 @@ function StoryDeck({ children }: { children: ReactNode }) {
           <button type="button" onClick={() => move(1)} disabled={active === slides.length - 1} aria-label="Next story screen">→</button>
         </div>
       </div>
-      <div className="lp-story-deck" aria-live="polite">
+      <div className="lp-story-deck" onWheel={onWheel} aria-live="polite">
         <div className="lp-story-slide" key={active}>{slides[active]}</div>
       </div>
       <div className="lp-story-dots" role="tablist" aria-label="Proof screens">
