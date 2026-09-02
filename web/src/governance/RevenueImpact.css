@@ -1,0 +1,104 @@
+.ri {
+  background: color-mix(in srgb, var(--live-bg) 55%, var(--panel));
+}
+
+.ri-uplift {
+  font-family: var(--sys);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  padding: 3px 9px;
+  border-radius: 999px;
+  color: var(--ink-3);
+  border: 1px solid var(--rule-2);
+}
+
+.ri-uplift.is-up {
+  color: var(--live);
+  border-color: color-mix(in srgb, var(--live) 50%, transparent);
+  background: var(--panel);
+}
+
+.ri-lines {
+  margin: 0;
+  padding: calc(var(--step) * 1.5) calc(var(--step) * 2.5) 0;
+  list-style: none;
+}
+
+.ri-lines li {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--step);
+  padding: 9px 0;
+}
+
+.ri-lines li + li {
+  border-top: 1px solid color-mix(in srgb, var(--rule) 60%, transparent);
+}
+
+.ri-lines strong {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.ri-lines span {
+  display: block;
+  margin-top: 2px;
+  font-size: 11.5px;
+  line-height: 1.4;
+  color: var(--ink-3);
+}
+
+.ri-lines b {
+  flex: none;
+  font-family: var(--sys);
+  font-size: 12.5px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-2);
+}
+
+.ri-lines li.is-negative b {
+  color: var(--warn);
+}
+
+.ri-total {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--step);
+  margin: calc(var(--step) * 1.5) calc(var(--step) * 2.5) 0;
+  padding-top: calc(var(--step) * 1.5);
+  border-top: 1px solid var(--rule-2);
+}
+
+.ri-total span {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.ri-total small {
+  display: block;
+  margin-top: 2px;
+  font-family: var(--sys);
+  font-size: 11px;
+  color: var(--ink-3);
+}
+
+.ri-total strong {
+  font-family: var(--sys);
+  font-size: 17px;
+  font-variant-numeric: tabular-nums;
+  color: var(--live);
+}
+
+.ri-note {
+  margin: calc(var(--step) * 1.5) calc(var(--step) * 2.5) calc(var(--step) * 2.5);
+  font-size: 11.5px;
+  line-height: 1.55;
+  color: var(--ink-3);
+}

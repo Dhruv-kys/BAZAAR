@@ -3,6 +3,7 @@ import type { AuditEvent } from "../audit/useAuditEvents";
 import { Guarantees } from "../governance/Guarantees";
 import { PolicyBoundary } from "../governance/PolicyBoundary";
 import { PolicyRail } from "../governance/PolicyRail";
+import { RevenueImpact } from "../governance/RevenueImpact";
 import { CloseIcon } from "../icons";
 import { StagedOrder, type PendingOrder } from "./StagedOrder";
 import "./OrderOverlay.css";
@@ -40,6 +41,7 @@ export function OrderOverlay({
 
         <div className="oo-body">
           <StagedOrder order={order} />
+          <RevenueImpact events={events} />
           <PolicyBoundary events={events} />
           <PolicyRail />
           <Guarantees events={events} />
