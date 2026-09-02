@@ -78,14 +78,14 @@ function PaymentNetwork() {
     <svg className="lp-payment-network" viewBox="0 0 1200 560" preserveAspectRatio="none" aria-hidden="true">
       <defs>
         <linearGradient id="lp-rail-a" x1="0" x2="1">
-          <stop offset="0" stopColor="#78c6b5" stopOpacity="0" />
-          <stop offset=".5" stopColor="#78c6b5" stopOpacity=".75" />
-          <stop offset="1" stopColor="#8bc9bf" stopOpacity="0" />
+          <stop offset="0" stopColor="#7d9fca" stopOpacity="0" />
+          <stop offset=".5" stopColor="#7d9fca" stopOpacity=".75" />
+          <stop offset="1" stopColor="#8baed8" stopOpacity="0" />
         </linearGradient>
         <linearGradient id="lp-rail-b" x1="0" x2="1">
-          <stop offset="0" stopColor="#8bc9bf" stopOpacity="0" />
-          <stop offset=".5" stopColor="#8bc9bf" stopOpacity=".6" />
-          <stop offset="1" stopColor="#78c6b5" stopOpacity="0" />
+          <stop offset="0" stopColor="#8baed8" stopOpacity="0" />
+          <stop offset=".5" stopColor="#8baed8" stopOpacity=".6" />
+          <stop offset="1" stopColor="#7d9fca" stopOpacity="0" />
         </linearGradient>
       </defs>
       <path className="lp-rail lp-rail-a" d="M-30 442 C220 210 350 220 550 338 S930 466 1230 120" pathLength="1" />
@@ -176,16 +176,12 @@ function CursorGhost() {
       const state = target?.matches(".lp-cta, .lp-mac-confirm") ? "cta" : target ? "interactive" : "normal";
       ghostRef.current?.setAttribute("data-state", state);
     };
-    const tick = (time: number) => {
-      const hue = (time * 0.035 + x * 0.08 + y * 0.04) % 360;
-      const red = Math.round(128 + Math.sin(hue * 0.017) * 70);
-      const green = Math.round(128 + Math.sin((hue + 120) * 0.017) * 70);
-      const blue = Math.round(128 + Math.sin((hue + 240) * 0.017) * 70);
+    const tick = () => {
       const ghost = ghostRef.current;
       if (ghost) {
         const scale = ghost.dataset.state === "cta" ? 1.6 : ghost.dataset.state === "interactive" ? 1.3 : 1;
         ghost.style.transform = `translate3d(${x + 12}px, ${y + 12}px, 0) scale(${scale})`;
-        ghost.style.setProperty("--ghost-rgb", `${red}, ${green}, ${blue}`);
+        ghost.style.setProperty("--ghost-rgb", "139, 174, 216");
       }
       frame = requestAnimationFrame(tick);
     };
@@ -349,12 +345,6 @@ export function Landing() {
               See how it works
             </a>
           </div>
-          <p className="lp-brief">
-            An AI agent runs the stall. It <mark>recommends</mark>, <mark>cross-sells</mark> and <mark>upsells</mark>,
-            then stops. It has <mark>no tool that can charge you</mark>, it cannot discount past a{" "}
-            <mark>server-enforced limit</mark>, and a <mark>human confirms</mark> before any money moves. Another agent
-            can buy here too, over <mark>agent-to-agent</mark> payment.
-          </p>
         </div>
 
         <div className="lp-scene" aria-hidden="true">

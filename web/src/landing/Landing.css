@@ -2599,13 +2599,13 @@ html.dark .band-deep { background: #121112; }
 .band-deep .lp-doorway-grid p,
 .band-deep .lp-final-note { color: rgba(255, 255, 255, 0.72); }
 
-.band-deep .eyebrow { color: #d98762; }
+.band-deep .eyebrow { color: var(--signal); }
 .band-deep .eyebrow::after { background: rgba(255, 255, 255, 0.18); }
 .band-deep .lp-doorway-grid li { border-color: rgba(255, 255, 255, 0.16); }
 
 .band-deep mark {
   color: #ffffff;
-  box-shadow: inset 0 -0.32em 0 rgba(217, 135, 98, 0.36);
+  box-shadow: inset 0 -0.32em 0 color-mix(in srgb, var(--blue) 36%, transparent);
 }
 
 .band-deep .lp-ghost { color: rgba(255, 255, 255, 0.06); }
@@ -2842,8 +2842,8 @@ html.dark .lp {
   opacity: .44;
   filter: blur(.1px);
 }
-.lp-payment-aura::before { border-color: rgba(139, 201, 191, .16); }
-.lp-payment-aura::after { border-color: rgba(123, 211, 169, .12); }
+.lp-payment-aura::before { border-color: rgba(139, 174, 216, .16); }
+.lp-payment-aura::after { border-color: rgba(116, 151, 194, .12); }
 .lp-rail {
   fill: none;
   stroke-width: 1.1;
@@ -2852,10 +2852,10 @@ html.dark .lp {
 }
 .lp-rail-a { stroke: url(#lp-rail-a); }
 .lp-rail-b { stroke: url(#lp-rail-b); animation-duration: 9s; animation-direction: reverse; }
-.lp-rail-c { stroke: rgba(123,184,170,.24); animation-duration: 12s; }
-.lp-network-nodes circle { fill: #8bc9bf; opacity: .5; filter: drop-shadow(0 0 5px rgba(139,201,191,.75)); }
-.lp-rail-packet { fill: #d4f4e8; filter: drop-shadow(0 0 7px rgba(97,212,161,.85)); }
-.packet-b { fill: #bce8dd; filter: drop-shadow(0 0 7px rgba(139,201,191,.8)); }
+.lp-rail-c { stroke: rgba(139,174,216,.24); animation-duration: 12s; }
+.lp-network-nodes circle { fill: #8baed8; opacity: .5; filter: drop-shadow(0 0 5px rgba(139,174,216,.75)); }
+.lp-rail-packet { fill: #dce8f7; filter: drop-shadow(0 0 7px rgba(139,174,216,.85)); }
+.packet-b { fill: #c9d9ef; filter: drop-shadow(0 0 7px rgba(139,174,216,.8)); }
 @keyframes lp-rail-flow { to { stroke-dashoffset: -.22; } }
 
 @media (max-width: 700px) {
@@ -2900,86 +2900,86 @@ html.dark .lp {
 /* One visual language for the landing: mineral paper in light mode, ink and
    sea-glass in dark mode. Semantic red/green remain reserved for outcomes. */
 .lp {
-  --bg: #f3f7f5;
-  --ground: #f3f7f5;
-  --tint: #e9f0ed;
-  --ink: #142322;
-  --ink-deep: #10201f;
-  --ink-2: #50635e;
-  --ink-3: #7c8e89;
-  --line: #d7e2de;
-  --line-strong: #bdcfca;
+  --bg: #f5f7fa;
+  --ground: #f5f7fa;
+  --tint: #e9eef5;
+  --ink: #18232e;
+  --ink-deep: #111c28;
+  --ink-2: #536273;
+  --ink-3: #7d8996;
+  --line: #d9e0e8;
+  --line-strong: #bfccd9;
   --surface: #ffffff;
-  --surface-2: #eaf1ee;
-  --blue: #2e6670;
-  --blue-deep: #21515a;
-  --blue-soft: #deece9;
-  --signal: #2e6670;
-  --signal-soft: #deece9;
-  --accent: #214f58;
-  --accent-ink: #f4faf8;
-  --amber: #2e6670;
-  --amber-dim: #deece9;
-  --positive: #2f866f;
-  --caution: #94713a;
+  --surface-2: #edf2f7;
+  --blue: #426a98;
+  --blue-deep: #31567f;
+  --blue-soft: #e1eaf6;
+  --signal: #426a98;
+  --signal-soft: #e1eaf6;
+  --accent: #315a86;
+  --accent-ink: #f5f8fc;
+  --amber: #426a98;
+  --amber-dim: #e1eaf6;
+  --positive: #426a98;
+  --caution: #7b6e63;
   --critical: #b95761;
-  --term-bg: #172525;
-  --term-line: rgba(234, 247, 243, .14);
-  --term-ink: #eaf6f1;
-  --term-dim: rgba(234, 247, 243, .58);
-  --term-blue: #83c4c5;
-  --term-cyan: #8cd0bd;
-  --term-go: #8fd4a9;
-  --term-warn: #d0b477;
+  --term-bg: #182331;
+  --term-line: rgba(234, 241, 250, .14);
+  --term-ink: #eaf1fa;
+  --term-dim: rgba(234, 241, 250, .58);
+  --term-blue: #8baed8;
+  --term-cyan: #a5bfe2;
+  --term-go: #8baed8;
+  --term-warn: #b2a398;
   --term-stop: #e58c91;
 }
 html.dark .lp {
-  --bg: #101819;
-  --ground: #101819;
-  --tint: #172425;
-  --ink: #edf6f2;
-  --ink-deep: #f3faf7;
-  --ink-2: #b7c9c3;
-  --ink-3: #849892;
-  --line: rgba(229, 245, 239, .13);
-  --line-strong: rgba(229, 245, 239, .24);
-  --surface: #172324;
-  --surface-2: #1d2c2d;
-  --blue: #8bc9bf;
-  --blue-deep: #a0d9cf;
-  --blue-soft: rgba(139, 201, 191, .17);
-  --signal: #8bc9bf;
-  --signal-soft: rgba(139, 201, 191, .17);
-  --accent: #8bc9bf;
-  --accent-ink: #102020;
-  --amber: #8bc9bf;
-  --amber-dim: rgba(139, 201, 191, .17);
-  --positive: #78d0aa;
-  --caution: #d8bb7a;
+  --bg: #11161d;
+  --ground: #11161d;
+  --tint: #1b2531;
+  --ink: #eef3fb;
+  --ink-deep: #f3f7fd;
+  --ink-2: #bdc9d8;
+  --ink-3: #8998aa;
+  --line: rgba(231, 240, 251, .13);
+  --line-strong: rgba(231, 240, 251, .24);
+  --surface: #19232e;
+  --surface-2: #202c39;
+  --blue: #8baed8;
+  --blue-deep: #a5c1e4;
+  --blue-soft: rgba(139, 174, 216, .17);
+  --signal: #8baed8;
+  --signal-soft: rgba(139, 174, 216, .17);
+  --accent: #8baed8;
+  --accent-ink: #101923;
+  --amber: #8baed8;
+  --amber-dim: rgba(139, 174, 216, .17);
+  --positive: #8baed8;
+  --caution: #c7b5a8;
   --critical: #e1848c;
-  --term-bg: #0d1415;
-  --term-line: rgba(229, 245, 239, .14);
-  --term-ink: #eaf6f1;
-  --term-dim: rgba(234, 246, 241, .58);
-  --term-blue: #83c4c5;
-  --term-cyan: #8cd0bd;
-  --term-go: #8fd4a9;
-  --term-warn: #d0b477;
+  --term-bg: #0d131b;
+  --term-line: rgba(231, 240, 251, .14);
+  --term-ink: #eaf1fa;
+  --term-dim: rgba(234, 241, 250, .58);
+  --term-blue: #8baed8;
+  --term-cyan: #a5bfe2;
+  --term-go: #8baed8;
+  --term-warn: #b9a99f;
   --term-stop: #e58c91;
 }
 
 /* Mac application tokens intentionally echo the page palette. */
 .lp-mac-story {
-  --mac-bg: #0d1718;
-  --mac-surface: #142223;
-  --mac-surface-raised: #192b2b;
-  --mac-ink: #edf7f3;
-  --mac-muted: #a0b3ad;
-  --mac-faint: #71857f;
-  --mac-accent: #8bc9bf;
-  --mac-success: #7bd3a9;
+  --mac-bg: #0d141d;
+  --mac-surface: #151f2b;
+  --mac-surface-raised: #1b2937;
+  --mac-ink: #eef3fb;
+  --mac-muted: #a6b4c5;
+  --mac-faint: #748397;
+  --mac-accent: #8baed8;
+  --mac-success: #8baed8;
   --mac-danger: #e1848c;
-  --mac-border: rgba(225, 243, 237, .14);
+  --mac-border: rgba(225, 236, 250, .14);
   color: var(--mac-ink);
   background: var(--mac-bg);
 }
@@ -3041,6 +3041,8 @@ html.dark .lp {
 .lp-mac-actions b,
 .lp-mac-order-head i,
 .lp-mac-log > div i { color: var(--mac-success); }
+.lp-mac-brake-result strong,
+.lp-mac-flow i { color: var(--mac-accent); }
 .lp-mac-route i,
 .lp-mac-signal-row i { background: var(--mac-accent); box-shadow: 0 0 10px var(--mac-accent); }
 .lp-mac-brake-head em,
@@ -3051,7 +3053,7 @@ html.dark .lp {
 .lp-mac-brake-meter i:nth-child(n+4) { background: var(--mac-success); }
 .lp-mac-accepted em { color: var(--mac-success); }
 .lp-mac-no-tool i { background: var(--mac-success); }
-.lp-mac-confirm { color: #102020; background: var(--mac-accent); }
+.lp-mac-confirm { color: #101923; background: var(--mac-accent); }
 .lp-mac-log p em,
 .lp-mac-offers strong { color: var(--mac-accent); }
 
