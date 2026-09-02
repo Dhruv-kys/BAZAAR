@@ -3054,3 +3054,29 @@ html.dark .lp {
 .lp-mac-confirm { color: #102020; background: var(--mac-accent); }
 .lp-mac-log p em,
 .lp-mac-offers strong { color: var(--mac-accent); }
+
+/* Hero brief: a readable measure with quiet emphasis instead of a dense
+   string of bold fragments. */
+.lp-brief {
+  width: min(58ch, calc(100% - 24px));
+  max-width: 58ch;
+  margin-top: 32px;
+  color: var(--ink-2);
+  font-size: clamp(15px, 1.18vw, 17px);
+  line-height: 1.72;
+  letter-spacing: -.005em;
+  text-wrap: pretty;
+}
+.lp-brief mark {
+  color: var(--ink);
+  font-weight: 700;
+  box-shadow: inset 0 -0.28em 0 var(--blue-soft);
+}
+@media (max-width: 700px) {
+  .lp-brief {
+    width: min(34ch, 100%);
+    margin-top: 26px;
+    font-size: 14px;
+    line-height: 1.65;
+  }
+}
