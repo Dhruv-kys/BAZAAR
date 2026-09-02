@@ -2753,6 +2753,24 @@ html.dark .lp {
 .lp-mac-screen .lp-replay { font-size: 10px; }
 .lp-mac-screen .lp-term { box-shadow: none; }
 .lp-mac-screen .lp-station .eyebrow, .lp-mac-screen .eyebrow { color: #c8a2d1; }
+
+/* Scroll chapter: start small and quiet, then reveal the proof surface. */
+.lp-mac-stage { min-height: 168vh; padding-top: 12vh; padding-bottom: 22vh; }
+.lp-mac-device { position: sticky; top: 12vh; transform: scale(.58) translateY(12vh); transform-origin: 50% 72%; transition: transform 900ms cubic-bezier(.16,1,.3,1), filter 900ms ease; }
+.lp-mac-screen { opacity: 0; transform: scale(.94); transition: opacity 600ms ease, transform 900ms cubic-bezier(.16,1,.3,1); }
+@supports (animation-timeline: view()) {
+  .lp-mac-stage { view-timeline-name: --mac-chapter; view-timeline-axis: block; }
+  .lp-mac-device { animation: lp-mac-open linear both; animation-timeline: --mac-chapter; animation-range: entry 0% cover 52%; }
+  .lp-mac-screen { animation: lp-mac-screen-on linear both; animation-timeline: --mac-chapter; animation-range: cover 30% cover 60%; }
+}
+@keyframes lp-mac-open { 0% { transform: scale(.58) translateY(12vh); filter: drop-shadow(0 18px 24px rgba(18,14,20,.16)); } 72%, 100% { transform: scale(1) translateY(0); filter: drop-shadow(0 44px 38px rgba(18,14,20,.28)); } }
+@keyframes lp-mac-screen-on { 0% { opacity: 0; transform: scale(.94); } 100% { opacity: 1; transform: scale(1); } }
+@media (prefers-reduced-motion: reduce) {
+  .lp-mac-stage { min-height: 0; }
+  .lp-mac-device { position: relative; top: auto; transform: none; }
+  .lp-mac-screen { opacity: 1; transform: none; }
+}
+@media (max-width: 700px) { .lp-mac-stage { min-height: 145vh; } }
 .lp-mac-screen .lp-story-deck { overflow: hidden; }
 .lp-mac-screen .lp-story-slide { animation: lp-proof-slide-in 420ms cubic-bezier(.22,.8,.24,1) both; }
 @keyframes lp-proof-slide-in { from { opacity: 0; transform: translateX(22px); } to { opacity: 1; transform: none; } }
