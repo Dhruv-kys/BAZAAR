@@ -1,4 +1,4 @@
-import { Children, Suspense, lazy, useEffect, useRef, useState, type ReactNode } from "react";
+import { Children, Suspense, lazy, useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { ArrowUpRightIcon, GitHubIcon, LockIcon, MoonIcon, SunIcon } from "../icons";
 import { navigate } from "../router";
 import { useReveal } from "./useReveal";
@@ -56,7 +56,7 @@ function AuditReplay() {
 function StoryDeck({ children }: { children: ReactNode }) {
   const slides = Children.toArray(children);
   const [active, setActive] = useState(0);
-  const move = (direction: number) => setActive((current) => Math.max(0, Math.min(slides.length - 1, current + direction)));
+  const move = useCallback((direction: number) => setActive((current) => Math.max(0, Math.min(slides.length - 1, current + direction))), [slides.length]);
   const wrapRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const wrap = wrapRef.current;
@@ -64,7 +64,7 @@ function StoryDeck({ children }: { children: ReactNode }) {
     const onStep = (event: Event) => move((event as CustomEvent<number>).detail);
     wrap.addEventListener("bazaar:story-step", onStep);
     return () => wrap.removeEventListener("bazaar:story-step", onStep);
-  });
+  }, [move]);
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "ArrowLeft") move(-1);
@@ -72,11 +72,13 @@ function StoryDeck({ children }: { children: ReactNode }) {
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  });
+  }, [move]);
   return (
     <div className="lp-story-wrap" ref={wrapRef} data-story-active={active} data-story-count={slides.length}>
       <div className="lp-story-deck" aria-live="polite">
-        <div className="lp-story-track" style={{ transform: `translate3d(${-active * 100}%, 0, 0)` }}>{slides.map((slide, index) => <div className="lp-story-slide" key={index}>{slide}</div>)}</div>
+        <div className="lp-story-track" style={{ width: `${slides.length * 100}%`, transform: `translate3d(${-active * (100 / slides.length)}%, 0, 0)` }}>
+          {slides.map((slide, index) => <div className="lp-story-slide" key={index} style={{ flex: `0 0 ${100 / slides.length}%`, width: `${100 / slides.length}%` }}>{slide}</div>)}
+        </div>
       </div>
       <div className="lp-story-progress" aria-hidden="true"><span style={{ transform: `scaleX(${(active + 1) / slides.length})` }} /></div>
     </div>
@@ -110,7 +112,7 @@ function MacScreen({ children }: { children: ReactNode }) {
       if (wheelLocked.current) return;
       wheelLocked.current = true;
       story.dispatchEvent(new CustomEvent("bazaar:story-step", { detail: direction, bubbles: true }));
-      window.setTimeout(() => { wheelLocked.current = false; }, 520);
+      window.setTimeout(() => { wheelLocked.current = false; }, 760);
     };
     stage.addEventListener("wheel", onWheel, { passive: false });
     return () => stage.removeEventListener("wheel", onWheel);
