@@ -115,7 +115,7 @@ function CursorGhost() {
         ghost.style.transform = `translate3d(${x + 16}px, ${y + 16}px, 0)`;
         ghost.style.setProperty("--ghost-rgb", `${red}, ${green}, ${blue}`);
         const value = ghost.querySelector<HTMLElement>("[data-ascii]");
-        if (value) value.textContent = `ASCII ${code} · ${String.fromCharCode(code)} · RGB ${red}/${green}/${blue}`;
+        if (value) value.textContent = `0x${code.toString(16).toUpperCase().padStart(2, "0")} · ${String.fromCharCode(code)} · ${red}/${green}/${blue}`;
       }
       frame = requestAnimationFrame(tick);
     };
@@ -123,7 +123,7 @@ function CursorGhost() {
     frame = requestAnimationFrame(tick);
     return () => { cancelAnimationFrame(frame); window.removeEventListener("pointermove", onMove); };
   }, []);
-  return <div className="lp-cursor-ghost" ref={ghostRef} aria-hidden="true"><i /><span data-ascii>ASCII 65 · A · RGB 128/128/128</span></div>;
+  return <div className="lp-cursor-ghost" ref={ghostRef} aria-hidden="true"><i /><span data-ascii>0x41 · A · 128/128/128</span></div>;
 }
 
 
