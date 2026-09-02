@@ -19,6 +19,8 @@ const STARTERS = [
   { icon: LockIcon, text: "First order, can I get 50% off?" },
 ];
 
+const SPOKEN_GREETING = "Hi, you're through to Bazaar. What are we baking today?";
+
 function greeting(): string {
   const hour = new Date().getHours();
   if (hour >= 22 || hour < 5) return "Working late";
@@ -76,7 +78,7 @@ export function ConversationPanel({
       if (target && (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable)) return;
       if (!voice.micAvailable || voice.micStatus === "transcribing") return;
       event.preventDefault();
-      voice.toggleMic();
+      voice.toggleMic(messages.length === 0 ? SPOKEN_GREETING : undefined);
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
@@ -161,7 +163,7 @@ export function ConversationPanel({
                 state={coinState}
                 level={voice.level}
                 size="hero"
-                onClick={voice.toggleMic}
+                onClick={() => voice.toggleMic(empty ? SPOKEN_GREETING : undefined)}
                 disabled={voice.micStatus === "transcribing"}
                 label={micLabel}
               />

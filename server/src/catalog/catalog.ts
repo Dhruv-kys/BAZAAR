@@ -55,3 +55,11 @@ export function getAddOnById(addOnId: string): AddOn | undefined {
 export function addOnsForCategory(category: string): AddOn[] {
   return addOns.filter((addOn) => addOn.crossSellFor.includes(category));
 }
+
+export function catalogKeyterms(): string[] {
+  const clean = (name: string) => name.replace(/[("]/g, " ").replace(/\)/g, " ").replace(/\s+/g, " ").trim();
+  const terms = new Set<string>();
+  for (const product of products) terms.add(clean(product.name));
+  for (const addOn of addOns) terms.add(clean(addOn.name));
+  return [...terms];
+}

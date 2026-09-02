@@ -2,8 +2,9 @@ import { useEffect, useRef, useState } from "react";
 import { apiUrl } from "../api";
 
 const MAX_RECORDING_MS = 30000;
-const SILENCE_HOLD_MS = 900;
-const SPEECH_LEVEL = 0.11;
+const SILENCE_HOLD_MS = 1500;
+const SPEECH_LEVEL = 0.055;
+const MIN_SPEECH_MS = 1200;
 
 interface VoiceConfig {
   stt: boolean;
@@ -120,8 +121,9 @@ export function useVoice(onTranscript: (text: string) => void, onNotice: (messag
     analyserRef.current = analyser;
 
     const bins = new Uint8Array(analyser.frequencyBinCount);
+    const openedAt = performance.now();
     let heardSpeech = false;
-    let lastLoud = performance.now();
+    let lastLoud = openedAt;
 
     const tick = () => {
       const node = analyserRef.current;
@@ -136,7 +138,7 @@ export function useVoice(onTranscript: (text: string) => void, onNotice: (messag
       if (amplitude > SPEECH_LEVEL) {
         heardSpeech = true;
         lastLoud = now;
-      } else if (heardSpeech && now - lastLoud > SILENCE_HOLD_MS) {
+      } else if (heardSpeech && now - lastLoud > SILENCE_HOLD_MS && now - openedAt > MIN_SPEECH_MS) {
         onSilence();
         return;
       }
@@ -278,7 +280,7 @@ export function useVoice(onTranscript: (text: string) => void, onNotice: (messag
     setIsSpeaking(false);
   }
 
-  function toggleMic() {
+  function toggleMic(greeting?: string) {
     if (micStatus === "transcribing") return;
 
     if (isSpeaking) {
@@ -298,7 +300,8 @@ export function useVoice(onTranscript: (text: string) => void, onNotice: (messag
 
     voiceModeRef.current = true;
     setVoiceMode(true);
-    startMic();
+    if (greeting) void speak(greeting);
+    else startMic();
   }
 
   function finishSpeaking(token: number) {
