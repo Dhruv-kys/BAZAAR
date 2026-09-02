@@ -329,8 +329,13 @@
 }
 
 .lp-marquee {
+  position: relative;
   margin: 0 calc(50% - 50vw);
-  overflow: hidden;
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-inline: contain;
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--signal) 70%, transparent) transparent;
   border-block: 1px solid var(--line);
   background: var(--ink);
   color: var(--bg);
@@ -339,27 +344,52 @@
 .lp-marquee-track {
   display: flex;
   width: max-content;
-  animation: lp-marquee 28s linear infinite;
+  scroll-snap-type: x mandatory;
 }
 
-.lp-marquee:hover .lp-marquee-track { animation-play-state: paused; }
 .lp-marquee span {
   display: inline-flex;
   align-items: center;
   gap: 20px;
-  padding: 15px 28px;
+  flex: 0 0 clamp(280px, 36vw, 470px);
+  min-height: 92px;
+  padding: 22px 30px;
+  border-right: 1px solid color-mix(in srgb, var(--bg) 18%, transparent);
+  scroll-snap-align: start;
   font-family: var(--mono);
-  font-size: 10px;
+  font-size: clamp(11px, 1.1vw, 14px);
   font-weight: 600;
+  line-height: 1.4;
   letter-spacing: 0.16em;
   white-space: nowrap;
 }
 .lp-marquee i { width: 5px; height: 5px; border-radius: 50%; background: var(--signal); }
 
-@keyframes lp-marquee { to { transform: translateX(-50%); } }
+.lp-marquee-hint {
+  position: sticky;
+  right: 18px;
+  bottom: 8px;
+  display: block !important;
+  width: max-content;
+  min-height: 0 !important;
+  margin: -30px 18px 8px auto;
+  padding: 4px 8px !important;
+  border: 1px solid color-mix(in srgb, var(--bg) 30%, transparent) !important;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--ink) 84%, transparent);
+  color: color-mix(in srgb, var(--bg) 70%, transparent) !important;
+  font-size: 9px !important;
+  letter-spacing: 0.08em !important;
+  white-space: nowrap;
+  pointer-events: none;
+}
 
 @media (prefers-reduced-motion: reduce) {
-  .lp-marquee-track { animation: none; }
+  .lp-marquee-track { scroll-behavior: auto; }
+}
+
+@media (max-width: 700px) {
+  .lp-marquee span { flex-basis: 82vw; min-height: 84px; padding-inline: 22px; }
 }
 
 @media (max-width: 760px) {

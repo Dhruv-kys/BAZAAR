@@ -56,12 +56,13 @@ function AuditReplay() {
 function TextRail() {
   const lines = ["SELL WITH A BRAKE PEDAL", "EXPLAIN EVERY DECISION", "LET THE SERVER HOLD THE LINE"];
   return (
-    <div className="lp-marquee" aria-label="Bazaar principles">
+    <div className="lp-marquee" aria-label="Bazaar principles" tabIndex={0}>
       <div className="lp-marquee-track">
         {[...lines, ...lines].map((line, index) => (
           <span key={`${line}-${index}`}><i />{line}</span>
         ))}
       </div>
+      <span className="lp-marquee-hint">scroll sideways →</span>
     </div>
   );
 }
