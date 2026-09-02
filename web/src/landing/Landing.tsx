@@ -82,14 +82,14 @@ function PaymentNetwork() {
     <svg className="lp-payment-network" viewBox="0 0 1200 560" preserveAspectRatio="none" aria-hidden="true">
       <defs>
         <linearGradient id="lp-rail-a" x1="0" x2="1">
-          <stop offset="0" stopColor="#7d9fca" stopOpacity="0" />
-          <stop offset=".5" stopColor="#7d9fca" stopOpacity=".75" />
-          <stop offset="1" stopColor="#8baed8" stopOpacity="0" />
+          <stop offset="0" stopColor="currentColor" stopOpacity="0" />
+          <stop offset=".5" stopColor="currentColor" stopOpacity=".75" />
+          <stop offset="1" stopColor="currentColor" stopOpacity="0" />
         </linearGradient>
         <linearGradient id="lp-rail-b" x1="0" x2="1">
-          <stop offset="0" stopColor="#8baed8" stopOpacity="0" />
-          <stop offset=".5" stopColor="#8baed8" stopOpacity=".6" />
-          <stop offset="1" stopColor="#7d9fca" stopOpacity="0" />
+          <stop offset="0" stopColor="currentColor" stopOpacity="0" />
+          <stop offset=".5" stopColor="currentColor" stopOpacity=".6" />
+          <stop offset="1" stopColor="currentColor" stopOpacity="0" />
         </linearGradient>
       </defs>
       <path className="lp-rail lp-rail-a" d="M-30 442 C220 210 350 220 550 338 S930 466 1230 120" pathLength="1" />
@@ -183,7 +183,7 @@ function CursorGhost() {
       if (ghost) {
         const scale = ghost.dataset.state === "cta" ? 1.6 : ghost.dataset.state === "interactive" ? 1.3 : 1;
         ghost.style.transform = `translate3d(${x + 12}px, ${y + 12}px, 0) scale(${scale})`;
-        ghost.style.setProperty("--ghost-rgb", "139, 174, 216");
+        ghost.style.setProperty("--ghost-rgb", "90, 87, 212");
       }
       frame = requestAnimationFrame(tick);
     };
