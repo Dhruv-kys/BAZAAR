@@ -28,13 +28,13 @@ function StoryDeck({ children }: { children: ReactNode }) {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [move]);
   return (
-    <div className="lp-story-wrap" ref={wrapRef} data-story-active={active} data-story-count={slides.length}>
-      <div className="lp-story-deck" aria-live="polite">
-        <div className="lp-story-track" style={{ width: `${slides.length * 100}%`, transform: `translate3d(${-active * (100 / slides.length)}%, 0, 0)` }}>
-          {slides.map((slide, index) => <div className="lp-story-slide" key={index} style={{ flex: `0 0 ${100 / slides.length}%`, width: `${100 / slides.length}%` }}>{slide}</div>)}
+    <div className="lp-mac-story" ref={wrapRef} data-story-active={active} data-story-count={slides.length}>
+      <div className="lp-mac-viewport" aria-live="polite">
+        <div className="lp-mac-track" style={{ width: `${slides.length * 100}%`, transform: `translate3d(${-active * (100 / slides.length)}%, 0, 0)` }}>
+          {slides.map((slide, index) => <div className="lp-mac-slide" key={index} style={{ flex: `0 0 ${100 / slides.length}%`, width: `${100 / slides.length}%` }}>{slide}</div>)}
         </div>
       </div>
-      <div className="lp-story-progress" aria-hidden="true"><span style={{ transform: `scaleX(${(active + 1) / slides.length})` }} /></div>
+      <div className="lp-mac-progress" aria-hidden="true"><span style={{ transform: `scaleX(${(active + 1) / slides.length})` }} /></div>
     </div>
   );
 }
@@ -95,13 +95,10 @@ function CursorGhost() {
       const red = Math.round(128 + Math.sin(hue * 0.017) * 70);
       const green = Math.round(128 + Math.sin((hue + 120) * 0.017) * 70);
       const blue = Math.round(128 + Math.sin((hue + 240) * 0.017) * 70);
-      const code = 33 + Math.floor((time / 120) % 94);
       const ghost = ghostRef.current;
       if (ghost) {
-        ghost.style.transform = `translate3d(${x + 16}px, ${y + 16}px, 0)`;
+        ghost.style.transform = `translate3d(${x + 12}px, ${y + 12}px, 0)`;
         ghost.style.setProperty("--ghost-rgb", `${red}, ${green}, ${blue}`);
-        const value = ghost.querySelector<HTMLElement>("[data-ascii]");
-        if (value) value.textContent = `0x${code.toString(16).toUpperCase().padStart(2, "0")} · ${String.fromCharCode(code)} · ${red}/${green}/${blue}`;
       }
       frame = requestAnimationFrame(tick);
     };
@@ -109,7 +106,7 @@ function CursorGhost() {
     frame = requestAnimationFrame(tick);
     return () => { cancelAnimationFrame(frame); window.removeEventListener("pointermove", onMove); };
   }, []);
-  return <div className="lp-cursor-ghost" ref={ghostRef} aria-hidden="true"><i /><span data-ascii>0x41 · A · 128/128/128</span></div>;
+  return <div className="lp-cursor-ghost" ref={ghostRef} aria-hidden="true"><i /></div>;
 }
 
 

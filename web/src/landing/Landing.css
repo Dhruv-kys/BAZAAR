@@ -2777,3 +2777,92 @@ html.dark .lp {
 @keyframes lp-mac-brake { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(-14px); } }
 @media (max-width: 700px) { .lp-mac-page { padding: 20px 22px; }.lp-mac-page h2 { font-size: 23px; }.lp-mac-lede { font-size: 10px; }.lp-mac-chat strong { font-size: 13px; }.lp-mac-product h2 { font-size: 15px; }.lp-mac-brake-head em { font-size: 24px; }.lp-mac-brake-result { gap: 8px; padding: 10px; }.lp-mac-order > strong { font-size: 12px; } }
 @media (prefers-reduced-motion: reduce) { .lp-mac-track, .lp-mac-progress span { transition: none; }.lp-mac-route i, .lp-mac-brake-meter b { animation: none; } }
+
+/* Final MacBook shell: one stable viewport, with the supplied transparent
+   mockup doing the framing. The screen content never creates its own scroll
+   context; the page wheel advances one complete product screen at a time. */
+.lp-mac-stage {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  min-height: 0;
+  background: #0a0a0d;
+}
+.lp-mac-device {
+  width: min(1120px, 96vw);
+  aspect-ratio: 1;
+  opacity: .72;
+  transform: scale(.86) translateY(26px);
+  transition: opacity 760ms cubic-bezier(.32,.72,0,1), transform 760ms cubic-bezier(.32,.72,0,1);
+  will-change: opacity, transform;
+}
+.lp-mac-device.is-open { opacity: 1; transform: scale(1) translateY(0); }
+.lp-mac-screen { overflow: hidden; contain: layout paint; }
+.lp-mac-story,
+.lp-mac-viewport,
+.lp-mac-track,
+.lp-mac-slide { min-height: 100%; }
+.lp-mac-story { overflow: hidden; }
+.lp-mac-viewport { overflow: hidden; }
+.lp-mac-track { overflow: visible; }
+.lp-mac-slide { width: auto; contain: layout paint; }
+.lp-mac-page { width: 100%; overflow: hidden; }
+.lp-mac-progress {
+  position: absolute;
+  z-index: 2;
+  left: 24px;
+  bottom: 14px;
+  width: 72px;
+  height: 2px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(255,255,255,.14);
+}
+.lp-mac-progress span {
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform-origin: left center;
+  border-radius: inherit;
+  background: #c9a6d1;
+  transition: transform 620ms cubic-bezier(.32,.72,0,1);
+}
+.lp-payment-aura { opacity: .72; }
+.lp-payment-aura::before { animation-duration: 11s; border-color: rgba(201,166,209,.16); }
+.lp-payment-aura::after { animation-duration: 15s; border-color: rgba(97,212,161,.12); }
+
+@media (max-width: 700px) {
+  .lp-mac-stage { padding-inline: 2px; }
+  .lp-mac-device { width: min(1120px, 96vw); margin-inline: auto; }
+  .lp-mac-page { padding: 18px 20px; }
+  .lp-mac-progress { left: 18px; bottom: 10px; width: 56px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lp-mac-device { transition: none; transform: none; opacity: 1; }
+}
+
+/* Cursor companion: a quiet chromatic signal instead of diagnostic text. */
+.lp-cursor-ghost {
+  width: 10px;
+  height: 10px;
+  padding: 0;
+  border: 1px solid rgba(var(--ghost-rgb), .75);
+  border-radius: 50%;
+  background: rgba(var(--ghost-rgb), .16);
+  box-shadow: 0 0 0 5px rgba(var(--ghost-rgb), .08), 0 0 18px rgba(var(--ghost-rgb), .38);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+.lp-cursor-ghost::before {
+  content: "";
+  position: absolute;
+  inset: -5px;
+  border: 1px solid rgba(var(--ghost-rgb), .25);
+  border-radius: 50%;
+  animation: lp-ghost-breathe 2.2s ease-in-out infinite;
+}
+.lp-cursor-ghost i { width: 3px; height: 3px; box-shadow: 0 0 8px rgb(var(--ghost-rgb)); }
+.lp-cursor-ghost span { display: none; }
+@keyframes lp-ghost-breathe { 50% { transform: scale(1.35); opacity: .35; } }
+@media (prefers-reduced-motion: reduce) { .lp-cursor-ghost::before { animation: none; } }
