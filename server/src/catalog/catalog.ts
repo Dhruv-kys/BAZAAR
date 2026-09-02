@@ -32,9 +32,9 @@ export function searchCatalog(query?: string, occasionTag?: string, category?: s
     if (category && product.category !== category) return false;
     if (occasionTag && !product.tags.includes(occasionTag)) return false;
     if (query) {
-      const needle = query.toLowerCase();
       const haystack = `${product.name} ${product.category} ${product.tags.join(" ")}`.toLowerCase();
-      if (!haystack.includes(needle)) return false;
+      const words = query.toLowerCase().split(/[^a-z0-9]+/).filter(Boolean);
+      if (!words.every((word) => haystack.includes(word))) return false;
     }
     return true;
   });
