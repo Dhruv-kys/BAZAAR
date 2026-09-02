@@ -127,7 +127,7 @@ const LINE_FRAG = `
     float core = pow(y, 70.0);
     float glow = pow(y, 5.0) * 0.09;
     float fade = 1.0 - smoothstep(0.18, 0.5, abs(vUv.x - 0.5));
-    gl_FragColor = vec4(vec3(0.77, 0.42, 0.22), (core + glow) * fade * uPulse);
+    gl_FragColor = vec4(vec3(0.46, 0.32, 0.52), (core + glow) * fade * uPulse);
   }
 `;
 

@@ -2372,3 +2372,59 @@ html.dark .lp-station .eyebrow { color: var(--signal); }
 
 .lp-statement-quote em { color: var(--signal); }
 html.dark .lp-statement-quote em { color: var(--signal); }
+
+/* Final theme lock: plum is the single expressive accent; no orange wash. */
+.lp {
+  --signal: #765b78;
+  --signal-soft: #f0e8f0;
+  --blue: #765b78;
+  --blue-deep: #5d4260;
+  --blue-soft: #f0e8f0;
+  --amber: #765b78;
+  --amber-dim: #f0e8f0;
+  --term-warn: #765b78;
+}
+
+html.dark .lp {
+  --signal: #c19ac3;
+  --signal-soft: rgba(193, 154, 195, 0.16);
+  --blue: #c19ac3;
+  --blue-deep: #9c719f;
+  --blue-soft: rgba(193, 154, 195, 0.16);
+  --amber: #c19ac3;
+  --amber-dim: rgba(193, 154, 195, 0.16);
+  --term-warn: #c19ac3;
+}
+
+.lp-station .eyebrow,
+.lp-statement-quote em,
+.lp-row-n,
+.lp-step-n,
+.band-deep .eyebrow { color: var(--signal); }
+.lp mark,
+.band-deep mark { box-shadow: inset 0 -0.32em 0 color-mix(in srgb, var(--signal) 28%, transparent); }
+
+@media (max-width: 700px) {
+  .lp { padding-inline: 20px; }
+  .lp-nav { padding-inline: 20px; }
+  .lp-hero { min-height: auto; padding-top: 64px; padding-bottom: 52px; }
+  .lp-hero .lp-head { font-size: clamp(38px, 11vw, 58px); line-height: 1.02; }
+  .lp-feats { justify-content: flex-start; font-size: 12px; line-height: 1.45; }
+  .lp-cta-row { justify-content: flex-start; gap: 18px; }
+  .lp-brief { max-width: 38ch; margin-top: 28px; font-size: 14px; line-height: 1.6; }
+  .lp-scene { min-height: 280px; margin-top: 10px; }
+  .lp-station { min-height: auto; padding-block: clamp(64px, 15vw, 104px); }
+  .lp-statement { padding-block: clamp(64px, 15vw, 104px); }
+  .lp-statement-quote { max-width: 14ch; font-size: clamp(38px, 11vw, 58px); }
+  .lp-h2 { font-size: clamp(30px, 9vw, 44px); line-height: 1.04; }
+  .lp-section-head { max-width: 34ch; }
+  .lp-row-claim, .lp-step-title { font-size: 16px; line-height: 1.25; }
+  .lp-receipt { padding-block: 72px; }
+  .lp-receipt-body { font-size: 15px; line-height: 1.6; }
+  .lp-term-body { font-size: 11px; }
+  .lp-replay { padding-inline: 14px; }
+  .lp-final { padding-top: 76px; }
+  .lp-final-head { font-size: clamp(34px, 10vw, 54px); }
+  .lp-ghost { font-size: clamp(112px, 31vw, 220px); transform: translateY(62%); }
+  .lp-foot { align-items: flex-start; flex-direction: column; gap: 12px; }
+}
