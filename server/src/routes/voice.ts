@@ -7,10 +7,12 @@ const MAX_SPOKEN_CHARS = 2000;
 
 export const voiceRouter = Router();
 
+const useBrowserTts = process.env.TTS_PROVIDER === "browser";
+
 voiceRouter.get("/config", (_req, res) => {
   res.json({
     stt: missingKeysFor("stt").length === 0,
-    tts: missingKeysFor("tts").length === 0,
+    tts: !useBrowserTts && missingKeysFor("tts").length === 0,
   });
 });
 

@@ -37,8 +37,6 @@ export function useAuditEvents(sessionId: string): { events: AuditEvent[]; statu
       if (event.sessionId !== sessionId) return;
       setEvents((prev) => (prev.some((e) => e.id === event.id) ? prev : [...prev, event]));
     };
-    // EventSource retries on its own, so an error means "not connected right now",
-    // not "give up". Reporting it is what keeps the LIVE badge honest.
     source.onerror = () => {
       if (!cancelled) setStatus(source.readyState === EventSource.CLOSED ? "offline" : "connecting");
     };

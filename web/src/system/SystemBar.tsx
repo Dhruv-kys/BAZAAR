@@ -1,5 +1,5 @@
 import type { StreamStatus } from "../audit/useAuditEvents";
-import { GitHubIcon, MoonIcon, SunIcon } from "../icons";
+import { GitHubIcon, MoonIcon, ShieldIcon, SunIcon } from "../icons";
 import { navigate } from "../router";
 import "./SystemBar.css";
 
@@ -14,11 +14,25 @@ export function SystemBar({
   stream,
   theme,
   onToggleTheme,
+  started,
+  eventCount,
+  hasOrder,
+  onOpenOrder,
+  auditOpen,
+  onToggleAudit,
+  onReset,
 }: {
   sessionId: string;
   stream: StreamStatus;
   theme: string;
   onToggleTheme: () => void;
+  started: boolean;
+  eventCount: number;
+  hasOrder: boolean;
+  onOpenOrder: () => void;
+  auditOpen: boolean;
+  onToggleAudit: () => void;
+  onReset: () => void;
 }) {
   return (
     <header className="sb">
@@ -27,24 +41,39 @@ export function SystemBar({
           ❖
         </span>
         <span className="sb-name">BAZAAR</span>
-        <span className="sb-sub">Bakery sales agent</span>
+        <span className="sb-slash">/agent</span>
+        <span className={`sb-ready sb-ready-${stream}`}>
+          <i aria-hidden="true" />
+          {started ? STREAM_COPY[stream] : "READY"}
+        </span>
       </a>
 
-      <div className="sb-status">
-        <span className={`sb-stream sb-stream-${stream}`}>
-          <i aria-hidden="true" />
-          {STREAM_COPY[stream]}
-          <span className="sb-sr">audit stream {STREAM_COPY[stream]}</span>
-        </span>
-        <span className="sb-div" aria-hidden="true" />
-        <span className="sb-mode">Test mode, no real money moves</span>
-        <span className="sb-div" aria-hidden="true" />
-        <span className="sb-session">
-          session <b>{sessionId.slice(0, 8)}</b>
-        </span>
-      </div>
-
       <div className="sb-actions">
+        {started && (
+          <button
+            className={`sb-pill${auditOpen ? " is-on" : ""}`}
+            type="button"
+            aria-pressed={auditOpen}
+            onClick={onToggleAudit}
+          >
+            Audit
+            {eventCount > 0 && <b>{eventCount}</b>}
+          </button>
+        )}
+
+        {hasOrder && (
+          <button className="sb-pill sb-pill-order" type="button" onClick={onOpenOrder}>
+            <ShieldIcon size={13} />
+            Order
+          </button>
+        )}
+
+        {started && (
+          <span className="sb-session" title={sessionId}>
+            {sessionId.slice(0, 8)}
+          </span>
+        )}
+
         <a
           className="sb-icon"
           href="https://github.com/Dhruv-kys/BAZAAR"
@@ -62,6 +91,11 @@ export function SystemBar({
         >
           {theme === "dark" ? <SunIcon size={14} /> : <MoonIcon size={14} />}
         </button>
+        {started && (
+          <button className="sb-new" type="button" onClick={onReset}>
+            <span aria-hidden="true">+</span> New conversation
+          </button>
+        )}
       </div>
     </header>
   );

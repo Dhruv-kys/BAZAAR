@@ -21,8 +21,6 @@ export function PolicyRail() {
     let cancelled = false;
     fetch(apiUrl("/api/guardrails"))
       .then(async (res) => {
-        // A static host with a SPA catch-all answers 200 with index.html, so a
-        // successful status is not enough to prove the API is actually there.
         const type = res.headers.get("content-type") ?? "";
         if (!res.ok || !type.includes("application/json")) throw new Error("not the API");
         return res.json();

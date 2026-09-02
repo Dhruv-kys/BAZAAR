@@ -2,15 +2,15 @@
   --sys: var(--mono);
   --human: "Inter Tight", "Plus Jakarta Sans", system-ui, sans-serif;
 
-  --bg: #f5f7fa;
+  --bg: #faf8f1;
   --panel: #ffffff;
-  --raise: #edf2f7;
-  --rule: #d9e0e8;
-  --rule-2: #bfccd9;
+  --raise: #f2efe6;
+  --rule: #e4dfd2;
+  --rule-2: #cdc6b6;
 
-  --ink: #18232e;
-  --ink-2: #536273;
-  --ink-3: #7d8996;
+  --ink: #1f1d17;
+  --ink-2: #5c584d;
+  --ink-3: #8b8578;
 
   --ok: #426a98;
   --warn: #6f7f91;
@@ -27,7 +27,7 @@
   --spring: cubic-bezier(0.34, 1.42, 0.64, 1);
 
   display: grid;
-  grid-template-rows: auto minmax(0, 1fr) auto;
+  grid-template-rows: auto minmax(0, 1fr);
   height: 100dvh;
   background: var(--bg);
   color: var(--ink-2);
@@ -36,15 +36,15 @@
 }
 
 html.dark .cs {
-  --bg: #11161d;
-  --panel: #19222d;
-  --raise: #202c39;
-  --rule: rgba(231, 240, 251, 0.13);
-  --rule-2: rgba(231, 240, 251, 0.24);
+  --bg: #15140f;
+  --panel: #1d1c17;
+  --raise: #242219;
+  --rule: rgba(245, 240, 225, 0.13);
+  --rule-2: rgba(245, 240, 225, 0.24);
 
-  --ink: #eef3fb;
-  --ink-2: #bdc9d8;
-  --ink-3: #8998aa;
+  --ink: #f4f1e8;
+  --ink-2: #c8c3b5;
+  --ink-3: #948e80;
 
   --ok: #8baed8;
   --warn: #a9bacd;
@@ -66,39 +66,10 @@ html.dark .cs {
 }
 
 .cs-main {
-  display: grid;
-  grid-template-columns: minmax(0, 1.8fr) minmax(280px, 1fr);
-  min-height: 0;
-  border-block: 1px solid var(--rule);
-}
-
-.cs-primary,
-.cs-governance {
   display: flex;
   flex-direction: column;
   min-height: 0;
   min-width: 0;
-}
-
-.cs-governance {
-  border-left: 1px solid var(--rule);
-  overflow-y: auto;
-  background: var(--panel);
-  scrollbar-width: thin;
-  scrollbar-color: var(--rule-2) transparent;
-}
-
-.cs-governance > section + section {
-  border-top: 1px solid var(--rule);
-}
-
-/* Keep the rail scannable: each responsibility gets its own quiet ground. */
-.cs-governance > section:nth-of-type(even) {
-  background: var(--raise);
-}
-
-.cs-governance > section:last-child {
-  background: color-mix(in srgb, var(--ok-bg) 72%, var(--panel));
 }
 
 .cs-gov-head {
@@ -110,41 +81,9 @@ html.dark .cs {
   border-bottom: 1px solid var(--rule);
 }
 
-@media (max-width: 1100px) {
-  .cs {
-    height: auto;
-    min-height: 100dvh;
-    overflow: visible;
-  }
-
-  .cs-main {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .cs-governance {
-    border-left: none;
-    border-top: 1px solid var(--rule);
-    overflow-y: visible;
-  }
-
-  .cs-primary {
-    min-height: 70vh;
-  }
-}
-
 @media (max-width: 700px) {
-  /* Centring the empty state inside a tall panel leaves a void on a phone.
-     Let the content set the height and keep the composer within reach. */
-  .cs-primary {
-    min-height: auto;
-  }
-
-  .cs-primary .cp-thread:has(.cp-intro) {
-    align-items: flex-start;
+  .cs-main .cp-stage {
+    place-items: start center;
     padding-block: calc(var(--step) * 4);
-  }
-
-  .at-stage {
-    height: 200px;
   }
 }

@@ -1,4 +1,6 @@
-const DEEPGRAM_URL = "https://api.deepgram.com/v1/listen?model=nova-3&smart_format=true";
+const DEEPGRAM_MODEL = process.env.DEEPGRAM_MODEL ?? "nova-3";
+const DEEPGRAM_LANGUAGE = process.env.DEEPGRAM_LANGUAGE ?? "multi";
+const DEEPGRAM_URL = `https://api.deepgram.com/v1/listen?model=${DEEPGRAM_MODEL}&language=${DEEPGRAM_LANGUAGE}&smart_format=true`;
 
 interface DeepgramResponse {
   results?: { channels?: { alternatives?: { transcript?: string }[] }[] };

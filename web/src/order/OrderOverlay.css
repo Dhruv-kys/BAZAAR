@@ -1,0 +1,116 @@
+.oo {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: grid;
+  place-items: end center;
+}
+
+.oo-scrim {
+  position: absolute;
+  inset: 0;
+  padding: 0;
+  border: 0;
+  cursor: pointer;
+  background: color-mix(in srgb, var(--ink) 26%, transparent);
+  backdrop-filter: blur(3px);
+  animation: oo-fade 0.28s var(--ease) both;
+}
+
+.oo-sheet {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: min(560px, 100%);
+  max-height: min(86dvh, 900px);
+  margin-bottom: calc(var(--step) * 2);
+  background: var(--panel);
+  border: 1px solid var(--rule);
+  border-radius: calc(var(--r) * 4);
+  box-shadow: 0 24px 70px -24px rgba(10, 20, 32, 0.42);
+  overflow: hidden;
+  animation: oo-rise 0.42s var(--spring) both;
+}
+
+.oo-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--step);
+  padding: calc(var(--step) * 2.5) calc(var(--step) * 3);
+  border-bottom: 1px solid var(--rule);
+}
+
+.oo-kicker {
+  display: block;
+  font-family: var(--sys);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--live);
+}
+
+.oo-title {
+  margin: 6px 0 0;
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+.oo-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  flex: none;
+  color: var(--ink-3);
+  background: transparent;
+  border: 1px solid var(--rule-2);
+  border-radius: var(--r);
+  cursor: pointer;
+  transition: color 0.3s var(--ease), border-color 0.3s var(--ease);
+}
+
+.oo-close:hover {
+  color: var(--ink);
+  border-color: var(--ink-3);
+}
+
+.oo-body {
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--rule-2) transparent;
+}
+
+.oo-body > section + section {
+  border-top: 1px solid var(--rule);
+}
+
+@keyframes oo-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes oo-rise {
+  from { transform: translateY(28px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@media (max-width: 620px) {
+  .oo-sheet {
+    width: 100%;
+    max-height: 92dvh;
+    margin-bottom: 0;
+    border-radius: calc(var(--r) * 4) calc(var(--r) * 4) 0 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .oo-scrim,
+  .oo-sheet {
+    animation: none;
+  }
+}

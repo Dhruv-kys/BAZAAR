@@ -17,8 +17,6 @@
   background: var(--line);
 }
 
-
-
 .lp-receipt .eyebrow::after {
   background: var(--term-line);
 }
@@ -34,8 +32,6 @@
   pointer-events: none;
 }
 
-/* The progress rule competed with the page composition; scrolling is already
-   communicated by the section transitions and carousel controls. */
 .lp-progress { display: none; }
 
 .lp-nav {
@@ -126,10 +122,6 @@
   padding: 13px 24px;
   font-size: var(--t-base);
 }
-
-
-
-
 
 .lp-hero::before {
   content: "";
@@ -239,18 +231,6 @@
 .lp-hero .eyebrow::after {
   background: var(--shell-line);
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 @keyframes ticker {
   from {
@@ -485,7 +465,6 @@ body:has(.lp:hover) .lp-cursor-ghost { opacity: 1; }
   .lp-marquee span { flex-basis: 82vw; min-height: 84px; padding-inline: 22px; }
 }
 
-/* The display is a dark, high-contrast product surface in either page mode. */
 .lp-mac-screen {
   background: #151318;
   color: #eee8ef;
@@ -524,7 +503,6 @@ body:has(.lp:hover) .lp-cursor-ghost { opacity: 1; }
   .lp-tldr-grid li { padding-inline: 14px; }
 }
 
-/* Final Mac display tuning (kept last so legacy landing rules cannot leak in). */
 .lp-mac-screen { background: #151318; color: #eee8ef; overflow: hidden; }
 .lp-mac-screen [data-reveal] { opacity: 1 !important; transform: none !important; filter: none !important; }
 .lp-mac-screen .lp-station, .lp-mac-screen .lp-section, .lp-mac-screen .lp-receipt { background: #151318; color: #eee8ef; }
@@ -545,9 +523,6 @@ body:has(.lp:hover) .lp-cursor-ghost { opacity: 1; }
 .lp-mac-screen .lp-term { box-shadow: none; }
 .lp-mac-screen .lp-eyebrow, .lp-mac-screen .eyebrow { color: #8baed8; }
 
-/* Lightweight MacBook presentation: the supplied transparent mockup frames
-   one proof screen at a time, avoiding the nested horizontal scroll that used
-   to make this section jank on trackpads and mobile browsers. */
 .lp-mac-stage {
   min-height: 0;
   padding: clamp(44px, 8vw, 96px) 16px clamp(28px, 5vw, 64px);
@@ -880,32 +855,6 @@ body:has(.lp:hover) .lp-cursor-ghost { opacity: 1; }
   color: var(--ink-2);
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 .lp-receipt {
   margin: 0 calc(50% - 50vw);
   padding: calc(var(--step) * 12) calc(var(--step) * 4);
@@ -1091,7 +1040,7 @@ body:has(.lp:hover) .lp-cursor-ghost { opacity: 1; }
   line-height: 0.72;
   letter-spacing: -0.02em;
   text-align: center;
-  /* Half of it lives below the cut, the way it did before. */
+
   color: rgba(255, 240, 224, 0.09);
   transform: translateY(58%);
   clip-path: inset(0 0 50% 0);
@@ -1151,8 +1100,6 @@ body:has(.lp:hover) .lp-cursor-ghost { opacity: 1; }
     padding: 0 calc(var(--step) * 2.5);
   }
 
-
-
   .lp-receipt {
     padding: calc(var(--step) * 9) calc(var(--step) * 2.5);
   }
@@ -1164,12 +1111,6 @@ body:has(.lp:hover) .lp-cursor-ghost { opacity: 1; }
   .lp-statement-body {
     margin-left: 0;
   }
-
-
-
-
-
-
 
   .lp-row {
     grid-template-columns: 1fr;
@@ -1230,9 +1171,6 @@ html.reveal-ready [data-reveal].is-in {
     animation-range: entry 0% entry 100%;
   }
 
-
-
-
 }
 
 @keyframes lp-ghost-drift {
@@ -1243,8 +1181,6 @@ html.reveal-ready [data-reveal].is-in {
     transform: translateY(4%);
   }
 }
-
-
 
 @media (prefers-reduced-motion: reduce) {
   html.reveal-ready [data-reveal] {
@@ -1258,18 +1194,7 @@ html.reveal-ready [data-reveal].is-in {
     animation: none;
   }
 
-
-
-
-
-
-
-
-
   .lp-step::before,
-
-
-
 
   .lp-shot-img {
     transition: none;
@@ -1293,8 +1218,6 @@ html.reveal-ready [data-reveal].is-in {
 .lp {
   --display: "Plus Jakarta Sans", "Hanken Grotesk", system-ui, sans-serif;
 
-  /* The landing is dark-locked. A particle field on a white page reads weak,
-     and one committed mode beats a compromise across two. */
   --ground: #fff6ea;
   --amber: #c4663f;
   --amber-dim: rgba(196, 102, 63, 0.12);
@@ -1318,7 +1241,6 @@ html.reveal-ready [data-reveal].is-in {
 
   --grain: 0.03;
 
-  /* Landing tokens are explicit so theme changes never leak a stale colour. */
   --bg: #ffffff;
   --ground: #ffffff;
   --tint: #f1efed;
@@ -1370,8 +1292,6 @@ html.reveal-ready [data-reveal].is-in {
   background: var(--ground);
 }
 
-/* The landing follows the app's theme again. Every colour it uses is declared
-   in both modes here, so nothing is left inheriting a flipping :root token. */
 html.dark .lp {
   --bg: #171617;
   --ground: #171617;
@@ -1454,7 +1374,6 @@ html.dark .lp {
   color: var(--glass-ink);
 }
 
-
 .lp-lede {
   color: var(--glass-ink-2);
   text-wrap: pretty;
@@ -1521,18 +1440,6 @@ html.dark .lp {
   box-shadow: var(--ambient);
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
 .lp-statement {
   display: flex;
   flex-direction: column;
@@ -1582,25 +1489,6 @@ html.dark .lp {
 
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 .lp-trust {
   display: inline-flex;
   align-items: center;
@@ -1608,14 +1496,6 @@ html.dark .lp {
   font-size: var(--t-sm);
   color: var(--glass-ink-3);
 }
-
-
-
-
-
-
-
-
 
 .lp-shot-band {
   margin-top: calc(var(--step) * 10);
@@ -1654,14 +1534,6 @@ html.dark .lp {
   color: var(--glass-ink-3);
 }
 
-
-
-
-
-
-
-
-
 .lp-hero {
   position: relative;
   display: grid;
@@ -1672,16 +1544,6 @@ html.dark .lp {
   overflow: clip;
 }
 
-.lp-scene {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-}
-
-.lp-scene canvas {
-  display: block;
-}
 
 .lp-stage {
   position: relative;
@@ -1696,7 +1558,7 @@ html.dark .lp {
   font-weight: 300;
   line-height: 0.86;
   letter-spacing: -0.02em;
-  /* Set into the scene rather than stamped on top of it. */
+
   color: rgba(255, 244, 226, 0.94);
   text-shadow: 0 0 80px rgba(255, 176, 90, 0.28);
 }
@@ -1752,7 +1614,6 @@ html.dark .lp {
   .lp-tagline { font-size: var(--t-base); }
 }
 
-/* Chrome sits over a painted sky, so it stays quiet and lets the scene lead. */
 .lp-nav {
   position: relative;
   z-index: 2;
@@ -1788,11 +1649,6 @@ html.dark .lp {
   border-color: rgba(255, 236, 214, 0.24);
 }
 
-/* ── Stations ─────────────────────────────────────────────────────────────
-   The scene is fixed behind the whole page, so sections stop being cards and
-   become moments you pass through. A soft scrim keeps cream text legible as
-   the sky brightens from night to morning underneath them. */
-
 .lp-station {
   position: relative;
   display: flex;
@@ -1805,9 +1661,6 @@ html.dark .lp {
 .lp-station > * {
   position: relative;
 }
-
-/* Strip the glass-card era chrome: no trays, no fills, hairlines only. */
-
 
 .lp-station .lp-shot-img {
   border-radius: 6px;
@@ -1850,7 +1703,6 @@ html.dark .lp {
 .lp-row-detail,
 .lp-step-body,
 
-
 .lp-station .eyebrow {
   color: rgba(255, 200, 140, 0.72);
 }
@@ -1858,15 +1710,6 @@ html.dark .lp {
 .lp-station .eyebrow::after {
   background: rgba(255, 220, 180, 0.18);
 }
-
-/* Limits read as three quiet facts on the horizon, not three boxes. */
-
-
-
-
-
-
-
 
 .lp-row,
 .lp-step {
@@ -1882,12 +1725,6 @@ html.dark .lp {
 .lp-step-n {
   color: rgba(255, 200, 140, 0.35);
 }
-
-
-
-
-
-
 
 .lp-foot {
   position: relative;
@@ -1905,12 +1742,7 @@ html.dark .lp {
     padding-block: calc(var(--step) * 9);
   }
 
-
 }
-
-/* ── Typography ───────────────────────────────────────────────────────────
-   One serif voice for every display line, one sans for everything you read
-   at length. Optical sizes tighten as the type grows. */
 
 .lp-wordmark {
   font-weight: 300;
@@ -1969,12 +1801,6 @@ html.dark .lp {
   font-variant-numeric: lining-nums tabular-nums;
 }
 
-
-
-/* ── Motion ───────────────────────────────────────────────────────────────
-   Everything enters on the same weighted curve so the page feels like one
-   object moving, not a dozen separate effects. */
-
 html.reveal-ready .lp [data-reveal] {
   opacity: 0;
   transform: translateY(34px);
@@ -1998,7 +1824,6 @@ html.reveal-ready .lp [data-reveal].is-in {
 .lp-step[data-reveal]:nth-child(3) { transition-delay: 0.16s; }
 .lp-step[data-reveal]:nth-child(4) { transition-delay: 0.24s; }
 
-/* The wordmark settles in rather than appearing. */
 .lp-wordmark {
   animation: lp-settle 1.6s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
@@ -2054,12 +1879,10 @@ html.reveal-ready .lp [data-reveal].is-in {
   }
 }
 
-/* The nav floats over the scene rather than sitting in a band above it, so
-   the sky reaches the very top of the page. */
 .lp-nav {
   position: absolute;
   top: 0;
-  /* matches .lp's own horizontal padding so the nav lines up with the column */
+
   left: calc(var(--step) * 4);
   right: calc(var(--step) * 4);
   z-index: 3;
@@ -2072,20 +1895,6 @@ html.reveal-ready .lp [data-reveal].is-in {
   margin-top: 0;
 }
 
-/* Names the three things in the scene so the picture is readable, not decorative. */
-
-
-
-
-
-
-
-
-
-
-/* ── Gaps ─────────────────────────────────────────────────────────────────
-   Forcing every station to a full viewport left large dead bands wherever the
-   content was short. Height now follows the content, with rhythm from padding. */
 .lp-station {
   min-height: 0;
   padding-block: clamp(80px, 12vh, 148px);
@@ -2099,8 +1908,6 @@ html.reveal-ready .lp [data-reveal].is-in {
 .lp-shot-band {
   padding-block: clamp(64px, 9vh, 120px);
 }
-
-
 
 .lp-stage {
   transform: translateY(-14vh);
@@ -2116,27 +1923,19 @@ html.reveal-ready .lp [data-reveal].is-in {
   transform: translateY(-20vh);
 }
 
-
-
 @media (max-width: 860px) {
   .lp-stage { transform: translateY(-10vh); }
 
 }
 
-/* Clear the copy out of the value channel and give the legend its own air. */
 .lp-stage {
   transform: translateY(-25vh);
 }
-
-
 
 @media (max-width: 860px) {
   .lp-stage { transform: translateY(-12vh); }
 
 }
-
-/* ── Light world ──────────────────────────────────────────────────────────
-   Cool mineral ground, blue signal, and rose only for failures. */
 
 .lp-brand-name { color: var(--ink); }
 .lp-brand-mark { color: var(--signal); }
@@ -2164,11 +1963,6 @@ html.reveal-ready .lp [data-reveal].is-in {
 
 .lp-tagline { color: var(--ink-2); }
 
-
-
-
-
-
 .lp-continue-text { color: var(--ink-3); }
 .lp-continue-line { background: linear-gradient(180deg, var(--line-strong), transparent); }
 
@@ -2183,7 +1977,6 @@ html.reveal-ready .lp [data-reveal].is-in {
 .lp-final-note,
 .lp-row-detail,
 .lp-step-body,
-
 
 .lp-station .eyebrow { color: var(--signal); }
 .lp-station .eyebrow::after { background: var(--line); }
@@ -2200,13 +1993,6 @@ html.reveal-ready .lp [data-reveal].is-in {
 .lp-row-n,
 .lp-step-n { color: rgba(224, 123, 42, 0.35); }
 
-
-
-
-
-
-
-
 .lp-ghost { color: rgba(42, 29, 18, 0.055); }
 
 .lp-foot {
@@ -2220,14 +2006,13 @@ html.reveal-ready .lp [data-reveal].is-in {
   box-shadow: 0 40px 80px -40px rgba(90, 55, 20, 0.35);
 }
 
-/* ── Hero: name on top, the market working underneath it ─────────────────── */
 .lp-hero {
-  display: grid;
-  grid-template-rows: auto minmax(0, 1fr);
-  align-items: start;
-  place-items: stretch;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   gap: calc(var(--step) * 2);
-  padding-top: calc(var(--step) * 13);
+  padding-top: calc(var(--step) * 11);
   padding-bottom: calc(var(--step) * 9);
 }
 
@@ -2258,16 +2043,6 @@ html.reveal-ready .lp [data-reveal].is-in {
   text-wrap: pretty;
 }
 
-.lp-scene {
-  position: relative;
-  inset: auto;
-  z-index: 0;
-  min-height: 340px;
-}
-
-.lp-scene canvas {
-  display: block;
-}
 
 @media (max-width: 860px) {
   .lp-hero {
@@ -2275,11 +2050,9 @@ html.reveal-ready .lp [data-reveal].is-in {
     gap: calc(var(--step) * 3);
   }
 
-  .lp-scene { min-height: 260px; }
   .lp-brief { font-size: 13.5px; }
 }
 
-/* Chrome, type and rules in dark. */
 html.dark .lp-brand-name,
 html.dark .lp-wordmark,
 html.dark .lp-h2,
@@ -2288,14 +2061,12 @@ html.dark .lp-final-head,
 html.dark .lp-row-claim,
 html.dark .lp-step-title,
 
-
 html.dark .lp-tagline,
 html.dark .lp-statement-body,
 html.dark .lp-receipt-body,
 html.dark .lp-final-note,
 html.dark .lp-row-detail,
 html.dark .lp-step-body,
-
 
 html.dark .lp-brief,
 html.dark .lp-brand-slash,
@@ -2324,7 +2095,6 @@ html.dark .lp-step:hover { background: rgba(247, 241, 231, 0.04); }
 html.dark .lp-statement-quote em,
 html.dark .lp-station .eyebrow,
 
-
 html.dark .lp-row-n,
 html.dark .lp-step-n { color: rgba(240, 162, 60, 0.32); }
 
@@ -2336,7 +2106,6 @@ html.dark .lp-station .lp-shot-img {
   box-shadow: 0 40px 80px -40px rgba(0, 0, 0, 0.8);
 }
 
-/* Theme control sits with the other nav chrome. */
 .app-theme {
   display: inline-flex;
   align-items: center;
@@ -2353,7 +2122,6 @@ html.dark .lp-station .lp-shot-img {
 .app-theme:hover { color: var(--ink); }
 .app-theme:active { transform: scale(0.93); }
 
-/* ── Second door ─────────────────────────────────────────────────────────── */
 .lp-doorway-lede {
   max-width: 66ch;
   margin: calc(var(--step) * 3) 0 0;
@@ -2407,17 +2175,85 @@ html.dark .lp-doorway-grid li { border-color: var(--line); }
   }
 }
 
-/* ── Hero in the reference's language ─────────────────────────────────────
-   Two-tone headline, a thin feature line, one solid button beside a link. */
-
 .lp-hero .lp-head {
-  margin: 0;
-  font-family: var(--display);
-  font-size: clamp(38px, 5.4vw, 76px);
-  font-weight: 700;
-  line-height: 1.06;
-  letter-spacing: -0.035em;
+  margin: calc(var(--step) * 3) 0 0;
+  font-family: "Instrument Serif", Georgia, "Times New Roman", serif;
+  font-size: clamp(40px, 6.2vw, 86px);
+  font-weight: 400;
+  line-height: 1.02;
+  letter-spacing: -0.015em;
   text-wrap: balance;
+}
+
+.lp-hero-coin {
+  width: clamp(210px, 27vw, 310px);
+  height: clamp(210px, 27vw, 310px);
+  margin-inline: auto;
+}
+
+.lp-hero-coin canvas {
+  display: block;
+}
+
+.lp-hero-coin-static {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  font-family: var(--display);
+  font-size: 84px;
+  font-weight: 700;
+  color: var(--ink-3);
+  border: 1px solid var(--line-strong);
+  border-radius: 50%;
+}
+
+.lp-asks {
+  width: min(520px, 100%);
+  margin: calc(var(--step) * 4) auto 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--line);
+  text-align: left;
+}
+
+.lp-asks li {
+  border-bottom: 1px solid var(--line);
+}
+
+.lp-asks a {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 6px;
+  font-size: 14.5px;
+  color: var(--ink-2);
+  text-decoration: none;
+  transition: color 0.25s var(--ease-fluid), padding-left 0.25s var(--ease-fluid);
+}
+
+.lp-asks a span {
+  flex: 1;
+  min-width: 0;
+}
+
+.lp-asks a svg {
+  flex: none;
+  color: var(--ink-3);
+  transition: color 0.25s var(--ease-fluid), transform 0.25s var(--ease-fluid);
+}
+
+.lp-asks a:hover {
+  color: var(--ink);
+  padding-left: 12px;
+}
+
+.lp-asks a:hover svg {
+  color: var(--blue);
+}
+
+.lp-asks a:hover svg:last-child {
+  transform: translate(2px, -2px);
 }
 
 .lp-head-a,
@@ -2425,7 +2261,7 @@ html.dark .lp-doorway-grid li { border-color: var(--line); }
   display: block;
 }
 
-.lp-head-a { color: var(--blue); }
+.lp-head-a { color: var(--ink-3); font-style: normal; }
 .lp-head-b { color: var(--ink); }
 
 .lp-feats {
@@ -2477,7 +2313,6 @@ html.dark .lp-doorway-grid li { border-color: var(--line); }
   color: var(--ink-3);
 }
 
-/* Buttons: one solid accent, modest radius, no glass. */
 .lp-cta {
   color: #ffffff;
   background: var(--blue);
@@ -2513,14 +2348,12 @@ html.dark .lp-nav .lp-cta {
 html.dark .lp-cta .lp-cta-orb,
 html.dark .lp-nav .lp-cta .lp-cta-orb { background: rgba(23, 22, 23, 0.18); }
 
-/* Display type across the page follows the reference: tight sans, not serif. */
 .lp-h2,
 .lp-statement-quote,
 .lp-final-head,
 .lp-row-claim,
 .lp-step-title,
 .lp-doorway-grid h3,
-
 
 .lp-statement-quote em {
   font-family: "Instrument Serif", Georgia, serif;
@@ -2536,10 +2369,8 @@ html.dark .lp-ghost { color: rgba(242, 245, 251, 0.05); }
 .lp-station .eyebrow { color: var(--blue); }
 .lp-row-n, .lp-step-n { color: rgba(48, 94, 255, 0.28); }
 
-
 .lp-hero { padding-top: calc(var(--step) * 12); }
 
-/* Load-bearing words of the problem statement, marked without shouting. */
 .lp mark {
   background: none;
   color: var(--ink);
@@ -2555,19 +2386,10 @@ html.dark .lp mark {
 .lp-brief mark { color: var(--ink-2); }
 html.dark .lp-brief mark { color: var(--ink); }
 
-/* Keep the scroll cue clear of the scene. */
 .lp-continue {
   bottom: calc(var(--step) * 2);
 }
 
-.lp-scene {
-  min-height: 380px;
-  margin-bottom: calc(var(--step) * 4);
-}
-
-/* ── Section bands ────────────────────────────────────────────────────────
-   Alternating grounds give the page a rhythm, so a long read arrives in
-   parts instead of as one wall. Bands bleed full width. */
 
 .lp-station {
   position: relative;
@@ -2590,7 +2412,6 @@ html.dark .lp-brief mark { color: var(--ink); }
 html.dark .band-tint { background: var(--surface); }
 html.dark .band-deep { background: #121112; }
 
-/* Inverted bands carry their own type colours. */
 .band-deep .lp-h2,
 .band-deep .lp-final-head,
 .band-deep .lp-doorway-grid h3 { color: #ffffff; }
@@ -2610,7 +2431,6 @@ html.dark .band-deep { background: #121112; }
 
 .band-deep .lp-ghost { color: rgba(255, 255, 255, 0.06); }
 
-/* The closing button must never sit white-on-white. */
 .lp-final .lp-cta {
   color: #ffffff;
   background: var(--signal);
@@ -2623,7 +2443,6 @@ html.dark .band-deep { background: #121112; }
 .lp-final-actions { justify-content: center; }
 .lp-final-safe { color: rgba(255, 255, 255, 0.6); }
 
-/* Keep the accent singular: blue carries emphasis without visual noise. */
 .lp mark {
   color: var(--ink);
   box-shadow: inset 0 -0.32em 0 rgba(196, 102, 63, 0.25);
@@ -2645,7 +2464,6 @@ html.dark .lp-station .eyebrow { color: var(--signal); }
 .lp-statement-quote em { color: var(--signal); }
 html.dark .lp-statement-quote em { color: var(--signal); }
 
-/* Final theme lock: plum is the single expressive accent; no orange wash. */
 .lp {
   --signal: #765b78;
   --signal-soft: #f0e8f0;
@@ -2684,7 +2502,6 @@ html.dark .lp {
   .lp-feats { justify-content: flex-start; font-size: 12px; line-height: 1.45; }
   .lp-cta-row { justify-content: flex-start; gap: 18px; }
   .lp-brief { max-width: 38ch; margin-top: 28px; font-size: 14px; line-height: 1.6; }
-  .lp-scene { min-height: 280px; margin-top: 10px; }
   .lp-station { min-height: auto; padding-block: clamp(64px, 15vw, 104px); }
   .lp-statement { padding-block: clamp(64px, 15vw, 104px); }
   .lp-statement-quote { max-width: 14ch; font-size: clamp(38px, 11vw, 58px); }
@@ -2736,7 +2553,6 @@ html.dark .lp {
 @keyframes lp-pulse-spin { to { transform: rotate(360deg); } }
 @media (prefers-reduced-motion: reduce) { .lp-pulse-orb::before { animation: none; } }
 
-/* Purpose-built miniature application inside the MacBook. */
 .lp-mac-stage { background: #0a0a0d; padding: clamp(44px, 7vw, 96px) 16px; }
 .lp-mac-screen { background: #0d0d11; overflow: hidden; }
 .lp-mac-story { width: 100%; height: 100%; overflow: hidden; position: relative; color: #f3eef5; font-family: "Hanken Grotesk", "Inter Tight", system-ui, sans-serif; }
@@ -2778,9 +2594,6 @@ html.dark .lp {
 @media (max-width: 700px) { .lp-mac-page { padding: 20px 22px; }.lp-mac-page h2 { font-size: 23px; }.lp-mac-lede { font-size: 10px; }.lp-mac-chat strong { font-size: 13px; }.lp-mac-product h2 { font-size: 15px; }.lp-mac-brake-head em { font-size: 24px; }.lp-mac-brake-result { gap: 8px; padding: 10px; }.lp-mac-order > strong { font-size: 12px; } }
 @media (prefers-reduced-motion: reduce) { .lp-mac-track, .lp-mac-progress span { transition: none; }.lp-mac-route i, .lp-mac-brake-meter b { animation: none; } }
 
-/* Final MacBook shell: one stable viewport, with the supplied transparent
-   mockup doing the framing. The screen content never creates its own scroll
-   context; the page wheel advances one complete product screen at a time. */
 .lp-mac-stage {
   position: relative;
   isolation: isolate;
@@ -2871,7 +2684,6 @@ html.dark .lp {
   .lp-rail-packet { display: none; }
 }
 
-/* Cursor companion: a quiet chromatic signal instead of diagnostic text. */
 .lp-cursor-ghost {
   width: 10px;
   height: 10px;
@@ -2897,8 +2709,6 @@ html.dark .lp {
 @media (prefers-reduced-motion: reduce) { .lp-cursor-ghost::before { animation: none; } }
 @media (hover: none), (pointer: coarse) { .lp-cursor-ghost { display: none !important; } }
 
-/* One visual language for the landing: mineral paper in light mode, ink and
-   cool blue in dark mode. Rose remains reserved for failures. */
 .lp {
   --bg: #f5f7fa;
   --ground: #f5f7fa;
@@ -2968,7 +2778,6 @@ html.dark .lp {
   --term-stop: #e58c91;
 }
 
-/* Mac application tokens intentionally echo the page palette. */
 .lp-mac-story {
   --mac-bg: #0d141d;
   --mac-surface: #151f2b;
@@ -3057,8 +2866,6 @@ html.dark .lp {
 .lp-mac-log p em,
 .lp-mac-offers strong { color: var(--mac-accent); }
 
-/* Hero brief: a readable measure with quiet emphasis instead of a dense
-   string of bold fragments. */
 .lp-brief {
   width: min(58ch, calc(100% - 24px));
   max-width: 58ch;

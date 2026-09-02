@@ -46,7 +46,6 @@ export function StagedOrder({ order }: { order: PendingOrder }) {
         const { ok, data } = await apiJson<{ status?: string }>(`/api/orders/${order.summaryId}/status`);
         if (ok && data.status === "paid") setPhase("settled");
       } catch {
-        // transient or offline; the badge on the system bar carries that signal
       }
     }, 5000);
     return () => clearInterval(id);

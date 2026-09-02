@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { ApiUnavailableError, apiJson } from "../api";
 import type { PendingOrder } from "../order/StagedOrder";
-import { AlertIcon, MicIcon, SpeakerIcon, SpeakerOffIcon } from "../icons";
+import { AlertIcon, CoinIcon, LockIcon, ShieldIcon, SpeakerIcon } from "../icons";
+import type { CoinState } from "../landing/CoinScene";
 import { RichText } from "./RichText";
+import { VoiceCoin, Waveform } from "../voice/VoiceCoin";
 import { useVoice } from "../voice/useVoice";
 import "./ConversationPanel.css";
 
@@ -12,22 +14,33 @@ interface ChatMessage {
 }
 
 const STARTERS = [
-  "A birthday cake for 15 people",
-  "Something chocolate for an anniversary",
-  "First order, can I get 50% off?",
+  { icon: CoinIcon, text: "A birthday cake for 15 people" },
+  { icon: ShieldIcon, text: "Something chocolate for an anniversary" },
+  { icon: LockIcon, text: "First order, can I get 50% off?" },
 ];
+
+function greeting(): string {
+  const hour = new Date().getHours();
+  if (hour >= 22 || hour < 5) return "Working late";
+  if (hour < 12) return "Good morning";
+  if (hour < 17) return "Good afternoon";
+  return "Good evening";
+}
 
 export function ConversationPanel({
   sessionId,
   onOrderStaged,
+  onStarted,
 }: {
   sessionId: string;
   onOrderStaged: (order: PendingOrder) => void;
+  onStarted: () => void;
 }) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
   const threadRef = useRef<HTMLDivElement>(null);
+  const askedRef = useRef(false);
 
   const voice = useVoice(
     (text) => {
@@ -41,9 +54,38 @@ export function ConversationPanel({
     threadRef.current?.scrollTo({ top: threadRef.current.scrollHeight, behavior: "smooth" });
   }, [messages, sending]);
 
+  const sendRef = useRef(send);
+
+  useEffect(() => {
+    sendRef.current = send;
+  });
+
+  useEffect(() => {
+    if (askedRef.current) return;
+    askedRef.current = true;
+    const ask = new URLSearchParams(window.location.search).get("ask");
+    if (!ask) return;
+    window.history.replaceState({}, "", window.location.pathname);
+    void sendRef.current(ask);
+  }, []);
+
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.code !== "Space" || event.repeat) return;
+      const target = event.target as HTMLElement | null;
+      if (target && (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable)) return;
+      if (!voice.micAvailable || voice.micStatus === "transcribing") return;
+      event.preventDefault();
+      voice.toggleMic();
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  });
+
   async function send(text: string) {
     if (!text.trim() || sending) return;
 
+    onStarted();
     setMessages((prev) => [...prev, { role: "user", content: text }]);
     setInput("");
     setSending(true);
@@ -80,55 +122,89 @@ export function ConversationPanel({
     }
   }
 
-  const agentState = sending
-    ? "Thinking"
-    : voice.micStatus === "recording"
+  const coinState: CoinState =
+    voice.micStatus === "recording"
+      ? "listening"
+      : sending || voice.micStatus === "transcribing"
+        ? "thinking"
+        : voice.isSpeaking
+          ? "speaking"
+          : "idle";
+
+  const agentState =
+    coinState === "listening"
       ? "Listening"
       : voice.micStatus === "transcribing"
         ? "Transcribing"
-        : "Ready";
+        : sending
+          ? "Thinking"
+          : voice.isSpeaking
+            ? "Speaking"
+            : "Ready";
+
+  const micLabel =
+    voice.micStatus === "recording"
+      ? "Stop listening"
+      : voice.isSpeaking
+        ? "Interrupt and speak"
+        : "Tap the coin to speak";
 
   const empty = messages.length === 0;
 
   return (
-    <section className="cp" aria-labelledby="cp-title">
-      <div className="cp-head">
-        <h2 className="cs-label" id="cp-title">
-          Chat
-        </h2>
-        <span className={`cp-state cp-state-${agentState.toLowerCase()}`}>
-          <i aria-hidden="true" />
-          {agentState}
-        </span>
-      </div>
+    <section className={`cp${empty ? " is-empty" : ""}`} aria-label="Conversation">
+      {empty ? (
+        <div className="cp-stage">
+          <div className="cp-stage-inner">
+            {voice.micAvailable ? (
+              <VoiceCoin
+                state={coinState}
+                level={voice.level}
+                size="hero"
+                onClick={voice.toggleMic}
+                disabled={voice.micStatus === "transcribing"}
+                label={micLabel}
+              />
+            ) : (
+              <div className="cp-stage-coin-static" aria-hidden="true">
+                <CoinIcon size={64} />
+              </div>
+            )}
 
-      <div className="cp-thread" ref={threadRef}>
-        {empty ? (
-          <div className="cp-intro">
-            <div className="cp-kicker"><i /> LIVE SALES AGENT <span>TEST MODE</span></div>
-            <h1 className="cp-lead">
-              What are we
+            <h1 className="cp-greeting">
+              {greeting()} &mdash;
               <br />
-              <em>baking today?</em>
+              <em>what are we baking?</em>
             </h1>
-            <p className="cp-sub">
-              Share an occasion and I&rsquo;ll build the basket. You approve before anything moves.
-            </p>
-            <div className="cp-trustline" aria-label="Agent safeguards">
-              <span>3 safeguards active</span>
-              <i aria-hidden="true" />
-              <span>human approval required</span>
-            </div>
-            <div className="cp-starters">
-              {STARTERS.map((s) => (
-                <button key={s} type="button" className="cp-starter" onClick={() => send(s)}>
-                  {s}
-                </button>
+
+            <ul className="cp-suggestions">
+              {STARTERS.map(({ icon: Icon, text }) => (
+                <li key={text}>
+                  <button type="button" onClick={() => send(text)}>
+                    <Icon size={15} />
+                    <span>{text}</span>
+                  </button>
+                </li>
               ))}
+            </ul>
+
+            <div className="cp-stage-foot">
+              <Waveform state={coinState} level={voice.level} />
+              <p className="cp-stage-hint">
+                {voice.micAvailable ? (
+                  <>
+                    Tap the coin to speak <kbd>Space</kbd> or type below
+                  </>
+                ) : (
+                  <>Type below to start &mdash; voice input is unavailable in this browser</>
+                )}
+              </p>
             </div>
           </div>
-        ) : (
-          messages.map((m, i) =>
+        </div>
+      ) : (
+        <div className="cp-thread" ref={threadRef}>
+          {messages.map((m, i) =>
             m.role === "notice" ? (
               <div key={i} className="cp-notice" role="status">
                 <AlertIcon size={14} />
@@ -142,20 +218,27 @@ export function ConversationPanel({
                 </div>
               </div>
             ),
-          )
-        )}
+          )}
 
-        {sending && (
-          <div className="cp-msg cp-assistant">
-            <span className="cp-who">Bazaar</span>
-            <div className="cp-bubble cp-thinking" aria-label="Agent is reasoning">
-              <span />
-              <span />
-              <span />
+          {sending && (
+            <div className="cp-msg cp-assistant">
+              <span className="cp-who">Bazaar</span>
+              <div className="cp-bubble cp-thinking" aria-label="Agent is reasoning">
+                <span />
+                <span />
+                <span />
+              </div>
             </div>
-          </div>
-        )}
-      </div>
+          )}
+        </div>
+      )}
+
+      {!empty && agentState !== "Ready" && (
+        <div className={`cp-live cp-state-${agentState.toLowerCase()}`} role="status">
+          <Waveform state={coinState} level={voice.level} />
+          <span>{agentState}</span>
+        </div>
+      )}
 
       <form
         className="cp-composer"
@@ -164,6 +247,16 @@ export function ConversationPanel({
           send(input);
         }}
       >
+        {voice.micAvailable && !empty && (
+          <VoiceCoin
+            state={coinState}
+            level={voice.level}
+            size="dock"
+            onClick={voice.toggleMic}
+            disabled={voice.micStatus === "transcribing"}
+            label={micLabel}
+          />
+        )}
         <input
           className="cp-input"
           value={input}
@@ -171,26 +264,14 @@ export function ConversationPanel({
           placeholder={voice.micStatus === "transcribing" ? "Transcribing…" : "Message the agent"}
           aria-label="Message the sales agent"
         />
-        {voice.micAvailable && (
+        {voice.voiceMode && (
           <button
-            className={`cp-tool${voice.micStatus === "recording" ? " is-rec" : ""}`}
+            className="cp-tool is-on"
             type="button"
-            disabled={voice.micStatus === "transcribing"}
-            aria-label={voice.micStatus === "recording" ? "Stop recording" : "Speak instead of typing"}
-            onClick={voice.toggleMic}
+            aria-label="End voice conversation"
+            onClick={voice.stopVoiceMode}
           >
-            <MicIcon size={14} />
-          </button>
-        )}
-        {voice.ttsAvailable && (
-          <button
-            className={`cp-tool${voice.speakReplies ? " is-on" : ""}`}
-            type="button"
-            aria-pressed={voice.speakReplies}
-            aria-label={voice.speakReplies ? "Stop speaking replies aloud" : "Speak replies aloud"}
-            onClick={voice.toggleSpeakReplies}
-          >
-            {voice.speakReplies ? <SpeakerIcon size={14} /> : <SpeakerOffIcon size={14} />}
+            <SpeakerIcon size={14} />
           </button>
         )}
         <button className="cp-send" type="submit" disabled={sending || !input.trim()}>

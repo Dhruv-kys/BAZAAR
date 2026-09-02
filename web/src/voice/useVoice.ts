@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import { apiUrl } from "../api";
 
 const MAX_RECORDING_MS = 30000;
+const SILENCE_HOLD_MS = 1400;
+const SPEECH_LEVEL = 0.11;
 
 interface VoiceConfig {
   stt: boolean;
@@ -34,6 +36,18 @@ function speechRecognitionCtor(): SpeechRecognitionCtor | undefined {
   return w.SpeechRecognition ?? w.webkitSpeechRecognition;
 }
 
+const DEVANAGARI = /[\u0900-\u097F]/;
+
+function preferredVoice(lang: string): SpeechSynthesisVoice | undefined {
+  const voices = window.speechSynthesis.getVoices();
+  if (voices.length === 0) return undefined;
+  const exact = voices.filter((voice) => voice.lang.replace("_", "-") === lang);
+  if (exact.length > 0) {
+    return exact.find((voice) => !voice.localService) ?? exact[0];
+  }
+  return voices.find((voice) => voice.lang.replace("_", "-").startsWith(lang.split("-")[0]));
+}
+
 function stripForSpeech(text: string): string {
   return text
     .replace(/\[([^\]]+)\]\([^)]*\)/g, "$1")
@@ -48,13 +62,19 @@ export type MicStatus = "idle" | "recording" | "transcribing";
 export function useVoice(onTranscript: (text: string) => void, onNotice: (message: string) => void) {
   const [serverVoice, setServerVoice] = useState<VoiceConfig>({ stt: false, tts: false });
   const [micStatus, setMicStatus] = useState<MicStatus>("idle");
-  const [speakReplies, setSpeakReplies] = useState(false);
-  const speakRepliesRef = useRef(false);
+  const [voiceMode, setVoiceMode] = useState(false);
+  const [isSpeaking, setIsSpeaking] = useState(false);
+  const [level, setLevel] = useState(0);
 
+  const voiceModeRef = useRef(false);
   const recorderRef = useRef<MediaRecorder | null>(null);
   const recognitionRef = useRef<BrowserSpeechRecognition | null>(null);
   const stopTimerRef = useRef<number | undefined>(undefined);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const analyserRef = useRef<AnalyserNode | null>(null);
+  const audioCtxRef = useRef<AudioContext | null>(null);
+  const levelFrameRef = useRef(0);
+  const startMicRef = useRef<() => void>(() => {});
   const callbacksRef = useRef({ onTranscript, onNotice });
 
   useEffect(() => {
@@ -66,10 +86,18 @@ export function useVoice(onTranscript: (text: string) => void, onNotice: (messag
       .then((res) => (res.ok ? res.json() : { stt: false, tts: false }))
       .then(setServerVoice)
       .catch(() => {});
+
+    window.speechSynthesis?.getVoices();
+    const onVoices = () => window.speechSynthesis.getVoices();
+    window.speechSynthesis?.addEventListener("voiceschanged", onVoices);
     return () => {
+      window.speechSynthesis?.removeEventListener("voiceschanged", onVoices);
+      voiceModeRef.current = false;
       recorderRef.current?.stream.getTracks().forEach((track) => track.stop());
       recognitionRef.current?.abort();
       window.clearTimeout(stopTimerRef.current);
+      cancelAnimationFrame(levelFrameRef.current);
+      void audioCtxRef.current?.close();
       audioRef.current?.pause();
       window.speechSynthesis?.cancel();
     };
@@ -79,13 +107,63 @@ export function useVoice(onTranscript: (text: string) => void, onNotice: (messag
   const micAvailable = serverVoice.stt || browserStt;
   const ttsAvailable = serverVoice.tts || (typeof window !== "undefined" && "speechSynthesis" in window);
 
+  function startMetering(stream: MediaStream, onSilence: () => void) {
+    const Ctor =
+      window.AudioContext ?? (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+    if (!Ctor) return;
+    const ctx = new Ctor();
+    const analyser = ctx.createAnalyser();
+    analyser.fftSize = 512;
+    analyser.smoothingTimeConstant = 0.75;
+    ctx.createMediaStreamSource(stream).connect(analyser);
+    audioCtxRef.current = ctx;
+    analyserRef.current = analyser;
+
+    const bins = new Uint8Array(analyser.frequencyBinCount);
+    let heardSpeech = false;
+    let lastLoud = performance.now();
+
+    const tick = () => {
+      const node = analyserRef.current;
+      if (!node) return;
+      node.getByteTimeDomainData(bins);
+      let peak = 0;
+      for (const bin of bins) peak = Math.max(peak, Math.abs(bin - 128) / 128);
+      const amplitude = Math.min(1, peak * 2.4);
+      setLevel(amplitude);
+
+      const now = performance.now();
+      if (amplitude > SPEECH_LEVEL) {
+        heardSpeech = true;
+        lastLoud = now;
+      } else if (heardSpeech && now - lastLoud > SILENCE_HOLD_MS) {
+        onSilence();
+        return;
+      }
+      levelFrameRef.current = requestAnimationFrame(tick);
+    };
+    levelFrameRef.current = requestAnimationFrame(tick);
+  }
+
+  function stopMetering() {
+    cancelAnimationFrame(levelFrameRef.current);
+    analyserRef.current = null;
+    void audioCtxRef.current?.close();
+    audioCtxRef.current = null;
+    setLevel(0);
+  }
+
+  function endVoiceMode() {
+    voiceModeRef.current = false;
+    setVoiceMode(false);
+  }
+
   function deliverTranscript(text: string) {
     if (text) {
-      speakRepliesRef.current = true;
-      setSpeakReplies(true);
       callbacksRef.current.onTranscript(text);
     } else {
-      callbacksRef.current.onNotice("Didn't catch that. Try again, or type instead.");
+      callbacksRef.current.onNotice("Didn't catch that. Tap the coin to try again, or type instead.");
+      endVoiceMode();
     }
   }
 
@@ -95,6 +173,7 @@ export function useVoice(onTranscript: (text: string) => void, onNotice: (messag
       stream = await navigator.mediaDevices.getUserMedia({ audio: true });
     } catch {
       callbacksRef.current.onNotice("Microphone access was denied. Allow it in the browser, or type instead.");
+      endVoiceMode();
       return;
     }
 
@@ -106,6 +185,7 @@ export function useVoice(onTranscript: (text: string) => void, onNotice: (messag
     recorder.onstop = async () => {
       stream.getTracks().forEach((track) => track.stop());
       window.clearTimeout(stopTimerRef.current);
+      stopMetering();
       recorderRef.current = null;
       setMicStatus("transcribing");
 
@@ -119,11 +199,13 @@ export function useVoice(onTranscript: (text: string) => void, onNotice: (messag
         const data = await res.json();
         if (!res.ok) {
           callbacksRef.current.onNotice(data.error ?? "Transcription failed. Try typing instead.");
+          endVoiceMode();
         } else {
           deliverTranscript((data.text ?? "").trim());
         }
       } catch {
         callbacksRef.current.onNotice("Couldn't reach the server to transcribe. Try typing instead.");
+        endVoiceMode();
       } finally {
         setMicStatus("idle");
       }
@@ -131,8 +213,13 @@ export function useVoice(onTranscript: (text: string) => void, onNotice: (messag
 
     recorderRef.current = recorder;
     recorder.start();
+    startMetering(stream, () => {
+      if (recorderRef.current?.state === "recording") recorderRef.current.stop();
+    });
     setMicStatus("recording");
-    stopTimerRef.current = window.setTimeout(() => recorder.stop(), MAX_RECORDING_MS);
+    stopTimerRef.current = window.setTimeout(() => {
+      if (recorderRef.current?.state === "recording") recorderRef.current.stop();
+    }, MAX_RECORDING_MS);
   }
 
   function startBrowserMic() {
@@ -154,10 +241,13 @@ export function useVoice(onTranscript: (text: string) => void, onNotice: (messag
       setMicStatus("idle");
       if (event.error === "not-allowed" || event.error === "service-not-allowed") {
         callbacksRef.current.onNotice("Microphone access was denied. Allow it in the browser, or type instead.");
-      } else if (event.error !== "aborted" && event.error !== "no-speech") {
-        callbacksRef.current.onNotice("Voice input failed. Try again, or type instead.");
+        endVoiceMode();
       } else if (event.error === "no-speech") {
-        callbacksRef.current.onNotice("Didn't catch that. Try again, or type instead.");
+        callbacksRef.current.onNotice("Didn't catch that. Tap the coin to try again, or type instead.");
+        endVoiceMode();
+      } else if (event.error !== "aborted") {
+        callbacksRef.current.onNotice("Voice input failed. Try again, or type instead.");
+        endVoiceMode();
       }
     };
     recognition.onend = () => {
@@ -170,25 +260,52 @@ export function useVoice(onTranscript: (text: string) => void, onNotice: (messag
     setMicStatus("recording");
   }
 
-  function toggleMic() {
-    if (micStatus === "transcribing") return;
-    if (micStatus === "recording") {
-      recorderRef.current?.stop();
-      recognitionRef.current?.stop();
-      return;
-    }
+  function startMic() {
     if (serverVoice.stt) void startServerMic();
     else startBrowserMic();
   }
+
+  useEffect(() => {
+    startMicRef.current = startMic;
+  });
 
   function stopPlayback() {
     audioRef.current?.pause();
     audioRef.current = null;
     window.speechSynthesis?.cancel();
+    setIsSpeaking(false);
+  }
+
+  function toggleMic() {
+    if (micStatus === "transcribing") return;
+
+    if (isSpeaking) {
+      stopPlayback();
+      voiceModeRef.current = true;
+      setVoiceMode(true);
+      startMic();
+      return;
+    }
+
+    if (micStatus === "recording") {
+      endVoiceMode();
+      recorderRef.current?.stop();
+      recognitionRef.current?.stop();
+      return;
+    }
+
+    voiceModeRef.current = true;
+    setVoiceMode(true);
+    startMic();
+  }
+
+  function endTurn() {
+    if (!voiceModeRef.current) return;
+    startMicRef.current();
   }
 
   async function speak(text: string) {
-    if (!speakRepliesRef.current) return;
+    if (!voiceModeRef.current) return;
     const plain = stripForSpeech(text);
     if (!plain) return;
 
@@ -204,26 +321,58 @@ export function useVoice(onTranscript: (text: string) => void, onNotice: (messag
         if (res.ok) {
           const url = URL.createObjectURL(await res.blob());
           const audio = new Audio(url);
-          audio.onended = () => URL.revokeObjectURL(url);
+          audio.onended = () => {
+            URL.revokeObjectURL(url);
+            setIsSpeaking(false);
+            endTurn();
+          };
           audioRef.current = audio;
+          setIsSpeaking(true);
           await audio.play();
           return;
         }
       } catch {
-        // fall through to the browser voice
       }
     }
 
     if ("speechSynthesis" in window) {
-      window.speechSynthesis.speak(new SpeechSynthesisUtterance(plain));
+      const utterance = new SpeechSynthesisUtterance(plain);
+      const lang = DEVANAGARI.test(plain) ? "hi-IN" : "en-IN";
+      const voice = preferredVoice(lang);
+      utterance.lang = lang;
+      if (voice) utterance.voice = voice;
+      utterance.onend = () => {
+        setIsSpeaking(false);
+        endTurn();
+      };
+      utterance.onerror = () => {
+        setIsSpeaking(false);
+        endVoiceMode();
+      };
+      setIsSpeaking(true);
+      window.speechSynthesis.speak(utterance);
+      return;
     }
+
+    endVoiceMode();
   }
 
-  function toggleSpeakReplies() {
-    if (speakRepliesRef.current) stopPlayback();
-    speakRepliesRef.current = !speakRepliesRef.current;
-    setSpeakReplies(speakRepliesRef.current);
+  function stopVoiceMode() {
+    endVoiceMode();
+    stopPlayback();
+    recorderRef.current?.stop();
+    recognitionRef.current?.stop();
   }
 
-  return { micAvailable, ttsAvailable, micStatus, speakReplies, toggleMic, toggleSpeakReplies, speak };
+  return {
+    micAvailable,
+    ttsAvailable,
+    micStatus,
+    voiceMode,
+    isSpeaking,
+    level,
+    toggleMic,
+    stopVoiceMode,
+    speak,
+  };
 }

@@ -1,0 +1,51 @@
+.ad {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 50;
+  pointer-events: none;
+}
+
+.ad-panel {
+  position: relative;
+  pointer-events: auto;
+  border-top: 1px solid var(--rule);
+  background: var(--panel);
+  box-shadow: 0 -18px 44px -30px rgba(10, 20, 32, 0.5);
+  animation: ad-rise 0.34s var(--spring) both;
+}
+
+.ad-close {
+  position: absolute;
+  top: 10px;
+  right: calc(var(--step) * 2);
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  color: var(--ink-3);
+  background: transparent;
+  border: 1px solid var(--rule-2);
+  border-radius: var(--r);
+  cursor: pointer;
+  transition: color 0.3s var(--ease), border-color 0.3s var(--ease);
+}
+
+.ad-close:hover {
+  color: var(--ink);
+  border-color: var(--ink-3);
+}
+
+@keyframes ad-rise {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ad-panel {
+    animation: none;
+  }
+}

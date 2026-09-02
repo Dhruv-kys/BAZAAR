@@ -3,9 +3,8 @@
   align-items: center;
   justify-content: space-between;
   gap: calc(var(--step) * 3);
-  padding: 0 calc(var(--step) * 2.5);
-  height: 52px;
-  background: var(--panel);
+  padding: 0 calc(var(--step) * 3);
+  height: 56px;
 }
 
 .sb-brand {
@@ -29,94 +28,103 @@
   color: var(--ink);
 }
 
-.sb-sub {
+.sb-slash {
   font-family: var(--sys);
-  font-size: 10px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  font-size: 12px;
   color: var(--ink-3);
   white-space: nowrap;
 }
 
-.sb-status {
-  display: flex;
-  align-items: center;
-  gap: calc(var(--step) * 1.5);
-  font-family: var(--sys);
-  font-size: 11px;
-  color: var(--ink-3);
-  white-space: nowrap;
-}
-
-.sb-div {
-  width: 1px;
-  height: 11px;
-  background: var(--rule-2);
-}
-
-.sb-stream {
+.sb-ready {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
-  padding: 3px 9px;
-  border: 1px solid var(--rule-2);
-  border-radius: var(--r);
-  letter-spacing: 0.08em;
+  gap: 6px;
+  margin-left: var(--step);
+  font-family: var(--sys);
+  font-size: 10px;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
+  color: var(--ink-3);
+  white-space: nowrap;
 }
 
-.sb-stream i {
-  width: 6px;
-  height: 6px;
+.sb-ready i {
+  width: 5px;
+  height: 5px;
   border-radius: 50%;
   background: currentColor;
 }
 
-.sb-stream-live {
+.sb-ready-live {
   color: var(--ok);
-  border-color: color-mix(in srgb, var(--ok) 45%, transparent);
-  background: var(--ok-bg);
 }
 
-.sb-stream-live i {
+.sb-ready-live i {
   animation: sb-pulse 2.4s var(--ease) infinite;
 }
 
-.sb-stream-connecting {
-  color: var(--warn);
-  border-color: color-mix(in srgb, var(--warn) 45%, transparent);
-  background: var(--warn-bg);
-}
-
-.sb-stream-offline {
-  color: var(--stop);
-  border-color: color-mix(in srgb, var(--stop) 45%, transparent);
-  background: var(--stop-bg);
-}
+.sb-ready-connecting { color: var(--warn); }
+.sb-ready-offline { color: var(--stop); }
 
 @keyframes sb-pulse {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.35; }
 }
 
-.sb-session b {
-  font-weight: 500;
-  color: var(--ink-2);
-}
-
-.sb-sr {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
-}
-
 .sb-actions {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
+}
+
+.sb-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 13px;
+  font-family: var(--human);
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--ink-2);
+  background: transparent;
+  border: 1px solid var(--rule-2);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: color 0.3s var(--ease), border-color 0.3s var(--ease), background-color 0.3s var(--ease);
+}
+
+.sb-pill:hover {
+  color: var(--ink);
+  border-color: var(--ink-3);
+}
+
+.sb-pill b {
+  font-family: var(--sys);
+  font-size: 10px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  padding: 1px 6px;
+  border-radius: 999px;
+  color: var(--live);
+  background: var(--live-bg);
+}
+
+.sb-pill.is-on {
+  color: var(--live);
+  border-color: color-mix(in srgb, var(--live) 50%, transparent);
+  background: var(--live-bg);
+}
+
+.sb-pill-order {
+  color: var(--live);
+  border-color: color-mix(in srgb, var(--live) 50%, transparent);
+}
+
+.sb-session {
+  font-family: var(--sys);
+  font-size: 11px;
+  color: var(--ink-3);
+  white-space: nowrap;
 }
 
 .sb-icon {
@@ -141,6 +149,28 @@
   transform: scale(0.94);
 }
 
+.sb-new {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-left: var(--step);
+  padding: 7px 14px;
+  font-family: var(--human);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+  background: var(--raise);
+  border: 1px solid var(--rule-2);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background-color 0.3s var(--ease), color 0.3s var(--ease);
+}
+
+.sb-new:hover {
+  background: var(--live-bg);
+  color: var(--live);
+}
+
 @media (max-width: 900px) {
   .sb {
     height: auto;
@@ -149,14 +179,14 @@
     padding: var(--step) calc(var(--step) * 2);
   }
 
-  .sb-sub,
+  .sb-slash,
   .sb-session {
     display: none;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .sb-stream-live i {
+  .sb-ready-live i {
     animation: none;
   }
 }

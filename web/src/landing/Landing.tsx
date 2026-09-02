@@ -1,11 +1,17 @@
 import { Children, Suspense, lazy, useCallback, useEffect, useRef, useState, type ReactNode } from "react";
-import { ArrowUpRightIcon, GitHubIcon, LockIcon, MoonIcon, SunIcon } from "../icons";
+import { ArrowUpRightIcon, CoinIcon, GitHubIcon, LockIcon, MoonIcon, ShieldIcon, SunIcon } from "../icons";
 import { navigate } from "../router";
 import { useReveal } from "./useReveal";
 import { useTheme } from "../useTheme";
 import "./Landing.css";
 
 const CoinScene = lazy(() => import("./CoinScene"));
+
+const HERO_ASKS = [
+  { icon: CoinIcon, text: "A birthday cake for 15 people" },
+  { icon: ShieldIcon, text: "Something chocolate for an anniversary" },
+  { icon: LockIcon, text: "First order, can I get 50% off?" },
+];
 
 function StoryDeck({ children }: { children: ReactNode }) {
   const slides = Children.toArray(children);
@@ -50,8 +56,6 @@ function StoryDeck({ children }: { children: ReactNode }) {
       const frame = requestAnimationFrame(settle);
       return () => cancelAnimationFrame(frame);
     }
-    // A guard only for browsers that suppress transitionend when the tab is
-    // backgrounded; normal interaction settles from the actual event below.
     const fallback = window.setTimeout(settle, 1400);
     return () => window.clearTimeout(fallback);
   }, [active, settle]);
@@ -143,8 +147,6 @@ function MacScreen({ children }: { children: ReactNode }) {
       setIsBumping(true);
       story.dispatchEvent(new CustomEvent("bazaar:story-step", { detail: direction, bubbles: true }));
     };
-    // Capture at the window level so the Mac remains the active story surface
-    // even when the pointer is over the surrounding cinematic background.
     window.addEventListener("wheel", onWheel, { passive: false, capture: true });
     return () => {
       window.removeEventListener("wheel", onWheel, true);
@@ -196,7 +198,6 @@ function CursorGhost() {
   }, []);
   return <div className="lp-cursor-ghost" ref={ghostRef} aria-hidden="true"><i /></div>;
 }
-
 
 function MacStory() {
   return (
@@ -326,16 +327,40 @@ export function Landing() {
 
       <header className="lp-hero">
         <div className="lp-stage">
+          <div className="lp-hero-coin" aria-hidden="true">
+            {field ? (
+              <Suspense fallback={null}>
+                <CoinScene />
+              </Suspense>
+            ) : (
+              <span className="lp-hero-coin-static">₹</span>
+            )}
+          </div>
+
           <h1 className="lp-head">
             <span className="lp-head-a">An agent that sells</span>
             <span className="lp-head-b">and knows when to stop</span>
           </h1>
+
           <p className="lp-feats">
             <span>Server-enforced limits</span>
             <span>Human confirmation</span>
             <span>Full audit trail</span>
             <span>Agent-to-agent</span>
           </p>
+
+          <ul className="lp-asks">
+            {HERO_ASKS.map(({ icon: Icon, text }) => (
+              <li key={text}>
+                <a href={`/app?ask=${encodeURIComponent(text)}`} onClick={navigate(`/app?ask=${encodeURIComponent(text)}`)}>
+                  <Icon size={15} />
+                  <span>{text}</span>
+                  <ArrowUpRightIcon size={13} />
+                </a>
+              </li>
+            ))}
+          </ul>
+
           <div className="lp-cta-row">
             <OpenAgent large />
             <a className="lp-link" href="#how" onClick={(e) => {
@@ -345,14 +370,6 @@ export function Landing() {
               See how it works
             </a>
           </div>
-        </div>
-
-        <div className="lp-scene" aria-hidden="true">
-          {field && (
-            <Suspense fallback={null}>
-              <CoinScene />
-            </Suspense>
-          )}
         </div>
 
         <div className="lp-continue">
