@@ -3,7 +3,8 @@ import { createChatCompletion } from "./llmClient.js";
 import { getSessionMessages, trimHistory } from "./session.js";
 import { SYSTEM_PROMPT } from "./systemPrompt.js";
 import { toolDefinitions } from "./tools.js";
-import { toolHandlers, type ToolResult } from "./toolHandlers.js";
+import { humanActor } from "../commerce/actor.js";
+import { toolHandlers, type ToolContext, type ToolResult } from "./toolHandlers.js";
 
 const MAX_TOOL_ROUNDS = 10;
 
@@ -34,7 +35,7 @@ export async function runChatTurn(sessionId: string, userMessage: string): Promi
     for (const toolCall of message.tool_calls) {
       if (toolCall.type !== "function") continue;
 
-      const result = runTool(toolCall.function.name, toolCall.function.arguments, { sessionId });
+      const result = runTool(toolCall.function.name, toolCall.function.arguments, { actor: humanActor(sessionId) });
       if (toolCall.function.name === "present_order_summary" && result.ok) {
         orderSummary = result.result as PendingOrder;
       }
@@ -52,7 +53,7 @@ export async function runChatTurn(sessionId: string, userMessage: string): Promi
   };
 }
 
-function runTool(name: string, rawArgs: string, ctx: { sessionId: string }): ToolResult {
+function runTool(name: string, rawArgs: string, ctx: ToolContext): ToolResult {
   const handler = toolHandlers[name];
   if (!handler) return { ok: false, error: `Unknown tool: ${name}` };
 

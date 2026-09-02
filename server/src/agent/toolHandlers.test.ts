@@ -4,7 +4,9 @@ import { GUARDRAILS } from "../guardrails/config.js";
 import { getPendingOrder, type PendingOrder } from "../payments/pendingOrderStore.js";
 import { toolHandlers } from "./toolHandlers.js";
 
-const ctx = { sessionId: "test-session" };
+import { humanActor } from "../commerce/actor.js";
+
+const ctx = { actor: humanActor("test-session") };
 
 function call(tool: keyof typeof toolHandlers | string, args: unknown) {
   return toolHandlers[tool](args, ctx);

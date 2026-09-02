@@ -8,7 +8,9 @@
   "scripts": {
     "dev": "concurrently -n server,web -c blue,magenta \"npm run dev -w server\" \"npm run dev -w web\"",
     "test": "npm run test -w server",
-    "typecheck": "tsc --noEmit -p server/tsconfig.json && tsc -b web"
+    "typecheck": "tsc --noEmit -p server/tsconfig.json && tsc -b web",
+    "wallet": "npm run wallet -w server --",
+    "buyer": "npm run buyer -w server"
   },
   "devDependencies": {
     "concurrently": "^9.1.0"

@@ -1,12 +1,6 @@
 import { EventEmitter } from "node:events";
-import fs from "node:fs";
-import path from "node:path";
-import Database from "better-sqlite3";
-
-const dataDir = path.resolve(import.meta.dirname, "../../data");
-fs.mkdirSync(dataDir, { recursive: true });
-
-const db = new Database(path.join(dataDir, "audit.sqlite"));
+import type { ActorKind } from "../commerce/actor.js";
+import { db, hasColumn } from "../db.js";
 
 db.exec(`
   CREATE TABLE IF NOT EXISTS audit_events (
@@ -21,14 +15,33 @@ db.exec(`
   )
 `);
 
+if (!hasColumn("audit_events", "actor")) {
+  db.exec(`ALTER TABLE audit_events ADD COLUMN actor TEXT NOT NULL DEFAULT 'human'`);
+}
+if (!hasColumn("audit_events", "agent_id")) {
+  db.exec(`ALTER TABLE audit_events ADD COLUMN agent_id TEXT`);
+}
+if (!hasColumn("audit_events", "refusal_code")) {
+  db.exec(`ALTER TABLE audit_events ADD COLUMN refusal_code TEXT`);
+}
+
 const insertStmt = db.prepare(`
-  INSERT INTO audit_events (session_id, timestamp, type, tool_name, reasoning, payload_json, was_clamped)
-  VALUES (@sessionId, @timestamp, @type, @toolName, @reasoning, @payloadJson, @wasClamped)
+  INSERT INTO audit_events (session_id, timestamp, type, tool_name, reasoning, payload_json, was_clamped, actor, agent_id, refusal_code)
+  VALUES (@sessionId, @timestamp, @type, @toolName, @reasoning, @payloadJson, @wasClamped, @actor, @agentId, @refusalCode)
 `);
 
-const selectStmt = db.prepare(`
-  SELECT id, session_id AS sessionId, timestamp, type, tool_name AS toolName, reasoning, payload_json AS payloadJson, was_clamped AS wasClamped
-  FROM audit_events WHERE session_id = ? ORDER BY id ASC
+const SELECT_COLUMNS = `
+  id, session_id AS sessionId, timestamp, type, tool_name AS toolName, reasoning,
+  payload_json AS payloadJson, was_clamped AS wasClamped, actor, agent_id AS agentId,
+  refusal_code AS refusalCode
+`;
+
+const selectBySessionStmt = db.prepare(`
+  SELECT ${SELECT_COLUMNS} FROM audit_events WHERE session_id = ? ORDER BY id ASC
+`);
+
+const selectRecentStmt = db.prepare(`
+  SELECT ${SELECT_COLUMNS} FROM audit_events ORDER BY id DESC LIMIT ?
 `);
 
 export interface AuditEventInput {
@@ -38,6 +51,9 @@ export interface AuditEventInput {
   reasoning?: string;
   payload?: unknown;
   wasClamped?: boolean;
+  actor?: ActorKind;
+  agentId?: string;
+  refusalCode?: string;
 }
 
 export interface AuditEvent {
@@ -49,12 +65,16 @@ export interface AuditEvent {
   reasoning: string | null;
   payload: unknown;
   wasClamped: boolean;
+  actor: ActorKind;
+  agentId: string | null;
+  refusalCode: string | null;
 }
 
 export const auditEvents = new EventEmitter();
 
 export function logAuditEvent(input: AuditEventInput): AuditEvent {
   const timestamp = new Date().toISOString();
+  const actor: ActorKind = input.actor ?? "human";
   const info = insertStmt.run({
     sessionId: input.sessionId,
     timestamp,
@@ -63,6 +83,9 @@ export function logAuditEvent(input: AuditEventInput): AuditEvent {
     reasoning: input.reasoning ?? null,
     payloadJson: input.payload !== undefined ? JSON.stringify(input.payload) : null,
     wasClamped: input.wasClamped ? 1 : 0,
+    actor,
+    agentId: input.agentId ?? null,
+    refusalCode: input.refusalCode ?? null,
   });
 
   const event: AuditEvent = {
@@ -74,6 +97,9 @@ export function logAuditEvent(input: AuditEventInput): AuditEvent {
     reasoning: input.reasoning ?? null,
     payload: input.payload ?? null,
     wasClamped: Boolean(input.wasClamped),
+    actor,
+    agentId: input.agentId ?? null,
+    refusalCode: input.refusalCode ?? null,
   };
 
   auditEvents.emit("event", event);
@@ -89,11 +115,13 @@ interface AuditEventRow {
   reasoning: string | null;
   payloadJson: string | null;
   wasClamped: number;
+  actor: string;
+  agentId: string | null;
+  refusalCode: string | null;
 }
 
-export function getAuditEvents(sessionId: string): AuditEvent[] {
-  const rows = selectStmt.all(sessionId) as AuditEventRow[];
-  return rows.map((row) => ({
+function toEvent(row: AuditEventRow): AuditEvent {
+  return {
     id: row.id,
     sessionId: row.sessionId,
     timestamp: row.timestamp,
@@ -102,5 +130,16 @@ export function getAuditEvents(sessionId: string): AuditEvent[] {
     reasoning: row.reasoning,
     payload: row.payloadJson ? JSON.parse(row.payloadJson) : null,
     wasClamped: Boolean(row.wasClamped),
-  }));
+    actor: row.actor === "agent" ? "agent" : "human",
+    agentId: row.agentId,
+    refusalCode: row.refusalCode,
+  };
+}
+
+export function getAuditEvents(sessionId: string): AuditEvent[] {
+  return (selectBySessionStmt.all(sessionId) as AuditEventRow[]).map(toEvent);
+}
+
+export function getRecentAuditEvents(limit: number): AuditEvent[] {
+  return (selectRecentStmt.all(limit) as AuditEventRow[]).map(toEvent).reverse();
 }

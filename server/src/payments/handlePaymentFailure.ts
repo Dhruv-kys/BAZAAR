@@ -1,5 +1,10 @@
 import { logAuditEvent } from "../audit/auditStore.js";
-import { getPendingOrder, recordPaymentAttempt } from "./pendingOrderStore.js";
+import {
+  beginPaymentLinkCreation,
+  endPaymentLinkCreation,
+  getPendingOrder,
+  recordPaymentAttempt,
+} from "./pendingOrderStore.js";
 import { createPaymentLink } from "./razorpay.js";
 
 export async function handlePaymentFailure(
@@ -19,8 +24,17 @@ export async function handlePaymentFailure(
     payload: { summaryId, status: "failed" },
   });
 
-  const paymentLink = await createPaymentLink(order);
-  recordPaymentAttempt(summaryId, { paymentLinkId: paymentLink.id, url: paymentLink.shortUrl });
+  if (!beginPaymentLinkCreation(summaryId)) {
+    throw new Error(`A payment link for ${summaryId} is already being created`);
+  }
+
+  let paymentLink: { id: string; shortUrl: string };
+  try {
+    paymentLink = await createPaymentLink(order);
+    recordPaymentAttempt(summaryId, { paymentLinkId: paymentLink.id, url: paymentLink.shortUrl });
+  } finally {
+    endPaymentLinkCreation(summaryId);
+  }
 
   logAuditEvent({
     sessionId: order.sessionId,

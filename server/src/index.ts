@@ -2,6 +2,7 @@ import cors from "cors";
 import express from "express";
 import { config, reportConfig } from "./config.js";
 import { rateLimit, securityHeaders } from "./security.js";
+import { mcpRouter, wellKnownRouter } from "./mcp/server.js";
 import { auditRouter } from "./routes/audit.js";
 import { chatRouter } from "./routes/chat.js";
 import { guardrailsRouter } from "./routes/guardrails.js";
@@ -35,6 +36,8 @@ app.use("/api/guardrails", guardrailsRouter);
 app.use("/api/audit", auditRouter);
 app.use("/api/orders", rateLimit(30, 60_000), ordersRouter);
 app.use("/api/voice", rateLimit(30, 60_000), voiceRouter);
+app.use("/.well-known", wellKnownRouter);
+app.use("/mcp", rateLimit(60, 60_000), mcpRouter);
 
 app.listen(config.port, () => {
   console.log(`server listening on http://localhost:${config.port}`);

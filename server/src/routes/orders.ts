@@ -1,9 +1,8 @@
 import { Router } from "express";
-import { logAuditEvent } from "../audit/auditStore.js";
-import { GUARDRAILS } from "../guardrails/config.js";
-import { watchPaymentLink } from "../payments/paymentWatcher.js";
-import { getPendingOrder, recordPaymentAttempt } from "../payments/pendingOrderStore.js";
-import { createPaymentLink } from "../payments/razorpay.js";
+import { humanActor } from "../commerce/actor.js";
+import { confirmOrder, orderStatus } from "../commerce/checkout.js";
+import { httpStatusFor } from "../commerce/refusals.js";
+import { getPendingOrder } from "../payments/pendingOrderStore.js";
 
 export const ordersRouter = Router();
 
@@ -15,43 +14,20 @@ ordersRouter.post("/:summaryId/confirm", async (req, res) => {
     return;
   }
 
-  if (order.totalInPaise > GUARDRAILS.maxOrderValuePaise) {
-    res.status(400).json({ error: "This order exceeds the maximum value that can be auto-approved." });
+  const result = await confirmOrder({ summaryId, actor: humanActor(order.sessionId) });
+  if (!result.ok) {
+    res.status(httpStatusFor(result.code)).json({ error: result.message, code: result.code });
     return;
   }
 
-  if (order.paymentAttempt) {
-    if (!order.paidAt) watchPaymentLink(summaryId, order.paymentAttempt.paymentLinkId);
-    res.json({ paymentUrl: order.paymentAttempt.url });
-    return;
-  }
-
-  try {
-    const paymentLink = await createPaymentLink(order);
-    recordPaymentAttempt(summaryId, { paymentLinkId: paymentLink.id, url: paymentLink.shortUrl });
-    watchPaymentLink(summaryId, paymentLink.id);
-    logAuditEvent({
-      sessionId: order.sessionId,
-      type: "payment_link_created",
-      toolName: "confirm_order",
-      reasoning: `Customer confirmed order ${summaryId}; payment link created for ₹${order.totalInPaise / 100}`,
-      payload: { summaryId, paymentLinkId: paymentLink.id },
-    });
-    res.json({ paymentUrl: paymentLink.shortUrl });
-  } catch (error) {
-    console.error("payment link creation failed:", error);
-    res.status(502).json({ error: "Couldn't create the payment link right now. Please try again." });
-  }
+  res.json({ paymentUrl: result.paymentUrl });
 });
 
 ordersRouter.get("/:summaryId/status", (req, res) => {
-  const order = getPendingOrder(req.params.summaryId);
-  if (!order) {
-    res.status(404).json({ error: "Unknown or expired order summary" });
+  const result = orderStatus(req.params.summaryId);
+  if (!result.ok) {
+    res.status(httpStatusFor(result.code)).json({ error: result.message, code: result.code });
     return;
   }
-  res.json({
-    status: order.paidAt ? "paid" : order.paymentAttempt ? "awaiting_payment" : "staged",
-    paymentUrl: order.paymentAttempt?.url,
-  });
+  res.json({ status: result.status, paymentUrl: result.paymentUrl });
 });

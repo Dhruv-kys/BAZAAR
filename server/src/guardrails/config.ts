@@ -2,6 +2,7 @@ export const GUARDRAILS = {
   maxDiscountPercent: 15,
   maxDiscountFlatPaise: 20000,
   maxOrderValuePaise: 500000,
+  quoteTtlMs: 300000,
   allowedDiscountReasonCodes: ["FIRST_ORDER", "BULK_ADDON", "SEASONAL_PROMO"] as const,
 } as const;
 

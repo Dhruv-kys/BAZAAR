@@ -1,8 +1,11 @@
 import { logAuditEvent } from "../audit/auditStore.js";
 import { addOnsForCategory, getAddOnById, getProductById, getVariant, searchCatalog } from "../catalog/catalog.js";
+import type { Actor } from "../commerce/actor.js";
+import { authorizeTotal } from "../commerce/policy.js";
+import { priceOrder } from "../commerce/pricing.js";
 import { GUARDRAILS } from "../guardrails/config.js";
-import { createDiscountRequest, getDiscountRequest } from "../payments/discountRequestStore.js";
-import { createPendingOrder, type PendingOrderAddOn, type PendingOrderItem } from "../payments/pendingOrderStore.js";
+import { createDiscountRequest } from "../payments/discountRequestStore.js";
+import { createPendingOrder } from "../payments/pendingOrderStore.js";
 import {
   applyDiscountParams,
   getProductDetailsParams,
@@ -15,9 +18,13 @@ import {
 
 export type ToolResult = { ok: true; result: unknown } | { ok: false; error: string };
 export interface ToolContext {
-  sessionId: string;
+  actor: Actor;
 }
 export type ToolHandler = (args: unknown, ctx: ToolContext) => ToolResult;
+
+function auditFields(actor: Actor) {
+  return { sessionId: actor.sessionId, actor: actor.kind, agentId: actor.agentId };
+}
 
 export const toolHandlers: Record<string, ToolHandler> = {
   search_catalog(args) {
@@ -56,7 +63,7 @@ export const toolHandlers: Record<string, ToolHandler> = {
     if (!variant) return { ok: false, error: "That product/variant combination doesn't exist" };
 
     logAuditEvent({
-      sessionId: ctx.sessionId,
+      ...auditFields(ctx.actor),
       type: "recommendation",
       toolName: "recommend_product",
       reasoning: parsed.data.reason,
@@ -74,7 +81,7 @@ export const toolHandlers: Record<string, ToolHandler> = {
     if (!addOn) return { ok: false, error: `No add-on with id "${parsed.data.addOnId}"` };
 
     logAuditEvent({
-      sessionId: ctx.sessionId,
+      ...auditFields(ctx.actor),
       type: "cross_sell",
       toolName: "suggest_addon",
       reasoning: parsed.data.reason,
@@ -93,7 +100,7 @@ export const toolHandlers: Record<string, ToolHandler> = {
     if (!variant.premium) return { ok: false, error: "That variant isn't a premium option" };
 
     logAuditEvent({
-      sessionId: ctx.sessionId,
+      ...auditFields(ctx.actor),
       type: "upsell",
       toolName: "suggest_upsell",
       reasoning: parsed.data.reason,
@@ -131,7 +138,7 @@ export const toolHandlers: Record<string, ToolHandler> = {
     });
 
     logAuditEvent({
-      sessionId: ctx.sessionId,
+      ...auditFields(ctx.actor),
       type: "discount_requested",
       toolName: "apply_discount",
       reasoning: reasonCode,
@@ -146,57 +153,29 @@ export const toolHandlers: Record<string, ToolHandler> = {
     const parsed = presentOrderSummaryParams.safeParse(args);
     if (!parsed.success) return { ok: false, error: parsed.error.message };
 
-    const items: PendingOrderItem[] = [];
-    for (const item of parsed.data.items) {
-      const product = getProductById(item.productId);
-      const variant = getVariant(item.productId, item.variantId);
-      if (!product || !variant) {
-        return { ok: false, error: `Unknown product/variant: ${item.productId}/${item.variantId}` };
-      }
-      items.push({
-        productId: product.id,
-        productName: product.name,
-        variantId: variant.id,
-        variantLabel: variant.label,
-        quantity: item.quantity,
-        priceInPaise: variant.priceInPaise,
-      });
-    }
+    const pricing = priceOrder({
+      items: parsed.data.items,
+      addOnIds: parsed.data.addOnIds ?? undefined,
+      discountRequestId: parsed.data.discountRequestId ?? undefined,
+    });
+    if (!pricing.ok) return { ok: false, error: pricing.message };
 
-    const addOns: PendingOrderAddOn[] = [];
-    for (const addOnId of parsed.data.addOnIds ?? []) {
-      const addOn = getAddOnById(addOnId);
-      if (!addOn) return { ok: false, error: `Unknown add-on: ${addOnId}` };
-      addOns.push({ addOnId: addOn.id, name: addOn.name, priceInPaise: addOn.priceInPaise });
-    }
-
-    const subtotalInPaise =
-      items.reduce((sum, item) => sum + item.priceInPaise * item.quantity, 0) +
-      addOns.reduce((sum, addOn) => sum + addOn.priceInPaise, 0);
-
-    let discountInPaise = 0;
-    if (parsed.data.discountRequestId) {
-      const discountRequest = getDiscountRequest(parsed.data.discountRequestId);
-      if (!discountRequest) {
-        return { ok: false, error: `Unknown discountRequestId: ${parsed.data.discountRequestId}` };
-      }
-      discountInPaise =
-        discountRequest.appliedPercent !== undefined
-          ? Math.round((subtotalInPaise * discountRequest.appliedPercent) / 100)
-          : (discountRequest.appliedAmountInPaise ?? 0);
-      discountInPaise = Math.min(discountInPaise, subtotalInPaise);
-    }
-
-    const totalInPaise = subtotalInPaise - discountInPaise;
-
-    if (totalInPaise > GUARDRAILS.maxOrderValuePaise) {
+    const { priced } = pricing;
+    const authorization = authorizeTotal(priced.totalInPaise, ctx.actor);
+    if (!authorization.ok) {
       logAuditEvent({
-        sessionId: ctx.sessionId,
+        ...auditFields(ctx.actor),
         type: "order_blocked",
         toolName: "present_order_summary",
-        reasoning: `Total of ${totalInPaise} paise exceeds the ${GUARDRAILS.maxOrderValuePaise} paise limit I can approve on my own`,
-        payload: { subtotalInPaise, discountInPaise, totalInPaise },
+        reasoning: `Total of ${priced.totalInPaise} paise exceeds the ${authorization.binding?.limitInPaise} paise limit I can approve on my own`,
+        payload: {
+          subtotalInPaise: priced.subtotalInPaise,
+          discountInPaise: priced.discountInPaise,
+          totalInPaise: priced.totalInPaise,
+          binding: authorization.binding,
+        },
         wasClamped: true,
+        refusalCode: authorization.code,
       });
       return {
         ok: false,
@@ -205,16 +184,15 @@ export const toolHandlers: Record<string, ToolHandler> = {
     }
 
     const pendingOrder = createPendingOrder({
-      sessionId: ctx.sessionId,
-      items,
-      addOns,
-      subtotalInPaise,
-      discountInPaise,
-      totalInPaise,
+      sessionId: ctx.actor.sessionId,
+      actor: ctx.actor.kind,
+      agentId: ctx.actor.agentId,
+      discountRequestId: parsed.data.discountRequestId ?? undefined,
+      ...priced,
     });
 
     logAuditEvent({
-      sessionId: ctx.sessionId,
+      ...auditFields(ctx.actor),
       type: "order_summary",
       toolName: "present_order_summary",
       reasoning: "Customer confirmed items - staging order summary",

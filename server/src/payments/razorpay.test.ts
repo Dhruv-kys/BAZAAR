@@ -6,6 +6,7 @@ import { paymentReferenceId, summaryIdFromReference } from "./razorpay.js";
 function stagedOrder() {
   return createPendingOrder({
     sessionId: "s1",
+    actor: "human" as const,
     items: [
       {
         productId: "p",
