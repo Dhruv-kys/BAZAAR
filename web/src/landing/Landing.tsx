@@ -86,6 +86,22 @@ function StoryDeck({ children }: { children: ReactNode }) {
   );
 }
 
+function MacScreen({ children }: { children: ReactNode }) {
+  return (
+    <section className="lp-mac-stage" aria-label="Bazaar proof screens">
+      <div className="lp-payment-aura" aria-hidden="true"><i /><i /><i /><i /></div>
+      <div className="lp-mac-shell">
+        <div className="lp-mac-bar">
+          <span className="lp-mac-dots"><i /><i /><i /></span>
+          <span className="lp-mac-address">bazaar / proof-of-commerce</span>
+          <span className="lp-mac-live"><i /> LIVE</span>
+        </div>
+        <div className="lp-mac-screen">{children}</div>
+      </div>
+    </section>
+  );
+}
+
 function CursorGhost() {
   const ghostRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -278,6 +294,7 @@ export function Landing() {
 
       <TextRail />
 
+      <MacScreen>
       <StoryDeck>
       <section className="lp-station lp-statement band-tint" data-reveal>
         <p className="lp-statement-quote">
@@ -402,7 +419,10 @@ export function Landing() {
         </div>
       </section>
 
-      <section className="lp-station lp-final band-deep" data-reveal>
+      </StoryDeck>
+      </MacScreen>
+
+      <section className="lp-station lp-final lp-bazaar-screen band-deep" data-reveal>
         <h2 className="lp-final-head">Try talking it past the cap.</h2>
         <p className="lp-final-note">
           Ask for half off and watch the log refuse you. Runs on Razorpay test mode: a real payment link is created, but
@@ -419,7 +439,6 @@ export function Landing() {
           BAAZAR
         </span>
       </section>
-      </StoryDeck>
 
       <footer className="lp-foot">
         <span>Bazaar. Track 01, AI Growth and Agentic Commerce.</span>
