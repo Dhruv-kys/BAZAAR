@@ -2734,7 +2734,7 @@ html.dark .lp {
 }
 
 /* Mac display surface: compact proof screens with no inherited oversized type. */
-.lp-mac-screen { background: #151318; color: #eee8ef; }
+.lp-mac-screen { background: #151318; color: #eee8ef; overflow: hidden; }
 .lp-mac-screen [data-reveal] { opacity: 1 !important; transform: none !important; }
 .lp-mac-screen .lp-station, .lp-mac-screen .lp-section, .lp-mac-screen .lp-receipt { background: #151318; color: #eee8ef; }
 .lp-mac-screen .lp-statement-quote, .lp-mac-screen .lp-h2, .lp-mac-screen .lp-final-head { color: #f4edf5; font-size: clamp(22px, 3.2vw, 42px); line-height: 1.06; }
@@ -2779,12 +2779,14 @@ html.dark .lp {
 .lp-mac-screen { opacity: 0; transform: scale(.96); }
 .lp-mac-device.is-open .lp-mac-screen { opacity: 1; transform: scale(1); }
 .lp-mac-screen .lp-story-wrap { width: 100%; max-width: 100%; overflow: hidden; }
+.lp-mac-screen .lp-story-wrap { transform: scale(.78); transform-origin: top left; width: 128.2%; min-height: 128.2%; }
 .lp-mac-screen .lp-story-slide { width: 100%; max-width: 100%; overflow: hidden; }
 .lp-mac-screen .lp-station { box-sizing: border-box; width: 100%; max-width: 100%; overflow: hidden; }
 @media (max-width: 700px) {
   .lp-mac-stage { min-height: 0; }
   .lp-mac-device { transform: scale(.52) translateY(8vh); }
   .lp-mac-device.is-open { transform: scale(1) translateY(0); }
+  .lp-mac-screen .lp-story-wrap { transform: scale(.68); width: 147%; min-height: 147%; }
 }
 .lp-mac-screen .lp-story-deck { overflow: hidden; }
 .lp-mac-screen .lp-story-slide { animation: lp-proof-slide-in 420ms cubic-bezier(.22,.8,.24,1) both; }
