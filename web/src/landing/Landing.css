@@ -2771,6 +2771,21 @@ html.dark .lp {
   .lp-mac-screen { opacity: 1; transform: none; }
 }
 @media (max-width: 700px) { .lp-mac-stage { min-height: 145vh; } }
+
+/* Stable interaction fallback: viewport entry opens the device; wheel owns slides. */
+.lp-mac-stage { min-height: 0; padding-top: clamp(32px, 7vw, 84px); padding-bottom: clamp(24px, 5vw, 60px); }
+.lp-mac-device { position: relative; top: auto; transform: scale(.58) translateY(10vh); }
+.lp-mac-device.is-open { transform: scale(1) translateY(0); }
+.lp-mac-screen { opacity: 0; transform: scale(.96); }
+.lp-mac-device.is-open .lp-mac-screen { opacity: 1; transform: scale(1); }
+.lp-mac-screen .lp-story-wrap { width: 100%; max-width: 100%; overflow: hidden; }
+.lp-mac-screen .lp-story-slide { width: 100%; max-width: 100%; overflow: hidden; }
+.lp-mac-screen .lp-station { box-sizing: border-box; width: 100%; max-width: 100%; overflow: hidden; }
+@media (max-width: 700px) {
+  .lp-mac-stage { min-height: 0; }
+  .lp-mac-device { transform: scale(.52) translateY(8vh); }
+  .lp-mac-device.is-open { transform: scale(1) translateY(0); }
+}
 .lp-mac-screen .lp-story-deck { overflow: hidden; }
 .lp-mac-screen .lp-story-slide { animation: lp-proof-slide-in 420ms cubic-bezier(.22,.8,.24,1) both; }
 @keyframes lp-proof-slide-in { from { opacity: 0; transform: translateX(22px); } to { opacity: 1; transform: none; } }

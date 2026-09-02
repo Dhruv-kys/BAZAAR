@@ -96,10 +96,19 @@ function StoryDeck({ children }: { children: ReactNode }) {
 }
 
 function MacScreen({ children }: { children: ReactNode }) {
+  const stageRef = useRef<HTMLElement>(null);
+  const [isOpen, setIsOpen] = useState(false);
+  useEffect(() => {
+    const stage = stageRef.current;
+    if (!stage) return;
+    const observer = new IntersectionObserver(([entry]) => setIsOpen(entry.isIntersecting), { threshold: 0.28 });
+    observer.observe(stage);
+    return () => observer.disconnect();
+  }, []);
   return (
-    <section className="lp-mac-stage" aria-label="Bazaar proof screens">
+    <section className="lp-mac-stage" ref={stageRef} aria-label="Bazaar proof screens">
       <div className="lp-payment-aura" aria-hidden="true"><i /><i /><i /><i /></div>
-      <div className="lp-mac-device">
+      <div className={`lp-mac-device${isOpen ? " is-open" : ""}`}>
         <div className="lp-mac-screen">{children}</div>
         <img className="lp-mac-art" src="/macbook-mockup.png" alt="" aria-hidden="true" />
       </div>
