@@ -213,6 +213,20 @@ function OpenAgent({ large }: { large?: boolean }) {
   );
 }
 
+function GuardrailPulse() {
+  const [armed, setArmed] = useState(false);
+  return (
+    <button className={`lp-guardrail-pulse${armed ? " is-armed" : ""}`} type="button" onClick={() => setArmed((value) => !value)}>
+      <span className="lp-pulse-orb" aria-hidden="true"><i /><i /><i /></span>
+      <span className="lp-pulse-copy">
+        <small>BAZAAR / CONTROL</small>
+        <strong>{armed ? "Guardrail engaged" : "Inspect the brake pedal"}</strong>
+      </span>
+      <span className="lp-pulse-state">{armed ? "ON" : "↗"}</span>
+    </button>
+  );
+}
+
 function detectField() {
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return false;
   try {
@@ -460,9 +474,7 @@ export function Landing() {
             No real money moves
           </span>
         </div>
-        <span className="lp-ghost" aria-hidden="true">
-          BAAZAR
-        </span>
+        <GuardrailPulse />
       </section>
 
       <footer className="lp-foot">
