@@ -2,25 +2,25 @@
   --sys: var(--mono);
   --human: "Inter Tight", "Plus Jakarta Sans", system-ui, sans-serif;
 
-  --bg: #f4f6f3;
+  --bg: #f7f6f4;
   --panel: #ffffff;
-  --raise: #edf2ee;
-  --rule: #d9e1dc;
-  --rule-2: #bdcbc2;
+  --raise: #f0efed;
+  --rule: #dedbd7;
+  --rule-2: #c9c5c0;
 
-  --ink: #1d2924;
-  --ink-2: #4d5d55;
-  --ink-3: #7b8b83;
+  --ink: #252321;
+  --ink-2: #5b5752;
+  --ink-3: #88827b;
 
   --ok: #0f9d58;
   --warn: #b06a00;
   --stop: #f0263c;
-  --live: #317c73;
+  --live: #765b78;
 
   --ok-bg: rgba(26, 127, 55, 0.09);
   --warn-bg: rgba(154, 103, 0, 0.1);
   --stop-bg: rgba(207, 34, 46, 0.09);
-  --live-bg: #e6f1ed;
+  --live-bg: #f0e8f0;
 
   --r: 4px;
   --ease: cubic-bezier(0.32, 0.72, 0, 1);
@@ -36,25 +36,25 @@
 }
 
 html.dark .cs {
-  --bg: #111816;
-  --panel: #17211e;
-  --raise: #1d2a25;
-  --rule: rgba(235, 242, 237, 0.14);
-  --rule-2: rgba(235, 242, 237, 0.25);
+  --bg: #171617;
+  --panel: #211e20;
+  --raise: #292629;
+  --rule: rgba(244, 240, 235, 0.14);
+  --rule-2: rgba(244, 240, 235, 0.25);
 
   --ink: #f2f5fb;
-  --ink-2: #b1c0b8;
-  --ink-3: #81958b;
+  --ink-2: #c1b9b3;
+  --ink-3: #948b86;
 
   --ok: #5fd39a;
   --warn: #f5b544;
   --stop: #ff7a6b;
-  --live: #79c4b2;
+  --live: #c19ac3;
 
   --ok-bg: rgba(63, 185, 80, 0.12);
   --warn-bg: rgba(210, 153, 34, 0.12);
   --stop-bg: rgba(248, 81, 73, 0.12);
-  --live-bg: rgba(121, 196, 178, 0.16);
+  --live-bg: rgba(193, 154, 195, 0.16);
 }
 
 .cs-label {

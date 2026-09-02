@@ -16,29 +16,29 @@ function faceTexture(caption: string): THREE.Texture {
   const g = c.getContext("2d")!;
   const R = s / 2;
 
-  g.fillStyle = "#d9a441";
+  g.fillStyle = "#d7dde0";
   g.beginPath();
   g.arc(R, R, R, 0, Math.PI * 2);
   g.fill();
 
   // Recessed field so the relief has somewhere to sit.
   const field = g.createRadialGradient(R * 0.8, R * 0.7, R * 0.1, R, R, R);
-  field.addColorStop(0, "#f4d489");
-  field.addColorStop(0.62, "#dfae52");
-  field.addColorStop(1, "#b8862f");
+  field.addColorStop(0, "#f7fafb");
+  field.addColorStop(0.62, "#b9c4c8");
+  field.addColorStop(1, "#68777d");
   g.fillStyle = field;
   g.beginPath();
   g.arc(R, R, R * 0.9, 0, Math.PI * 2);
   g.fill();
 
-  g.strokeStyle = "rgba(120, 82, 18, 0.55)";
+  g.strokeStyle = "rgba(38, 51, 57, 0.58)";
   g.lineWidth = s * 0.012;
   g.beginPath();
   g.arc(R, R, R * 0.79, 0, Math.PI * 2);
   g.stroke();
 
   // Milled beads just inside the rim.
-  g.fillStyle = "rgba(255, 240, 200, 0.55)";
+  g.fillStyle = "rgba(255, 255, 255, 0.72)";
   for (let i = 0; i < 72; i++) {
     const a = (i / 72) * Math.PI * 2;
     g.beginPath();
@@ -46,13 +46,13 @@ function faceTexture(caption: string): THREE.Texture {
     g.fill();
   }
 
-  g.fillStyle = "#6b4a12";
+  g.fillStyle = "#26343a";
   g.font = `700 ${s * 0.42}px "Inter Tight", ui-sans-serif, system-ui, sans-serif`;
   g.textAlign = "center";
   g.textBaseline = "middle";
   g.fillText("₹", R, R * 0.98);
 
-  g.fillStyle = "rgba(107, 74, 18, 0.85)";
+  g.fillStyle = "rgba(38, 52, 58, 0.88)";
   g.font = `600 ${s * 0.052}px "Inter Tight", ui-sans-serif, system-ui, sans-serif`;
   g.fillText(caption, R, R * 1.52);
 
@@ -70,7 +70,7 @@ function Coin() {
 
   const materials = useMemo(() => {
     const edge = new THREE.MeshStandardMaterial({
-      color: "#c99a3d",
+      color: "#8b989d",
       metalness: 0.95,
       roughness: 0.28,
     });
@@ -101,7 +101,7 @@ function Coin() {
       {/* A milled band sitting proud of the edge. */}
       <mesh rotation={[Math.PI / 2, 0, 0]}>
         <torusGeometry args={[1.28, 0.035, 12, 96]} />
-        <meshStandardMaterial color="#e6bb63" metalness={0.95} roughness={0.22} />
+        <meshStandardMaterial color="#dfe6e8" metalness={0.95} roughness={0.22} />
       </mesh>
     </group>
   );
@@ -174,9 +174,9 @@ export default function CoinScene() {
     >
       {/* Three-point-ish rig: metal needs moving highlights to read as metal. */}
       <ambientLight intensity={0.55} color="#fff6e2" />
-      <directionalLight position={[3, 4, 5]} intensity={2.1} color="#fff3d6" />
+      <directionalLight position={[3, 4, 5]} intensity={2.1} color="#f4f7f8" />
       <directionalLight position={[-4, 1.5, 2]} intensity={1.0} color="#76b6a4" />
-      <directionalLight position={[0, -3, 3]} intensity={0.55} color="#ffd9a0" />
+      <directionalLight position={[0, -3, 3]} intensity={0.55} color="#c4d0d4" />
       <pointLight position={[0, 0, 3]} intensity={12} distance={12} color="#ffffff" />
       <Rig>
         <Coin />

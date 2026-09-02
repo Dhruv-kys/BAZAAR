@@ -265,6 +265,75 @@
   padding: calc(var(--step) * 13) 0 calc(var(--step) * 12);
 }
 
+.lp-tldr {
+  display: grid;
+  grid-template-columns: minmax(220px, 0.8fr) minmax(0, 1.7fr);
+  gap: clamp(28px, 6vw, 88px);
+  align-items: end;
+  margin: calc(var(--step) * 6) 0;
+  padding: clamp(24px, 4vw, 44px) 0;
+  border-block: 1px solid var(--line);
+}
+
+.lp-tldr-intro h2 {
+  max-width: 11ch;
+  margin: 12px 0 8px;
+  font-family: var(--display);
+  font-size: clamp(26px, 3.6vw, 46px);
+  line-height: 0.98;
+  letter-spacing: -0.045em;
+  color: var(--ink);
+}
+
+.lp-tldr-intro p {
+  margin: 0;
+  color: var(--ink-3);
+  font-size: 13px;
+}
+
+.lp-tldr-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.lp-tldr-grid li {
+  min-height: 132px;
+  padding: 0 22px;
+  border-left: 1px solid var(--line);
+}
+
+.lp-tldr-grid li:first-child { padding-left: 0; border-left: 0; }
+.lp-tldr-grid span {
+  display: block;
+  margin-bottom: 22px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--signal);
+}
+.lp-tldr-grid strong {
+  display: block;
+  margin-bottom: 7px;
+  font-size: 15px;
+  color: var(--ink);
+}
+.lp-tldr-grid p {
+  max-width: 18ch;
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--ink-2);
+}
+
+@media (max-width: 760px) {
+  .lp-tldr { grid-template-columns: 1fr; gap: 28px; }
+  .lp-tldr-intro h2 { max-width: none; }
+  .lp-tldr-grid li { padding-inline: 14px; }
+}
+
 .lp-statement-quote {
   margin: 0;
   max-width: 24ch;
@@ -902,8 +971,8 @@ html.reveal-ready [data-reveal].is-in {
   /* The landing is dark-locked. A particle field on a white page reads weak,
      and one committed mode beats a compromise across two. */
   --ground: #fff6ea;
-  --amber: #e07b2a;
-  --amber-dim: rgba(224, 123, 42, 0.12);
+  --amber: #c4663f;
+  --amber-dim: rgba(196, 102, 63, 0.12);
 
   --shell: rgba(42, 29, 18, 0.04);
   --shell-line: rgba(42, 29, 18, 0.1);
@@ -927,24 +996,24 @@ html.reveal-ready [data-reveal].is-in {
   /* Landing tokens are explicit so theme changes never leak a stale colour. */
   --bg: #ffffff;
   --ground: #ffffff;
-  --tint: #edf3ef;
-  --ink: #1d2924;
-  --ink-deep: #243630;
-  --ink-2: #4d5d55;
-  --ink-3: #7b8b83;
-  --line: #d9e1dc;
-  --line-strong: #bdcbc2;
+  --tint: #f1efed;
+  --ink: #252321;
+  --ink-deep: #30292b;
+  --ink-2: #5b5752;
+  --ink-3: #88827b;
+  --line: #dedbd7;
+  --line-strong: #c9c5c0;
   --surface: #ffffff;
-  --surface-2: #edf3ef;
-  --blue: #317c73;
-  --blue-deep: #245f58;
-  --blue-soft: #e6f1ed;
+  --surface-2: #f1efed;
+  --blue: #765b78;
+  --blue-deep: #5d4260;
+  --blue-soft: #f0e8f0;
   --signal: #c4663f;
   --signal-soft: #f8ece6;
   --positive: #0f9d58;
   --caution: #b06a00;
   --critical: #f0263c;
-  --term-bg: #243630;
+  --term-bg: #30292b;
   --term-line: rgba(255, 255, 255, 0.12);
   --term-ink: #eef2f8;
   --term-dim: rgba(238, 242, 248, 0.55);
@@ -952,17 +1021,17 @@ html.reveal-ready [data-reveal].is-in {
   --term-stop: #ff7a6b;
   --term-go: #5fd39a;
 
-  --amber: #c89532;
-  --amber-dim: #f6edd9;
-  --shell: #edf3ef;
-  --shell-line: #d9e1dc;
+  --amber: #c4663f;
+  --amber-dim: #f8ece6;
+  --shell: #f1efed;
+  --shell-line: #dedbd7;
   --core: #ffffff;
-  --core-line: #d9e1dc;
+  --core-line: #dedbd7;
   --core-lift: none;
-  --ambient: 0 18px 40px -24px rgba(29, 41, 36, 0.22);
-  --glass-ink: #1d2924;
-  --glass-ink-2: #4d5d55;
-  --glass-ink-3: #7b8b83;
+  --ambient: 0 18px 40px -24px rgba(37, 35, 33, 0.22);
+  --glass-ink: #252321;
+  --glass-ink-2: #5b5752;
+  --glass-ink-3: #88827b;
   --accent: #c4663f;
   --accent-ink: #ffffff;
   --grain: 0;
@@ -979,38 +1048,38 @@ html.reveal-ready [data-reveal].is-in {
 /* The landing follows the app's theme again. Every colour it uses is declared
    in both modes here, so nothing is left inheriting a flipping :root token. */
 html.dark .lp {
-  --bg: #111816;
-  --ground: #111816;
-  --tint: #1b2924;
+  --bg: #171617;
+  --ground: #171617;
+  --tint: #272224;
   --ink: #f2f5fb;
-  --ink-deep: #eaf2ed;
-  --ink-2: #b1c0b8;
-  --ink-3: #81958b;
+  --ink-deep: #f1ece8;
+  --ink-2: #c1b9b3;
+  --ink-3: #948b86;
   --line: rgba(242, 245, 251, 0.12);
   --line-strong: rgba(242, 245, 251, 0.22);
-  --surface: #17211e;
-  --surface-2: #1d2a25;
-  --blue: #79c4b2;
-  --blue-deep: #317c73;
-  --blue-soft: rgba(121, 196, 178, 0.16);
+  --surface: #211e20;
+  --surface-2: #292629;
+  --blue: #c19ac3;
+  --blue-deep: #9c719f;
+  --blue-soft: rgba(193, 154, 195, 0.16);
   --signal: #d98762;
   --signal-soft: rgba(217, 135, 98, 0.16);
   --positive: #5fd39a;
   --caution: #f5b544;
   --critical: #ff7a6b;
-  --term-bg: #0d1311;
-  --amber: #d4a94f;
-  --amber-dim: rgba(212, 169, 79, 0.16);
-  --shell: rgba(235, 242, 237, 0.04);
-  --shell-line: rgba(235, 242, 237, 0.1);
-  --core: #17211e;
-  --core-line: rgba(235, 242, 237, 0.09);
+  --term-bg: #121112;
+  --amber: #d98762;
+  --amber-dim: rgba(217, 135, 98, 0.16);
+  --shell: rgba(244, 240, 235, 0.04);
+  --shell-line: rgba(244, 240, 235, 0.1);
+  --core: #211e20;
+  --core-line: rgba(244, 240, 235, 0.09);
   --ambient: 0 24px 52px -28px rgba(0, 0, 0, 0.7);
-  --glass-ink: #eaf2ed;
-  --glass-ink-2: #b1c0b8;
-  --glass-ink-3: #81958b;
+  --glass-ink: #f1ece8;
+  --glass-ink-2: #c1b9b3;
+  --glass-ink-3: #948b86;
   --accent: #d98762;
-  --accent-ink: #111816;
+  --accent-ink: #171617;
   --grain: 0;
 }
 
@@ -2112,12 +2181,12 @@ html.dark .lp-doorway-grid li { border-color: var(--line); }
 
 html.dark .lp-cta,
 html.dark .lp-nav .lp-cta {
-  color: #111816;
+  color: #171617;
   background: var(--blue);
 }
 
 html.dark .lp-cta .lp-cta-orb,
-html.dark .lp-nav .lp-cta .lp-cta-orb { background: rgba(17, 24, 22, 0.18); }
+html.dark .lp-nav .lp-cta .lp-cta-orb { background: rgba(23, 22, 23, 0.18); }
 
 /* Display type across the page follows the reference: tight sans, not serif. */
 .lp-h2,
@@ -2194,7 +2263,7 @@ html.dark .lp-brief mark { color: var(--ink); }
 }
 
 html.dark .band-tint { background: var(--surface); }
-html.dark .band-deep { background: #0d1311; }
+html.dark .band-deep { background: #121112; }
 
 /* Inverted bands carry their own type colours. */
 .band-deep .lp-h2,
@@ -2205,7 +2274,7 @@ html.dark .band-deep { background: #0d1311; }
 .band-deep .lp-doorway-grid p,
 .band-deep .lp-final-note { color: rgba(255, 255, 255, 0.72); }
 
-.band-deep .eyebrow { color: #d4a94f; }
+.band-deep .eyebrow { color: #d98762; }
 .band-deep .eyebrow::after { background: rgba(255, 255, 255, 0.18); }
 .band-deep .lp-doorway-grid li { border-color: rgba(255, 255, 255, 0.16); }
 
@@ -2229,9 +2298,7 @@ html.dark .band-deep { background: #0d1311; }
 .lp-final-actions { justify-content: center; }
 .lp-final-safe { color: rgba(255, 255, 255, 0.6); }
 
-/* ── Less blue ────────────────────────────────────────────────────────────
-   Blue is reserved for actions and one headline line. Emphasis in body copy
-   moves to the coin's gold so the page is not monochrome. */
+/* Keep the accent singular: coral carries emphasis without turning the page gold. */
 .lp mark {
   color: var(--ink);
   box-shadow: inset 0 -0.32em 0 rgba(217, 164, 65, 0.3);
@@ -2243,12 +2310,12 @@ html.dark .lp mark {
 }
 
 .lp-row-n,
-.lp-step-n { color: rgba(217, 164, 65, 0.55); }
+.lp-step-n { color: rgba(196, 102, 63, 0.62); }
 
-.lp-station .eyebrow { color: #a8781f; }
-html.dark .lp-station .eyebrow { color: #d9a441; }
+.lp-station .eyebrow { color: var(--signal); }
+html.dark .lp-station .eyebrow { color: var(--signal); }
 .band-deep .lp-row-n,
-.band-deep .lp-step-n { color: rgba(217, 164, 65, 0.6); }
+.band-deep .lp-step-n { color: rgba(217, 135, 98, 0.72); }
 
-.lp-statement-quote em { color: #a8781f; }
-html.dark .lp-statement-quote em { color: #d9a441; }
+.lp-statement-quote em { color: var(--signal); }
+html.dark .lp-statement-quote em { color: var(--signal); }

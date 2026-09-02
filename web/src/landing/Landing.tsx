@@ -2,7 +2,6 @@ import { Suspense, lazy, useState } from "react";
 import { ArrowUpRightIcon, GitHubIcon, LockIcon, MoonIcon, SunIcon } from "../icons";
 import { navigate } from "../router";
 import { useReveal } from "./useReveal";
-import { useTilt } from "./useTilt";
 import { useTheme } from "../useTheme";
 import "./Landing.css";
 
@@ -87,7 +86,6 @@ function detectField() {
 
 export function Landing() {
   const { theme, toggleTheme } = useTheme();
-  const { ref: shotRef, onPointerMove: onShotPointerMove, onPointerLeave: onShotPointerLeave } = useTilt();
   const [field] = useState(detectField);
   useReveal();
 
@@ -168,21 +166,17 @@ export function Landing() {
         </div>
       </header>
 
-      <section className="lp-station lp-shot-band" data-reveal>
-        <div
-          className="lp-hero-shot"
-          ref={shotRef}
-          onPointerMove={onShotPointerMove}
-          onPointerLeave={onShotPointerLeave}
-        >
-          <img
-            className="lp-shot-img"
-            src="/agent-dark.webp"
-            width={1600}
-            height={1006}
-            alt="The Bazaar control surface mid-sale: the customer asks for 50% off, the server allows 15%, and the audit stream records the clamp."
-          />
+      <section className="lp-tldr" aria-labelledby="tldr-title" data-reveal>
+        <div className="lp-tldr-intro">
+          <span className="eyebrow">TL;DR</span>
+          <h2 id="tldr-title">Commerce with a brake pedal.</h2>
+          <p>Three rules make the whole system legible.</p>
         </div>
+        <ol className="lp-tldr-grid">
+          <li><span>01</span><strong>The agent sells</strong><p>It searches, recommends, and builds the basket.</p></li>
+          <li><span>02</span><strong>The server decides</strong><p>Prices, discounts, and limits are checked in code.</p></li>
+          <li><span>03</span><strong>You approve</strong><p>Nothing charges until a person confirms the total.</p></li>
+        </ol>
       </section>
 
       <section className="lp-station lp-statement band-tint" data-reveal>
