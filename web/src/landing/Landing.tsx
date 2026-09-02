@@ -53,6 +53,19 @@ function AuditReplay() {
   );
 }
 
+function TextRail() {
+  const lines = ["SELL WITH A BRAKE PEDAL", "EXPLAIN EVERY DECISION", "LET THE SERVER HOLD THE LINE"];
+  return (
+    <div className="lp-marquee" aria-label="Bazaar principles">
+      <div className="lp-marquee-track">
+        {[...lines, ...lines].map((line, index) => (
+          <span key={`${line}-${index}`}><i />{line}</span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 
 const GUARANTEES = [
   {
@@ -224,6 +237,8 @@ export function Landing() {
           <li><span>03</span><strong>You approve</strong><p>Nothing charges until a person confirms the total.</p></li>
         </ol>
       </section>
+
+      <TextRail />
 
       <section className="lp-station lp-statement band-tint" data-reveal>
         <p className="lp-statement-quote">

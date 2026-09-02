@@ -43,6 +43,32 @@ These are not reasons to weaken the current demo; they are the hardening backlog
 9. **Provider verification.** Keep Razorpay webhooks as the source of truth for asynchronous settlement and use provider fetch only as a bounded reconciliation fallback. Razorpay explicitly recommends webhooks for automation and API fetch for urgent confirmation.
 10. **Test coverage.** Add route-level security tests, malformed webhook tests, replay/idempotency tests, quote persistence tests, authorization matrix tests, and property tests for pricing/discount invariants.
 
+## Authentication design
+
+Authentication is part of the commerce boundary, not a UI toggle. Use separate credentials and scopes for each caller:
+
+| Caller | Authentication | Required authorization |
+| --- | --- | --- |
+| Browser customer | Secure, `HttpOnly`, `SameSite=Lax` session cookie issued after an application login or trusted identity provider | Session may read its own quote/audit stream and confirm only its own quote |
+| Merchant operator | OIDC login (or a managed identity provider) plus short-lived access token | Tenant-scoped policy, catalog, order, refund, and audit permissions; step-up auth for money/policy changes |
+| Shopping agent / MCP | Per-agent key issued by the merchant, stored hashed, rotated and revocable; send as `Authorization: Bearer` | Agent identity, merchant/tenant binding, tool scopes, rate limit, and a valid mandate for `confirm_order` |
+| Razorpay webhook | `X-Razorpay-Signature` verified against the raw request body and a secret kept server-side | Accept only known event types, persist provider event ID, reject duplicates, then transition the matching order |
+| Internal jobs | Workload identity or private network plus signed service token | Narrow scope for reconciliation, expiry, and recovery jobs; never reuse an end-user or MCP key |
+
+Implementation rules:
+
+- Never put API keys, agent bearer keys, mandate private keys, webhook secrets, or Razorpay credentials in the browser, URL, audit payload, or model context.
+- Generate a request/correlation ID at the edge and include it in structured logs, audit events, provider notes, and error responses without exposing secrets.
+- Hash MCP keys with a slow password hash (Argon2id/scrypt), show the raw key once, support rotation/revocation, and compare presented keys against the stored hash in constant time.
+- Bind every session, quote, order, mandate, and audit query to a merchant/tenant ID. IDs from another tenant must return the same generic not-found response.
+- Protect browser mutations with origin checks and CSRF tokens when cookie authentication is enabled. Apply CORS as an explicit allowlist; do not wildcard credentialed requests.
+- Set `trust proxy` only for known proxies before using `req.ip` for rate limiting. Add per-agent, per-session, and per-route limits.
+- Enforce authentication before parsing or dispatching privileged MCP tools. Fail closed when no agent credential registry or mandate public key is configured.
+- For mandate verification, require a version, issuer/key ID, agent ID, merchant ID, quote hash, ceiling, scope, issued-at, expiry, and unique mandate ID. Store consumption atomically with the quote ID.
+- For webhooks, verify the raw body, validate the event schema, persist the provider event ID before returning 2xx, and make all transitions idempotent.
+
+Minimum authentication tests: missing/invalid/revoked agent key, wrong tenant, wrong scope, expired session, CSRF/origin failure, replayed mandate, duplicate webhook, malformed raw webhook, and concurrent confirmation with one idempotency key.
+
 ## Recommended end-to-end architecture
 
 ```text

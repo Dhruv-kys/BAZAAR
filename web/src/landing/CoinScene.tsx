@@ -90,9 +90,11 @@ function Coin() {
     // The coin is struck vertically (face normal points at the camera), then
     // slowly yaws to reveal its milled edge. Pointer steering is handled by
     // the parent rig so the motion remains damped instead of snapping.
-    group.current.rotation.y = t * 0.55;
+    // Rotate in its own face plane so it reads as a coin, never as a 90° edge.
+    // The parent rig adds only a small interactive 3D tilt on pointer movement.
+    group.current.rotation.y = 0;
     group.current.rotation.x = Math.sin(t * 0.7) * 0.035;
-    group.current.rotation.z = Math.sin(t * 0.45) * 0.025;
+    group.current.rotation.z = t * 0.55 + Math.sin(t * 0.45) * 0.025;
     group.current.position.y = Math.sin(t * 0.9) * 0.08;
   });
 
