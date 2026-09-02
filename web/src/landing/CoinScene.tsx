@@ -2,11 +2,6 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { useMemo, useRef } from "react";
 import * as THREE from "three";
 
-function scrollProgress() {
-  const h = window.innerHeight;
-  return h > 0 ? Math.min(window.scrollY / h, 1) : 0;
-}
-
 /** Struck face: milled ring, rupee mark, and a caption around the rim. */
 function faceTexture(caption: string): THREE.Texture {
   const s = 1024;
@@ -86,16 +81,13 @@ function Coin() {
 
   useFrame((state) => {
     if (!group.current) return;
-    const t = state.clock.elapsedTime;
-    // The coin is struck vertically (face normal points at the camera), then
-    // slowly yaws to reveal its milled edge. Pointer steering is handled by
-    // the parent rig so the motion remains damped instead of snapping.
-    // Rotate in its own face plane so it reads as a coin, never as a 90° edge.
-    // The parent rig adds only a small interactive 3D tilt on pointer movement.
-    group.current.rotation.y = 0;
-    group.current.rotation.x = Math.sin(t * 0.7) * 0.035;
-    group.current.rotation.z = t * 0.55 + Math.sin(t * 0.45) * 0.025;
-    group.current.position.y = Math.sin(t * 0.9) * 0.08;
+    // No idle spin: the coin only moves in response to the pointer.
+    const targetX = -state.pointer.y * 0.14;
+    const targetY = state.pointer.x * 0.28;
+    const targetZ = state.pointer.x * 0.42;
+    group.current.rotation.x += (targetX - group.current.rotation.x) * 0.06;
+    group.current.rotation.y += (targetY - group.current.rotation.y) * 0.06;
+    group.current.rotation.z += (targetZ - group.current.rotation.z) * 0.06;
   });
 
   return (
@@ -165,7 +157,7 @@ function Rig({ children }: { children: React.ReactNode }) {
     const { x, y } = state.pointer;
     g.current.rotation.y += (x * 0.22 - g.current.rotation.y) * 0.05;
     g.current.rotation.x += (-y * 0.1 - g.current.rotation.x) * 0.05;
-    g.current.position.y += (scrollProgress() * 1.2 - g.current.position.y) * 0.06;
+    g.current.position.y += (0 - g.current.position.y) * 0.06;
   });
   return <group ref={g}>{children}</group>;
 }

@@ -107,16 +107,29 @@ function CursorGhost() {
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     let frame = 0;
-    const onMove = (event: PointerEvent) => {
-      cancelAnimationFrame(frame);
-      frame = requestAnimationFrame(() => {
-        ghostRef.current?.style.setProperty("transform", `translate3d(${event.clientX + 16}px, ${event.clientY + 16}px, 0)`);
-      });
+    let x = window.innerWidth * 0.5;
+    let y = window.innerHeight * 0.5;
+    const onMove = (event: PointerEvent) => { x = event.clientX; y = event.clientY; };
+    const tick = (time: number) => {
+      const hue = (time * 0.035 + x * 0.08 + y * 0.04) % 360;
+      const red = Math.round(128 + Math.sin(hue * 0.017) * 70);
+      const green = Math.round(128 + Math.sin((hue + 120) * 0.017) * 70);
+      const blue = Math.round(128 + Math.sin((hue + 240) * 0.017) * 70);
+      const code = 33 + Math.floor((time / 120) % 94);
+      const ghost = ghostRef.current;
+      if (ghost) {
+        ghost.style.transform = `translate3d(${x + 16}px, ${y + 16}px, 0)`;
+        ghost.style.setProperty("--ghost-rgb", `${red}, ${green}, ${blue}`);
+        const value = ghost.querySelector<HTMLElement>("[data-ascii]");
+        if (value) value.textContent = `ASCII ${code} · ${String.fromCharCode(code)} · RGB ${red}/${green}/${blue}`;
+      }
+      frame = requestAnimationFrame(tick);
     };
     window.addEventListener("pointermove", onMove, { passive: true });
+    frame = requestAnimationFrame(tick);
     return () => { cancelAnimationFrame(frame); window.removeEventListener("pointermove", onMove); };
   }, []);
-  return <div className="lp-cursor-ghost" ref={ghostRef} aria-hidden="true"><i /> follow the proof</div>;
+  return <div className="lp-cursor-ghost" ref={ghostRef} aria-hidden="true"><i /><span data-ascii>ASCII 65 · A · RGB 128/128/128</span></div>;
 }
 
 

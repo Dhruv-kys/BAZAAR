@@ -472,16 +472,18 @@
   opacity: 0;
   pointer-events: none;
   transform: translate3d(-100px, -100px, 0);
+  --ghost-rgb: 128, 128, 128;
   transition: opacity 0.25s ease;
   font-family: var(--mono);
   font-size: 9px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--bg);
+  color: rgb(var(--ghost-rgb));
   background: var(--ink);
+  border: 1px solid color-mix(in srgb, rgb(var(--ghost-rgb)) 62%, transparent);
   border-radius: 999px;
 }
-.lp-cursor-ghost i { width: 5px; height: 5px; border-radius: 50%; background: var(--signal); }
+.lp-cursor-ghost i { width: 5px; height: 5px; border-radius: 50%; background: rgb(var(--ghost-rgb)); box-shadow: 0 0 10px rgb(var(--ghost-rgb)); }
 body:has(.lp:hover) .lp-cursor-ghost { opacity: 1; }
 
 @media (prefers-reduced-motion: reduce) {
