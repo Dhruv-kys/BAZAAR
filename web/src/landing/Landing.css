@@ -702,6 +702,59 @@
   color: var(--term-dim);
 }
 
+.lp-replay {
+  padding: 0 calc(var(--step) * 2) calc(var(--step) * 2.5);
+}
+
+.lp-replay-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--step);
+  padding: 11px 0;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: var(--term-dim);
+  text-transform: uppercase;
+}
+
+.lp-replay-controls span { display: inline-flex; align-items: center; gap: 7px; }
+.lp-replay-controls i { width: 6px; height: 6px; border-radius: 50%; background: var(--term-go); box-shadow: 0 0 0 4px rgba(127, 192, 154, 0.12); }
+.lp-replay-controls button {
+  margin-left: 6px;
+  padding: 5px 9px;
+  font: inherit;
+  font-size: 9px;
+  letter-spacing: 0.06em;
+  color: var(--term-ink);
+  background: transparent;
+  border: 1px solid var(--term-line);
+  border-radius: 999px;
+}
+.lp-replay-controls button:hover { border-color: var(--term-dim); }
+.lp-replay-controls button:active { transform: scale(0.96); }
+
+.lp-replay-progress {
+  height: 2px;
+  overflow: hidden;
+  background: var(--term-line);
+}
+.lp-replay-progress b { display: block; height: 100%; background: var(--term-go); transition: width 0.45s var(--ease-fluid); }
+.lp-replay-events { padding-top: 17px; }
+.lp-replay-event { animation: lp-event-in 0.38s var(--ease-fluid) both; }
+.lp-replay-event + .lp-replay-event { margin-top: 16px; }
+.lp-replay-event > span { margin-right: 10px; font-family: var(--mono); font-size: var(--t-sm); }
+.lp-replay-event p { margin: 6px 0 0; font-family: var(--mono); font-size: var(--t-sm); line-height: 1.55; color: var(--term-ink); }
+.lp-replay-empty { margin: 0; font-family: var(--mono); font-size: var(--t-sm); color: var(--term-dim); }
+
+@keyframes lp-event-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .lp-replay-event { animation: none; }
+  .lp-replay-progress b { transition: none; }
+}
+
 .lp-term-body {
   margin: 0;
   padding: calc(var(--step) * 3);

@@ -1,4 +1,4 @@
-import { Suspense, lazy, useState } from "react";
+import { Suspense, lazy, useEffect, useState } from "react";
 import { ArrowUpRightIcon, GitHubIcon, LockIcon, MoonIcon, SunIcon } from "../icons";
 import { navigate } from "../router";
 import { useReveal } from "./useReveal";
@@ -6,6 +6,52 @@ import { useTheme } from "../useTheme";
 import "./Landing.css";
 
 const CoinScene = lazy(() => import("./CoinScene"));
+
+const AUDIT_REPLAY = [
+  { time: "16:56:03", type: "recommend", tone: "l-blue", text: "1 kg suits a birthday for fifteen guests" },
+  { time: "16:56:04", type: "cross_sell", tone: "l-cyan", text: "Edible topper matches the occasion" },
+  { time: "16:56:15", type: "discount !", tone: "l-warn", text: "FIRST_ORDER · guardrail 50% → 15% · CAPPED" },
+  { time: "16:57:00", type: "result", tone: "l-stop", text: "Simulated failure (demo trigger)" },
+  { time: "16:57:01", type: "retry", tone: "l-warn", text: "Fresh payment link issued after the decline" },
+] as const;
+
+function AuditReplay() {
+  const [visible, setVisible] = useState<number>(AUDIT_REPLAY.length);
+  const [playing, setPlaying] = useState(false);
+
+  useEffect(() => {
+    if (!playing || visible >= AUDIT_REPLAY.length) return;
+    const timer = window.setTimeout(() => setVisible((count) => Math.min(count + 1, AUDIT_REPLAY.length)), 680);
+    return () => window.clearTimeout(timer);
+  }, [playing, visible]);
+
+  useEffect(() => {
+    if (visible >= AUDIT_REPLAY.length) setPlaying(false);
+  }, [visible]);
+
+  return (
+    <div className="lp-replay">
+      <div className="lp-replay-controls">
+        <span><i className="is-live" /> LIVE EVIDENCE</span>
+        <div>
+          <button type="button" onClick={() => setPlaying((value) => !value)}>{playing ? "Pause" : "Replay"}</button>
+          <button type="button" onClick={() => { setVisible(0); setPlaying(true); }}>Reset</button>
+        </div>
+      </div>
+      <div className="lp-replay-progress"><b style={{ width: `${(visible / AUDIT_REPLAY.length) * 100}%` }} /></div>
+      <div className="lp-replay-events" aria-live="polite">
+        {AUDIT_REPLAY.slice(0, visible).map((event) => (
+          <div className="lp-replay-event" key={event.time}>
+            <span className="l-time">{event.time}</span>
+            <span className={event.tone}>{event.type}</span>
+            <p><span className="l-dim">▸</span> {event.text}</p>
+          </div>
+        ))}
+        {!visible && <p className="lp-replay-empty">Press replay to watch the guardrail in motion.</p>}
+      </div>
+    </div>
+  );
+}
 
 
 const GUARANTEES = [
@@ -297,31 +343,7 @@ export function Landing() {
               </span>
               <span className="lp-term-title">audit.log</span>
             </div>
-            <pre className="lp-term-body">
-              <code>
-                <span className="l-time">16:56:03</span> <span className="l-blue">recommend</span>
-                {"\n"}
-                <span className="l-dim">▸</span> 1 kg suits a birthday for fifteen guests{"\n\n"}
-                <span className="l-time">16:56:04</span> <span className="l-cyan">cross_sell</span>
-                {"\n"}
-                <span className="l-dim">▸</span> Edible topper matches the occasion{"\n\n"}
-                <span className="l-time">16:56:15</span> <span className="l-warn">discount</span>{" "}
-                <span className="l-warn">!</span>
-                {"\n"}
-                <span className="l-dim">▸</span> FIRST_ORDER{"\n"}
-                {"  "}
-                <span className="l-dim">guardrail</span> <span className="l-strike">50%</span>{" "}
-                <span className="l-dim">→</span> <span className="l-warn">15%</span>{" "}
-                <span className="l-dim">CAPPED</span>
-                {"\n\n"}
-                <span className="l-time">16:57:00</span> <span className="l-stop">result</span>
-                {"\n"}
-                <span className="l-dim">▸</span> Simulated failure (demo trigger){"\n\n"}
-                <span className="l-time">16:57:01</span> <span className="l-warn">retry</span>
-                {"\n"}
-                <span className="l-dim">▸</span> Fresh payment link issued after the decline
-              </code>
-            </pre>
+            <AuditReplay />
           </div>
         </div>
       </section>
