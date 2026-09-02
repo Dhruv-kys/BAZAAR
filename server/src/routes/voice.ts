@@ -1,4 +1,6 @@
 import { Router, raw } from "express";
+import { Readable } from "node:stream";
+import { pipeline } from "node:stream/promises";
 import { missingKeysFor } from "../config.js";
 import { transcribeAudio } from "../voice/stt.js";
 import { synthesizeSpeech } from "../voice/tts.js";
@@ -49,9 +51,14 @@ voiceRouter.post("/speak", async (req, res) => {
   try {
     const audio = await synthesizeSpeech(text.slice(0, MAX_SPOKEN_CHARS));
     res.setHeader("Content-Type", "audio/mpeg");
-    res.send(audio);
+    res.setHeader("Cache-Control", "no-store");
+    await pipeline(Readable.fromWeb(audio as Parameters<typeof Readable.fromWeb>[0]), res);
   } catch (error) {
     console.error("speech synthesis failed:", error);
+    if (res.headersSent) {
+      res.destroy();
+      return;
+    }
     res.status(502).json({ error: "Speech synthesis failed. The reply is still available as text." });
   }
 });
