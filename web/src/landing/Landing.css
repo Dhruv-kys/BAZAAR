@@ -2757,6 +2757,43 @@ html.dark .lp {
 .lp-mac-screen .lp-story-slide { animation: lp-proof-slide-in 420ms cubic-bezier(.22,.8,.24,1) both; }
 @keyframes lp-proof-slide-in { from { opacity: 0; transform: translateX(22px); } to { opacity: 1; transform: none; } }
 
+/* Recompose each inherited landing section for the much smaller display. */
+.lp-mac-screen .lp-statement {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr);
+  align-items: center;
+  gap: 24px;
+  min-height: 100%;
+  padding: 34px 42px;
+}
+.lp-mac-screen .lp-statement-body { margin: 0; }
+.lp-mac-screen .lp-section-head { max-width: 72%; }
+.lp-mac-screen .lp-section-head .lp-h2 { max-width: 18ch; }
+.lp-mac-screen .lp-ledger { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 18px; }
+.lp-mac-screen .lp-row { display: block; min-width: 0; padding: 12px 0; border-top: 1px solid rgba(255,255,255,.12); }
+.lp-mac-screen .lp-row-n { display: block; margin-bottom: 4px; font-size: 18px; }
+.lp-mac-screen .lp-row-label { font-size: 8px; letter-spacing: .15em; }
+.lp-mac-screen .lp-row-detail { margin-top: 6px; }
+.lp-mac-screen .lp-steps { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 18px; }
+.lp-mac-screen .lp-step { display: block; border-top: 1px solid rgba(255,255,255,.12); }
+.lp-mac-screen .lp-step-flag { display: block; margin-bottom: 4px; font-size: 8px; }
+.lp-mac-screen .lp-step-n { display: inline-block; margin-right: 8px; font-size: 17px; }
+.lp-mac-screen .lp-doorway-lede { max-width: 64ch; margin: 10px 0 18px; font-size: 11px; line-height: 1.45; color: #aaa0ad; }
+.lp-mac-screen .lp-doorway-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 18px; }
+.lp-mac-screen .lp-doorway-grid li { padding: 12px 0; border-top: 1px solid rgba(255,255,255,.12); }
+.lp-mac-screen .lp-doorway-grid h3 { font-size: 14px; line-height: 1.15; color: #f0e8f1; }
+.lp-mac-screen .lp-doorway-grid p { margin-top: 6px; font-size: 10px; line-height: 1.4; color: #aaa0ad; }
+.lp-mac-screen .lp-receipt-body { max-width: 58ch; margin: 10px 0 14px; }
+.lp-mac-screen .lp-term { padding: 4px; border-radius: 10px; }
+.lp-mac-screen .lp-term-bar { min-height: 24px; padding-inline: 8px; }
+.lp-mac-screen .lp-replay-event { padding: 5px 0; }
+
+@media (max-width: 700px) {
+  .lp-mac-screen .lp-statement { grid-template-columns: 1fr; gap: 12px; padding: 28px 20px; }
+  .lp-mac-screen .lp-section-head { max-width: 88%; }
+  .lp-mac-screen .lp-ledger, .lp-mac-screen .lp-steps, .lp-mac-screen .lp-doorway-grid { gap: 0 12px; }
+}
+
 /* Let the closing wordmark peek a little higher above the lower cut. */
 .lp-final .lp-ghost { transform: translateY(49%); }
 @media (max-width: 700px) {
