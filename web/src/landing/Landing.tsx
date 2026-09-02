@@ -57,6 +57,14 @@ function StoryDeck({ children }: { children: ReactNode }) {
   const slides = Children.toArray(children);
   const [active, setActive] = useState(0);
   const move = (direction: number) => setActive((current) => Math.max(0, Math.min(slides.length - 1, current + direction)));
+  const wrapRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const wrap = wrapRef.current;
+    if (!wrap) return;
+    const onStep = (event: Event) => move((event as CustomEvent<number>).detail);
+    wrap.addEventListener("bazaar:story-step", onStep);
+    return () => wrap.removeEventListener("bazaar:story-step", onStep);
+  });
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "ArrowLeft") move(-1);
@@ -66,20 +74,11 @@ function StoryDeck({ children }: { children: ReactNode }) {
     return () => window.removeEventListener("keydown", onKeyDown);
   });
   return (
-    <div className="lp-story-wrap">
-      <div className="lp-story-controls">
-        <span><i /> PROOF SCREEN {String(active + 1).padStart(2, "0")} / {String(slides.length).padStart(2, "0")}</span>
-        <div>
-          <button type="button" onClick={() => move(-1)} disabled={active === 0} aria-label="Previous story screen">←</button>
-          <button type="button" onClick={() => move(1)} disabled={active === slides.length - 1} aria-label="Next story screen">→</button>
-        </div>
-      </div>
+    <div className="lp-story-wrap" ref={wrapRef} data-story-active={active} data-story-count={slides.length}>
       <div className="lp-story-deck" aria-live="polite">
-        <div className="lp-story-slide" key={active}>{slides[active]}</div>
+        <div className="lp-story-track" style={{ transform: `translate3d(${-active * 100}%, 0, 0)` }}>{slides.map((slide, index) => <div className="lp-story-slide" key={index}>{slide}</div>)}</div>
       </div>
-      <div className="lp-story-dots" role="tablist" aria-label="Proof screens">
-        {slides.map((_, index) => <button key={index} type="button" role="tab" aria-selected={index === active} aria-label={`Go to proof screen ${index + 1}`} className={index === active ? "is-active" : ""} onClick={() => setActive(index)} />)}
-      </div>
+      <div className="lp-story-progress" aria-hidden="true"><span style={{ transform: `scaleX(${(active + 1) / slides.length})` }} /></div>
     </div>
   );
 }
@@ -100,16 +99,17 @@ function MacScreen({ children }: { children: ReactNode }) {
     if (!stage) return;
     const onWheel = (event: WheelEvent) => {
       if (!isOpen || Math.abs(event.deltaY) < 2) return;
-      const dots = Array.from(stage.querySelectorAll<HTMLButtonElement>(".lp-story-dots button"));
-      const active = dots.findIndex((dot) => dot.getAttribute("aria-selected") === "true");
-      if (active < 0) return;
+      const story = stage.querySelector<HTMLElement>("[data-story-active]");
+      if (!story) return;
+      const active = Number(story.dataset.storyActive ?? 0);
+      const count = Number(story.dataset.storyCount ?? 0);
       const direction = event.deltaY > 0 ? 1 : -1;
       const next = active + direction;
-      if (next < 0 || next >= dots.length) return;
+      if (next < 0 || next >= count) return;
       event.preventDefault();
       if (wheelLocked.current) return;
       wheelLocked.current = true;
-      dots[next]?.click();
+      story.dispatchEvent(new CustomEvent("bazaar:story-step", { detail: direction, bubbles: true }));
       window.setTimeout(() => { wheelLocked.current = false; }, 520);
     };
     stage.addEventListener("wheel", onWheel, { passive: false });
