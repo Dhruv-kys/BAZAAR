@@ -6,6 +6,7 @@ import type { CoinState } from "../landing/CoinScene";
 import { RichText } from "./RichText";
 import { VoiceCoin, Waveform } from "../voice/VoiceCoin";
 import { useVoice } from "../voice/useVoice";
+import { useRealtimeVoice } from "../voice/useRealtimeVoice";
 import "./ConversationPanel.css";
 
 interface ChatMessage {
@@ -52,6 +53,21 @@ export function ConversationPanel({
     (message) => setMessages((prev) => [...prev, { role: "notice", content: message }]),
   );
 
+  const realtime = useRealtimeVoice(sessionId, {
+    onUserTranscript: (text) => {
+      onStarted();
+      setMessages((prev) => [...prev, { role: "user", content: text }]);
+    },
+    onAgentTranscript: (text) => {
+      setMessages((prev) => [...prev, { role: "assistant", content: text }]);
+    },
+    onToolResult: (name, result) => {
+      const staged = result as { ok?: boolean; result?: PendingOrder };
+      if (name === "present_order_summary" && staged.ok && staged.result) onOrderStaged(staged.result);
+    },
+    onNotice: (message) => setMessages((prev) => [...prev, { role: "notice", content: message }]),
+  });
+
   useEffect(() => {
     threadRef.current?.scrollTo({ top: threadRef.current.scrollHeight, behavior: "smooth" });
   }, [messages, sending]);
@@ -76,9 +92,9 @@ export function ConversationPanel({
       if (event.code !== "Space" || event.repeat) return;
       const target = event.target as HTMLElement | null;
       if (target && (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable)) return;
-      if (!voice.micAvailable || voice.micStatus === "transcribing") return;
+      if (!micReady || voice.micStatus === "transcribing") return;
       event.preventDefault();
-      voice.toggleMic(messages.length === 0 ? SPOKEN_GREETING : undefined);
+      startTalking();
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
@@ -124,8 +140,13 @@ export function ConversationPanel({
     }
   }
 
-  const coinState: CoinState =
-    voice.micStatus === "recording"
+  const coinState: CoinState = realtime.active
+    ? realtime.status === "speaking"
+      ? "speaking"
+      : realtime.status === "thinking" || realtime.status === "connecting"
+        ? "thinking"
+        : "listening"
+    : voice.micStatus === "recording"
       ? "listening"
       : sending || voice.micStatus === "transcribing"
         ? "thinking"
@@ -133,8 +154,18 @@ export function ConversationPanel({
           ? "speaking"
           : "idle";
 
-  const agentState =
-    coinState === "listening"
+  const coinLevel = realtime.active ? realtime.level : voice.level;
+
+  const startTalking = () => {
+    if (realtime.available) realtime.toggle();
+    else voice.toggleMic(messages.length === 0 ? SPOKEN_GREETING : undefined);
+  };
+
+  const agentState = realtime.active
+    ? realtime.status === "connecting"
+      ? "Connecting"
+      : realtime.status.charAt(0).toUpperCase() + realtime.status.slice(1)
+    : coinState === "listening"
       ? "Listening"
       : voice.micStatus === "transcribing"
         ? "Transcribing"
@@ -144,12 +175,17 @@ export function ConversationPanel({
             ? "Speaking"
             : "Ready";
 
-  const micLabel =
-    voice.micStatus === "recording"
-      ? "Stop listening"
-      : voice.isSpeaking
-        ? "Interrupt and speak"
-        : "Tap the coin to speak";
+  const micLabel = realtime.active
+    ? "End the call"
+    : realtime.available
+      ? "Tap the coin to talk"
+      : voice.micStatus === "recording"
+        ? "Stop listening"
+        : voice.isSpeaking
+          ? "Interrupt and speak"
+          : "Tap the coin to speak";
+
+  const micReady = realtime.available || voice.micAvailable;
 
   const empty = messages.length === 0;
 
@@ -191,7 +227,7 @@ export function ConversationPanel({
             </ul>
 
             <div className="cp-stage-foot">
-              <Waveform state={coinState} level={voice.level} />
+              <Waveform state={coinState} level={coinLevel} />
               <p className="cp-stage-hint">
                 {voice.micAvailable ? (
                   <>
@@ -237,7 +273,7 @@ export function ConversationPanel({
 
       {!empty && agentState !== "Ready" && (
         <div className={`cp-live cp-state-${agentState.toLowerCase()}`} role="status">
-          <Waveform state={coinState} level={voice.level} />
+          <Waveform state={coinState} level={coinLevel} />
           <span>{agentState}</span>
         </div>
       )}
@@ -249,12 +285,12 @@ export function ConversationPanel({
           send(input);
         }}
       >
-        {voice.micAvailable && !empty && (
+        {micReady && !empty && (
           <VoiceCoin
             state={coinState}
-            level={voice.level}
+            level={coinLevel}
             size="dock"
-            onClick={voice.toggleMic}
+            onClick={startTalking}
             disabled={voice.micStatus === "transcribing"}
             label={micLabel}
           />
