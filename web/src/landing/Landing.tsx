@@ -78,14 +78,14 @@ function PaymentNetwork() {
     <svg className="lp-payment-network" viewBox="0 0 1200 560" preserveAspectRatio="none" aria-hidden="true">
       <defs>
         <linearGradient id="lp-rail-a" x1="0" x2="1">
-          <stop offset="0" stopColor="#7bb8aa" stopOpacity="0" />
-          <stop offset=".5" stopColor="#7bb8aa" stopOpacity=".75" />
-          <stop offset="1" stopColor="#b99bc2" stopOpacity="0" />
+          <stop offset="0" stopColor="#78c6b5" stopOpacity="0" />
+          <stop offset=".5" stopColor="#78c6b5" stopOpacity=".75" />
+          <stop offset="1" stopColor="#8bc9bf" stopOpacity="0" />
         </linearGradient>
         <linearGradient id="lp-rail-b" x1="0" x2="1">
-          <stop offset="0" stopColor="#b99bc2" stopOpacity="0" />
-          <stop offset=".5" stopColor="#b99bc2" stopOpacity=".6" />
-          <stop offset="1" stopColor="#7bb8aa" stopOpacity="0" />
+          <stop offset="0" stopColor="#8bc9bf" stopOpacity="0" />
+          <stop offset=".5" stopColor="#8bc9bf" stopOpacity=".6" />
+          <stop offset="1" stopColor="#78c6b5" stopOpacity="0" />
         </linearGradient>
       </defs>
       <path className="lp-rail lp-rail-a" d="M-30 442 C220 210 350 220 550 338 S930 466 1230 120" pathLength="1" />
@@ -116,7 +116,7 @@ function MacScreen({ children }: { children: ReactNode }) {
   useEffect(() => {
     const stage = stageRef.current;
     if (!stage) return;
-    const observer = new IntersectionObserver(([entry]) => setIsOpen(entry.isIntersecting), { threshold: 0.28 });
+    const observer = new IntersectionObserver(([entry]) => setIsOpen(entry.isIntersecting && entry.intersectionRatio >= 0.42), { threshold: [0, 0.42, 1] });
     observer.observe(stage);
     return () => observer.disconnect();
   }, []);
@@ -143,9 +143,11 @@ function MacScreen({ children }: { children: ReactNode }) {
       setIsBumping(true);
       story.dispatchEvent(new CustomEvent("bazaar:story-step", { detail: direction, bubbles: true }));
     };
-    stage.addEventListener("wheel", onWheel, { passive: false });
+    // Capture at the window level so the Mac remains the active story surface
+    // even when the pointer is over the surrounding cinematic background.
+    window.addEventListener("wheel", onWheel, { passive: false, capture: true });
     return () => {
-      stage.removeEventListener("wheel", onWheel);
+      window.removeEventListener("wheel", onWheel, true);
       stage.removeEventListener("bazaar:story-settled", onSettled);
     };
   }, [isOpen]);

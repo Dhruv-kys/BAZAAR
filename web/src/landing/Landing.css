@@ -2842,6 +2842,8 @@ html.dark .lp {
   opacity: .44;
   filter: blur(.1px);
 }
+.lp-payment-aura::before { border-color: rgba(139, 201, 191, .16); }
+.lp-payment-aura::after { border-color: rgba(123, 211, 169, .12); }
 .lp-rail {
   fill: none;
   stroke-width: 1.1;
@@ -2851,9 +2853,9 @@ html.dark .lp {
 .lp-rail-a { stroke: url(#lp-rail-a); }
 .lp-rail-b { stroke: url(#lp-rail-b); animation-duration: 9s; animation-direction: reverse; }
 .lp-rail-c { stroke: rgba(123,184,170,.24); animation-duration: 12s; }
-.lp-network-nodes circle { fill: #b99bc2; opacity: .5; filter: drop-shadow(0 0 5px rgba(185,155,194,.75)); }
+.lp-network-nodes circle { fill: #8bc9bf; opacity: .5; filter: drop-shadow(0 0 5px rgba(139,201,191,.75)); }
 .lp-rail-packet { fill: #d4f4e8; filter: drop-shadow(0 0 7px rgba(97,212,161,.85)); }
-.packet-b { fill: #e8d9ed; filter: drop-shadow(0 0 7px rgba(201,166,209,.8)); }
+.packet-b { fill: #bce8dd; filter: drop-shadow(0 0 7px rgba(139,201,191,.8)); }
 @keyframes lp-rail-flow { to { stroke-dashoffset: -.22; } }
 
 @media (max-width: 700px) {
@@ -2894,3 +2896,161 @@ html.dark .lp {
 @keyframes lp-ghost-breathe { 50% { transform: scale(1.35); opacity: .35; } }
 @media (prefers-reduced-motion: reduce) { .lp-cursor-ghost::before { animation: none; } }
 @media (hover: none), (pointer: coarse) { .lp-cursor-ghost { display: none !important; } }
+
+/* One visual language for the landing: mineral paper in light mode, ink and
+   sea-glass in dark mode. Semantic red/green remain reserved for outcomes. */
+.lp {
+  --bg: #f3f7f5;
+  --ground: #f3f7f5;
+  --tint: #e9f0ed;
+  --ink: #142322;
+  --ink-deep: #10201f;
+  --ink-2: #50635e;
+  --ink-3: #7c8e89;
+  --line: #d7e2de;
+  --line-strong: #bdcfca;
+  --surface: #ffffff;
+  --surface-2: #eaf1ee;
+  --blue: #2e6670;
+  --blue-deep: #21515a;
+  --blue-soft: #deece9;
+  --signal: #2e6670;
+  --signal-soft: #deece9;
+  --accent: #214f58;
+  --accent-ink: #f4faf8;
+  --amber: #2e6670;
+  --amber-dim: #deece9;
+  --positive: #2f866f;
+  --caution: #94713a;
+  --critical: #b95761;
+  --term-bg: #172525;
+  --term-line: rgba(234, 247, 243, .14);
+  --term-ink: #eaf6f1;
+  --term-dim: rgba(234, 247, 243, .58);
+  --term-blue: #83c4c5;
+  --term-cyan: #8cd0bd;
+  --term-go: #8fd4a9;
+  --term-warn: #d0b477;
+  --term-stop: #e58c91;
+}
+html.dark .lp {
+  --bg: #101819;
+  --ground: #101819;
+  --tint: #172425;
+  --ink: #edf6f2;
+  --ink-deep: #f3faf7;
+  --ink-2: #b7c9c3;
+  --ink-3: #849892;
+  --line: rgba(229, 245, 239, .13);
+  --line-strong: rgba(229, 245, 239, .24);
+  --surface: #172324;
+  --surface-2: #1d2c2d;
+  --blue: #8bc9bf;
+  --blue-deep: #a0d9cf;
+  --blue-soft: rgba(139, 201, 191, .17);
+  --signal: #8bc9bf;
+  --signal-soft: rgba(139, 201, 191, .17);
+  --accent: #8bc9bf;
+  --accent-ink: #102020;
+  --amber: #8bc9bf;
+  --amber-dim: rgba(139, 201, 191, .17);
+  --positive: #78d0aa;
+  --caution: #d8bb7a;
+  --critical: #e1848c;
+  --term-bg: #0d1415;
+  --term-line: rgba(229, 245, 239, .14);
+  --term-ink: #eaf6f1;
+  --term-dim: rgba(234, 246, 241, .58);
+  --term-blue: #83c4c5;
+  --term-cyan: #8cd0bd;
+  --term-go: #8fd4a9;
+  --term-warn: #d0b477;
+  --term-stop: #e58c91;
+}
+
+/* Mac application tokens intentionally echo the page palette. */
+.lp-mac-story {
+  --mac-bg: #0d1718;
+  --mac-surface: #142223;
+  --mac-surface-raised: #192b2b;
+  --mac-ink: #edf7f3;
+  --mac-muted: #a0b3ad;
+  --mac-faint: #71857f;
+  --mac-accent: #8bc9bf;
+  --mac-success: #7bd3a9;
+  --mac-danger: #e1848c;
+  --mac-border: rgba(225, 243, 237, .14);
+  color: var(--mac-ink);
+  background: var(--mac-bg);
+}
+.lp-mac-page { background: var(--mac-bg); color: var(--mac-ink); }
+.lp-mac-kicker,
+.lp-mac-question span,
+.lp-mac-product span,
+.lp-mac-offers span,
+.lp-mac-actions span,
+.lp-mac-flow b,
+.lp-mac-log > div { color: var(--mac-accent); }
+.lp-mac-kicker i,
+.lp-mac-question,
+.lp-mac-product,
+.lp-mac-order .lp-mac-total,
+  .lp-mac-log > div { border-color: var(--mac-border); }
+.lp-mac-kicker i { background: var(--mac-border); }
+.lp-mac-index { color: var(--mac-ink); }
+.lp-mac-page h2,
+.lp-mac-page h2 em,
+.lp-mac-question strong,
+.lp-mac-chat strong,
+.lp-mac-intent dd,
+.lp-mac-product > strong,
+.lp-mac-offers b,
+.lp-mac-brake-head strong,
+.lp-mac-brake-note b,
+.lp-mac-order > strong,
+.lp-mac-order em,
+.lp-mac-total strong,
+.lp-mac-flow strong { color: var(--mac-ink); }
+.lp-mac-page h2 em { color: var(--mac-accent); }
+.lp-mac-lede,
+.lp-mac-product p,
+.lp-mac-brake-note,
+.lp-mac-order > div,
+.lp-mac-log p { color: var(--mac-muted); }
+.lp-mac-chat,
+.lp-mac-intent,
+.lp-mac-offers > div,
+.lp-mac-brake-result,
+.lp-mac-order,
+.lp-mac-log { border-color: var(--mac-border); background: var(--mac-surface); }
+.lp-mac-chat-label,
+.lp-mac-intent span,
+.lp-mac-order-head span,
+.lp-mac-no-tool,
+.lp-mac-brake-head span,
+.lp-mac-brake-result span,
+.lp-mac-intent dt,
+.lp-mac-offers small,
+.lp-mac-brake-result small,
+.lp-mac-order > span,
+.lp-mac-log p b { color: var(--mac-faint); }
+.lp-mac-intent,
+.lp-mac-no-tool { border-color: color-mix(in srgb, var(--mac-accent) 28%, transparent); }
+.lp-mac-intent b,
+.lp-mac-resolved,
+.lp-mac-actions b,
+.lp-mac-order-head i,
+.lp-mac-log > div i { color: var(--mac-success); }
+.lp-mac-route i,
+.lp-mac-signal-row i { background: var(--mac-accent); box-shadow: 0 0 10px var(--mac-accent); }
+.lp-mac-brake-head em,
+.lp-mac-denied strong,
+.lp-mac-denied s,
+.lp-mac-brake-result em { color: var(--mac-danger); }
+.lp-mac-brake-meter i { background: var(--mac-danger); }
+.lp-mac-brake-meter i:nth-child(n+4) { background: var(--mac-success); }
+.lp-mac-accepted em { color: var(--mac-success); }
+.lp-mac-no-tool i { background: var(--mac-success); }
+.lp-mac-confirm { color: #102020; background: var(--mac-accent); }
+.lp-mac-log p em,
+.lp-mac-offers strong { color: var(--mac-accent); }
