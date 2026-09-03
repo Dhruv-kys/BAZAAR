@@ -77,41 +77,6 @@ function StoryDeck({ children }: { children: ReactNode }) {
   );
 }
 
-function PaymentNetwork() {
-  return (
-    <svg className="lp-payment-network" viewBox="0 0 1200 560" preserveAspectRatio="none" aria-hidden="true">
-      <defs>
-        <linearGradient id="lp-rail-a" x1="0" x2="1">
-          <stop offset="0" stopColor="currentColor" stopOpacity="0" />
-          <stop offset=".5" stopColor="currentColor" stopOpacity=".75" />
-          <stop offset="1" stopColor="currentColor" stopOpacity="0" />
-        </linearGradient>
-        <linearGradient id="lp-rail-b" x1="0" x2="1">
-          <stop offset="0" stopColor="currentColor" stopOpacity="0" />
-          <stop offset=".5" stopColor="currentColor" stopOpacity=".6" />
-          <stop offset="1" stopColor="currentColor" stopOpacity="0" />
-        </linearGradient>
-      </defs>
-      <path className="lp-rail lp-rail-a" d="M-30 442 C220 210 350 220 550 338 S930 466 1230 120" pathLength="1" />
-      <path className="lp-rail lp-rail-b" d="M-30 104 C210 326 370 340 600 212 S940 38 1230 376" pathLength="1" />
-      <path className="lp-rail lp-rail-c" d="M80 590 C260 410 450 412 610 452 S920 510 1120 -20" pathLength="1" />
-      <g className="lp-network-nodes">
-        <circle cx="192" cy="278" r="3" />
-        <circle cx="550" cy="338" r="3" />
-        <circle cx="860" cy="402" r="3" />
-        <circle cx="1004" cy="166" r="3" />
-        <circle cx="602" cy="212" r="3" />
-      </g>
-      <circle className="lp-rail-packet packet-a" r="4">
-        <animateMotion dur="3.8s" repeatCount="indefinite" path="M-30 442 C220 210 350 220 550 338 S930 466 1230 120" />
-      </circle>
-      <circle className="lp-rail-packet packet-b" r="3">
-        <animateMotion dur="4.6s" begin="-1.8s" repeatCount="indefinite" path="M-30 104 C210 326 370 340 600 212 S940 38 1230 376" />
-      </circle>
-    </svg>
-  );
-}
-
 function MacScreen({ children }: { children: ReactNode }) {
   const stageRef = useRef<HTMLElement>(null);
   const wheelLocked = useRef(false);
@@ -155,48 +120,12 @@ function MacScreen({ children }: { children: ReactNode }) {
   }, [isOpen]);
   return (
     <section className="lp-mac-stage" ref={stageRef} aria-label="Bazaar proof screens">
-      <PaymentNetwork />
-      <div className="lp-payment-aura" aria-hidden="true"><i /><i /><i /><i /></div>
       <div className={`lp-mac-device${isOpen ? " is-open" : ""}${isBumping ? " is-bumping" : ""}`}>
         <div className="lp-mac-screen">{children}</div>
         <img className="lp-mac-art" src="/macbook-mockup.png" alt="" aria-hidden="true" />
       </div>
     </section>
   );
-}
-
-function CursorGhost() {
-  const ghostRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    let frame = 0;
-    let x = window.innerWidth * 0.5;
-    let y = window.innerHeight * 0.5;
-    const onMove = (event: PointerEvent) => { x = event.clientX; y = event.clientY; };
-    const onPointerOver = (event: PointerEvent) => {
-      const target = (event.target as Element | null)?.closest("a, button, [role='button']");
-      const state = target?.matches(".lp-cta, .lp-mac-confirm") ? "cta" : target ? "interactive" : "normal";
-      ghostRef.current?.setAttribute("data-state", state);
-    };
-    const tick = () => {
-      const ghost = ghostRef.current;
-      if (ghost) {
-        const scale = ghost.dataset.state === "cta" ? 1.6 : ghost.dataset.state === "interactive" ? 1.3 : 1;
-        ghost.style.transform = `translate3d(${x + 12}px, ${y + 12}px, 0) scale(${scale})`;
-        ghost.style.setProperty("--ghost-rgb", "90, 87, 212");
-      }
-      frame = requestAnimationFrame(tick);
-    };
-    window.addEventListener("pointermove", onMove, { passive: true });
-    document.addEventListener("pointerover", onPointerOver, { passive: true });
-    frame = requestAnimationFrame(tick);
-    return () => {
-      cancelAnimationFrame(frame);
-      window.removeEventListener("pointermove", onMove);
-      document.removeEventListener("pointerover", onPointerOver);
-    };
-  }, []);
-  return <div className="lp-cursor-ghost" ref={ghostRef} aria-hidden="true"><i /></div>;
 }
 
 function MacStory() {
@@ -292,7 +221,6 @@ export function Landing() {
 
   return (
     <div className="lp">
-      <CursorGhost />
       <div className="lp-progress" aria-hidden="true" />
       <nav className="lp-nav">
         <a className="lp-brand" href="/" onClick={navigate("/")}>
