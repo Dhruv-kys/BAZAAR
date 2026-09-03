@@ -220,8 +220,8 @@ function MacStory() {
 
       <article className="lp-mac-page lp-mac-page-sell">
         <div className="lp-mac-kicker"><span className="lp-mac-index">03</span><span>REVENUE PATH</span><i /></div>
-        <div className="lp-mac-product"><div><span>RECOMMENDATION</span><h2>Chocolate Celebration Cake</h2><p>BEST FIT · birthday · 15 guests</p></div><strong>₹1,499</strong></div>
-        <div className="lp-mac-offers"><div><span>CROSS-SELL</span><b>+ Edible topper</b><strong>₹199</strong></div><div><span>UPSELL</span><b>1.5 kg cake</b><strong>₹1,799</strong><small>reason: 15 guests</small></div></div>
+        <div className="lp-mac-product"><div><span>RECOMMENDATION</span><h2>Chocolate Truffle Cake</h2><p>BEST FIT · birthday · 15 guests</p></div><strong>₹999</strong></div>
+        <div className="lp-mac-offers"><div><span>CROSS-SELL</span><b>+ Birthday topper</b><strong>₹149</strong></div><div><span>UPSELL</span><b>2 kg premium</b><strong>₹1,799</strong><small>reason: feeds 20+</small></div></div>
         <div className="lp-mac-actions"><span>AGENT ACTIONS</span><b>✓ recommend</b><b>✓ cross-sell</b><b>✓ upsell</b></div>
       </article>
 
@@ -236,7 +236,7 @@ function MacStory() {
       <article className="lp-mac-page lp-mac-page-gate">
         <div className="lp-mac-kicker"><span className="lp-mac-index">05</span><span>HUMAN GATE</span><i /></div>
         <div className="lp-mac-order-head"><span>ORDER READY</span><i>staged · not charged</i></div>
-        <div className="lp-mac-order"><strong>Chocolate Celebration Cake</strong><span>1.5 kg</span><div><b>Cake</b><em>₹1,799</em></div><div><b>Topper</b><em>₹199</em></div><div className="lp-mac-total"><b>TOTAL</b><strong>₹1,998</strong></div></div>
+        <div className="lp-mac-order"><strong>Chocolate Truffle Cake</strong><span>2 kg (Premium)</span><div><b>Cake</b><em>₹1,799</em></div><div><b>Topper</b><em>₹149</em></div><div className="lp-mac-total"><b>TOTAL</b><strong>₹1,948</strong></div></div>
         <div className="lp-mac-no-tool"><i /> AI HAS NO CHARGE TOOL <span>human confirmation required</span></div>
         <button className="lp-mac-confirm" type="button">CONFIRM PAYMENT <span>↗</span></button>
       </article>
