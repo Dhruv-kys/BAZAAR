@@ -1,5 +1,6 @@
 import { Router } from "express";
-import { auditEvents, getAuditEvents, type AuditEvent } from "../audit/auditStore.js";
+import { auditEvents, getAuditEvents, getRecentAuditEvents, type AuditEvent } from "../audit/auditStore.js";
+import { merchantMetrics, sessionImpact } from "../audit/impact.js";
 
 export const auditRouter = Router();
 
@@ -10,6 +11,21 @@ auditRouter.get("/", (req, res) => {
     return;
   }
   res.json(getAuditEvents(sessionId));
+});
+
+const METRICS_WINDOW = 5000;
+
+auditRouter.get("/metrics", (_req, res) => {
+  res.json(merchantMetrics(getRecentAuditEvents(METRICS_WINDOW)));
+});
+
+auditRouter.get("/impact", (req, res) => {
+  const { sessionId } = req.query;
+  if (typeof sessionId !== "string") {
+    res.status(400).json({ error: "sessionId query param is required" });
+    return;
+  }
+  res.json(sessionImpact(sessionId, getAuditEvents(sessionId)) ?? null);
 });
 
 auditRouter.get("/stream", (req, res) => {

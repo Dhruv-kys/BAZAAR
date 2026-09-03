@@ -44,7 +44,7 @@ export function Workspace() {
       </main>
 
       {orderOpen && order && (
-        <OrderOverlay order={order} events={events} onClose={() => setOrderOpen(false)} />
+        <OrderOverlay order={order} events={events} sessionId={sessionId} onClose={() => setOrderOpen(false)} />
       )}
 
       {auditOpen && <AuditDrawer events={events} status={status} onClose={() => setAuditOpen(false)} />}

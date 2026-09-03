@@ -11,10 +11,12 @@ import "./OrderOverlay.css";
 export function OrderOverlay({
   order,
   events,
+  sessionId,
   onClose,
 }: {
   order: PendingOrder;
   events: AuditEvent[];
+  sessionId: string;
   onClose: () => void;
 }) {
   useEffect(() => {
@@ -41,7 +43,7 @@ export function OrderOverlay({
 
         <div className="oo-body">
           <StagedOrder order={order} />
-          <RevenueImpact events={events} />
+          <RevenueImpact sessionId={sessionId} eventCount={events.length} />
           <PolicyBoundary events={events} />
           <PolicyRail />
           <Guarantees events={events} />

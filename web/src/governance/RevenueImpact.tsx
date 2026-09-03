@@ -1,20 +1,37 @@
-import type { AuditEvent } from "../audit/useAuditEvents";
-import { computeImpact } from "./revenueModel";
+import { useEffect, useState } from "react";
+import { apiUrl } from "../api";
+import type { SessionImpact } from "./metrics";
+import { rupees } from "./metrics";
 import "./RevenueImpact.css";
 
-function rupees(paise: number) {
-  const sign = paise < 0 ? "−" : "";
-  return `${sign}₹${(Math.abs(paise) / 100).toLocaleString("en-IN", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  })}`;
-}
+export function RevenueImpact({ sessionId, eventCount }: { sessionId: string; eventCount: number }) {
+  const [impact, setImpact] = useState<SessionImpact | null>(null);
 
-export function RevenueImpact({ events }: { events: AuditEvent[] }) {
-  const impact = computeImpact(events);
+  useEffect(() => {
+    let cancelled = false;
+    fetch(apiUrl(`/api/audit/impact?sessionId=${encodeURIComponent(sessionId)}`))
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data: SessionImpact | null) => {
+        if (!cancelled) setImpact(data);
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, [sessionId, eventCount]);
+
   if (!impact) return null;
 
-  const gained = impact.upliftInPaise > 0;
+  const lines = [
+    { key: "baseline", label: "First recommendation", amount: impact.baselineInPaise },
+    { key: "upsell", label: "Upsell accepted", amount: impact.upsellInPaise },
+    { key: "cross", label: "Cross-sell accepted", amount: impact.crossSellInPaise },
+    { key: "other", label: "Additional items", amount: impact.otherItemsInPaise },
+    { key: "discount", label: "Discount applied", amount: -impact.discountInPaise },
+  ].filter((line) => line.key === "baseline" || line.amount !== 0);
+
+  const uplift = impact.totalInPaise - impact.baselineInPaise;
+  const upliftPercent = impact.baselineInPaise > 0 ? (uplift / impact.baselineInPaise) * 100 : 0;
 
   return (
     <section className="ri" aria-labelledby="ri-title">
@@ -22,20 +39,19 @@ export function RevenueImpact({ events }: { events: AuditEvent[] }) {
         <h2 className="cs-label" id="ri-title">
           Revenue impact
         </h2>
-        <span className={`ri-uplift${gained ? " is-up" : ""}`}>
-          {gained ? "+" : ""}
-          {impact.upliftPercent.toFixed(0)}%
+        <span className={`ri-uplift${uplift > 0 ? " is-up" : ""}`}>
+          {uplift > 0 ? "+" : ""}
+          {upliftPercent.toFixed(0)}%
         </span>
       </div>
 
       <ol className="ri-lines">
-        {impact.lines.map((line) => (
-          <li key={line.key} className={line.amountInPaise < 0 ? "is-negative" : undefined}>
+        {lines.map((line) => (
+          <li key={line.key} className={line.amount < 0 ? "is-negative" : undefined}>
             <div>
               <strong>{line.label}</strong>
-              <span>{line.detail}</span>
             </div>
-            <b>{rupees(line.amountInPaise)}</b>
+            <b>{rupees(line.amount)}</b>
           </li>
         ))}
       </ol>
@@ -43,15 +59,13 @@ export function RevenueImpact({ events }: { events: AuditEvent[] }) {
       <div className="ri-total">
         <div>
           <span>Order total</span>
-          <small>
-            {rupees(impact.baselineInPaise)} at first recommendation
-          </small>
+          <small>{rupees(impact.baselineInPaise)} at first recommendation</small>
         </div>
-        <strong>{rupees(impact.finalInPaise)}</strong>
+        <strong>{rupees(impact.totalInPaise)}</strong>
       </div>
 
       <p className="ri-note">
-        Counted from the audit trail, and only where the customer actually accepted. A suggestion that was
+        Counted from the audit trail, and only where the customer accepted. A suggestion that was
         declined adds nothing here.
       </p>
     </section>
