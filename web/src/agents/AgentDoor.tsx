@@ -1,8 +1,6 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { apiUrl } from "../api";
-import { GitHubIcon, MoonIcon, SunIcon } from "../icons";
-import { navigate } from "../router";
-import { useTheme } from "../useTheme";
+import { PageShell } from "../pages/PageShell";
 import "./AgentDoor.css";
 
 interface Discovery {
@@ -40,38 +38,9 @@ const REFUSALS_SHOWN = [
   },
 ];
 
-function useReveal() {
-  const ref = useRef<HTMLElement>(null);
-  useEffect(() => {
-    const root = ref.current;
-    if (!root) return;
-    const targets = root.querySelectorAll<HTMLElement>("[data-reveal]");
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      targets.forEach((el) => el.setAttribute("data-shown", "true"));
-      return;
-    }
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) {
-            entry.target.setAttribute("data-shown", "true");
-            observer.unobserve(entry.target);
-          }
-        }
-      },
-      { threshold: 0.15 },
-    );
-    targets.forEach((el) => observer.observe(el));
-    return () => observer.disconnect();
-  }, []);
-  return ref;
-}
-
 export function AgentDoor() {
-  const { theme, toggleTheme } = useTheme();
   const [doc, setDoc] = useState<Discovery>();
   const [failed, setFailed] = useState(false);
-  const mainRef = useReveal();
 
   useEffect(() => {
     fetch(apiUrl("/.well-known/bazaar-commerce"))
@@ -83,43 +52,9 @@ export function AgentDoor() {
   const origin = doc ? new URL(apiUrl("/.well-known/bazaar-commerce")).origin : "";
 
   return (
-    <div className="ad">
-      <header className="ad-head">
-        <a className="ad-brand" href="/" onClick={navigate("/")}>
-          <span aria-hidden="true">❖</span>
-          <span className="ad-brand-name">BAZAAR</span>
-          <span className="ad-brand-slash">/agents</span>
-        </a>
-        <nav className="ad-nav">
-          <a href="/app" onClick={navigate("/app")}>
-            Agent
-          </a>
-          <a href="/dashboard" onClick={navigate("/dashboard")}>
-            Dashboard
-          </a>
-          <a
-            className="ad-icon"
-            href="https://github.com/Dhruv-kys/BAZAAR"
-            target="_blank"
-            rel="noreferrer"
-            aria-label="View source on GitHub"
-          >
-            <GitHubIcon size={15} />
-          </a>
-          <button
-            className="ad-icon"
-            type="button"
-            aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
-            onClick={toggleTheme}
-          >
-            {theme === "dark" ? <SunIcon size={14} /> : <MoonIcon size={14} />}
-          </button>
-        </nav>
-      </header>
-
-      <main className="ad-main" ref={mainRef}>
-        <section className="ad-intro" data-reveal>
-          <span className="ad-eyebrow">The other door</span>
+    <PageShell slug="agents">
+        <section className="pg-intro" data-reveal>
+          <span className="pg-eyebrow">The other door</span>
           <h1>
             This shop is callable
             <br />
@@ -140,9 +75,9 @@ export function AgentDoor() {
 
         {doc && (
           <>
-            <section className="ad-section" data-reveal>
+            <section className="pg-section" data-reveal>
               <h2>What an agent finds first</h2>
-              <p className="ad-lede">
+              <p className="pg-lede">
                 Everything below is read from <code>{origin}/.well-known/bazaar-commerce</code> at
                 page load, so it cannot drift from what the server actually publishes.
               </p>
@@ -176,7 +111,7 @@ export function AgentDoor() {
               </dl>
             </section>
 
-            <section className="ad-section" data-reveal>
+            <section className="pg-section" data-reveal>
               <h2>Four tools, one of which spends</h2>
               <ul className="ad-tools">
                 {(doc.tools ?? []).map((tool) => (
@@ -199,9 +134,9 @@ export function AgentDoor() {
               )}
             </section>
 
-            <section className="ad-section" data-reveal>
+            <section className="pg-section" data-reveal>
               <h2>What happens when an agent misbehaves</h2>
-              <p className="ad-lede">
+              <p className="pg-lede">
                 The buyer in our own demo tries to cheat. These are the refusals it meets, named in
                 the contract so a counterparty can handle them.
               </p>
@@ -215,14 +150,14 @@ export function AgentDoor() {
                 ))}
               </ul>
               {doc.refusal_codes && (
-                <p className="ad-note">
+                <p className="pg-note">
                   {doc.refusal_codes.length} refusal codes are published in the contract. A refusal
                   is an audit event with a code, never a bare HTTP error.
                 </p>
               )}
             </section>
 
-            <section className="ad-section" data-reveal>
+            <section className="pg-section" data-reveal>
               <h2>Why the merchant cannot forge your authorization</h2>
               <ul className="ad-security">
                 <li>
@@ -256,30 +191,29 @@ export function AgentDoor() {
               </ul>
             </section>
 
-            <section className="ad-section" data-reveal>
+            <section className="pg-section" data-reveal>
               <h2>Connect an agent</h2>
-              <p className="ad-lede">
+              <p className="pg-lede">
                 Any MCP client can call this merchant. Reading the catalog and pricing a basket need
                 only a credential; spending also needs a mandate signed by the buyer&rsquo;s wallet.
               </p>
-              <pre className="ad-code">
+              <pre className="pg-code">
                 <code>{`endpoint  ${origin}${doc.transport.mcp}
 header    ${doc.transport.auth}
 mandate   ${doc.authorization.claims.join(", ")}
 signed    ${doc.authorization.scheme}, single use`}</code>
               </pre>
-              <p className="ad-lede">Or drive it with the reference buyer in this repository:</p>
-              <pre className="ad-code">
+              <p className="pg-lede">Or drive it with the reference buyer in this repository:</p>
+              <pre className="pg-code">
                 <code>{`MERCHANT_MCP_URL=${origin}${doc.transport.mcp} npm run buyer`}</code>
               </pre>
-              <p className="ad-note">
+              <p className="pg-note">
                 Credentials are issued by the merchant, not self-served. That is deliberate on a
                 path that can move money.
               </p>
             </section>
           </>
         )}
-      </main>
-    </div>
+    </PageShell>
   );
 }

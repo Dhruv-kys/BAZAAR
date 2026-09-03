@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
 import { apiUrl } from "../api";
 import { type MerchantMetrics, rupees, rupeesShort } from "../governance/metrics";
-import { GitHubIcon, MoonIcon, SunIcon } from "../icons";
-import { navigate } from "../router";
-import { useTheme } from "../useTheme";
+import { PageShell } from "../pages/PageShell";
 import "./Dashboard.css";
 
 interface Segment {
@@ -24,7 +22,7 @@ function Composition({ metrics }: { metrics: MerchantMetrics }) {
   if (gross === 0) return null;
 
   return (
-    <figure className="db-figure">
+    <figure className="db-figure" data-reveal>
       <figcaption>
         <h2 className="db-figure-title">Where the revenue came from</h2>
         <p>
@@ -90,7 +88,6 @@ function Tile({
 }
 
 export function Dashboard() {
-  const { theme, toggleTheme } = useTheme();
   const [metrics, setMetrics] = useState<MerchantMetrics>();
   const [failed, setFailed] = useState(false);
 
@@ -104,43 +101,9 @@ export function Dashboard() {
   const empty = metrics && metrics.sessionsWithOrder === 0;
 
   return (
-    <div className="db">
-      <header className="db-head">
-        <a className="db-brand" href="/" onClick={navigate("/")}>
-          <span aria-hidden="true">❖</span>
-          <span className="db-brand-name">BAZAAR</span>
-          <span className="db-brand-slash">/merchant</span>
-        </a>
-        <nav className="db-nav">
-          <a href="/app" onClick={navigate("/app")}>
-            Agent
-          </a>
-          <a href="/agents" onClick={navigate("/agents")}>
-            AI buyers
-          </a>
-          <a
-            className="db-icon"
-            href="https://github.com/Dhruv-kys/BAZAAR"
-            target="_blank"
-            rel="noreferrer"
-            aria-label="View source on GitHub"
-          >
-            <GitHubIcon size={15} />
-          </a>
-          <button
-            className="db-icon"
-            type="button"
-            aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
-            onClick={toggleTheme}
-          >
-            {theme === "dark" ? <SunIcon size={14} /> : <MoonIcon size={14} />}
-          </button>
-        </nav>
-      </header>
-
-      <main className="db-main">
-        <div className="db-intro">
-          <span className="db-eyebrow">Merchant view</span>
+    <PageShell slug="dashboard" width={980}>
+        <div className="pg-intro" data-reveal>
+          <span className="pg-eyebrow">Merchant view</span>
           <h1>
             What the agent
             <br />
@@ -167,7 +130,7 @@ export function Dashboard() {
 
         {metrics && !empty && (
           <>
-            <div className="db-tiles">
+            <div className="db-tiles" data-reveal>
               <Tile
                 label="Revenue booked"
                 value={rupeesShort(metrics.finalTotalInPaise)}
@@ -216,7 +179,7 @@ export function Dashboard() {
 
             <Composition metrics={metrics} />
 
-            <table className="db-table">
+            <table className="db-table" data-reveal>
               <caption>The same figures as a table</caption>
               <tbody>
                 <tr>
@@ -255,7 +218,6 @@ export function Dashboard() {
             </table>
           </>
         )}
-      </main>
-    </div>
+    </PageShell>
   );
 }
