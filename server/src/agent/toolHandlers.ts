@@ -22,6 +22,14 @@ export interface ToolContext {
 }
 export type ToolHandler = (args: unknown, ctx: ToolContext) => ToolResult;
 
+export function rupeeLabel(paise: number): string {
+  return `₹${(paise / 100).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+}
+
+function pricedVariant<T extends { priceInPaise: number }>(variant: T) {
+  return { ...variant, price: rupeeLabel(variant.priceInPaise) };
+}
+
 function auditFields(actor: Actor) {
   return { sessionId: actor.sessionId, actor: actor.kind, agentId: actor.agentId };
 }
@@ -40,6 +48,7 @@ export const toolHandlers: Record<string, ToolHandler> = {
         name: product.name,
         category: product.category,
         fromPaise: Math.min(...product.variants.map((v) => v.priceInPaise)),
+        from: rupeeLabel(Math.min(...product.variants.map((v) => v.priceInPaise))),
         variantCount: product.variants.length,
       })),
     };
@@ -52,7 +61,14 @@ export const toolHandlers: Record<string, ToolHandler> = {
     const product = getProductById(parsed.data.productId);
     if (!product) return { ok: false, error: `No product with id "${parsed.data.productId}"` };
 
-    return { ok: true, result: { ...product, availableAddOns: addOnsForCategory(product.category) } };
+    return {
+      ok: true,
+      result: {
+        ...product,
+        variants: product.variants.map(pricedVariant),
+        availableAddOns: addOnsForCategory(product.category).map(pricedVariant),
+      },
+    };
   },
 
   recommend_product(args, ctx) {
@@ -88,7 +104,7 @@ export const toolHandlers: Record<string, ToolHandler> = {
       payload: { addOn },
     });
 
-    return { ok: true, result: { addOn, reason: parsed.data.reason } };
+    return { ok: true, result: { addOn: pricedVariant(addOn), reason: parsed.data.reason } };
   },
 
   suggest_upsell(args, ctx) {
@@ -107,7 +123,10 @@ export const toolHandlers: Record<string, ToolHandler> = {
       payload: { productId: parsed.data.productId, variant },
     });
 
-    return { ok: true, result: { productId: parsed.data.productId, variant, reason: parsed.data.reason } };
+    return {
+      ok: true,
+      result: { productId: parsed.data.productId, variant: pricedVariant(variant), reason: parsed.data.reason },
+    };
   },
 
   apply_discount(args, ctx) {
@@ -199,6 +218,14 @@ export const toolHandlers: Record<string, ToolHandler> = {
       payload: pendingOrder,
     });
 
-    return { ok: true, result: pendingOrder };
+    return {
+      ok: true,
+      result: {
+        ...pendingOrder,
+        subtotal: rupeeLabel(pendingOrder.subtotalInPaise),
+        discount: rupeeLabel(pendingOrder.discountInPaise),
+        total: rupeeLabel(pendingOrder.totalInPaise),
+      },
+    };
   },
 };
