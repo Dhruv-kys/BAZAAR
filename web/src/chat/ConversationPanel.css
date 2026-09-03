@@ -364,3 +364,35 @@
   }
 }
 
+
+@media (max-width: 620px) {
+  .cp-stage {
+    padding: calc(var(--step) * 3) calc(var(--step) * 2);
+  }
+
+  .cp-greeting {
+    font-size: clamp(26px, 8vw, 34px);
+  }
+
+  .cp-suggestions button {
+    padding: 13px 4px;
+    font-size: 13.5px;
+  }
+
+  .cp-thread {
+    padding: calc(var(--step) * 3) calc(var(--step) * 2) calc(var(--step) * 1.5);
+  }
+
+  .cp-msg {
+    max-width: 100%;
+  }
+
+  .cp-composer {
+    gap: 8px;
+    padding: calc(var(--step) * 1.5) calc(var(--step) * 2) calc(var(--step) * 3);
+  }
+
+  .cp-stage-hint kbd {
+    display: none;
+  }
+}

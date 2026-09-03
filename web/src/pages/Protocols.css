@@ -1,6 +1,6 @@
 .pr-primitive {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
   gap: 1px;
   background: var(--rule);
   border: 1px solid var(--rule);
@@ -111,7 +111,7 @@
 
 .pr-meta {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
   gap: calc(var(--step) * 2);
   margin: calc(var(--step) * 2.5) 0 0;
   padding: calc(var(--step) * 2) 0;
@@ -175,7 +175,7 @@
   padding: 0;
   list-style: none;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
   gap: 1px;
   background: var(--rule);
   border: 1px solid var(--rule);
@@ -261,4 +261,22 @@
 
 .pr-stance-block p + p {
   margin-top: calc(var(--step) * 2);
+}
+
+@media (max-width: 620px) {
+  .pr-item {
+    padding: calc(var(--step) * 2.5);
+  }
+
+  .pr-item-head h3 {
+    font-size: 26px;
+  }
+
+  .pr-relation {
+    padding: calc(var(--step) * 2);
+  }
+
+  .pr-stance-block {
+    padding: calc(var(--step) * 2.5);
+  }
 }

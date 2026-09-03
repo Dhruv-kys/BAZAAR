@@ -10,7 +10,7 @@
 
 .ad-facts {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 210px), 1fr));
   gap: 1px;
   margin: 0;
   background: var(--rule);
@@ -105,7 +105,7 @@
   padding: 0;
   list-style: none;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
   gap: 1px;
   background: var(--rule);
   border: 1px solid var(--rule);
@@ -148,7 +148,7 @@
   padding: 0;
   list-style: none;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
   gap: calc(var(--step) * 3);
 }
 
@@ -334,5 +334,28 @@
 @media (prefers-reduced-motion: reduce) {
   .ad-run-steps li {
     animation: none;
+  }
+}
+
+@media (max-width: 620px) {
+  .ad-run-head {
+    padding: calc(var(--step) * 2.5);
+  }
+
+  .ad-run-go {
+    width: 100%;
+  }
+
+  .ad-run-steps li {
+    grid-template-columns: 26px minmax(0, 1fr);
+    gap: 9px;
+    padding: calc(var(--step) * 2) calc(var(--step) * 2);
+  }
+
+  .ad-facts > div,
+  .ad-refusals li,
+  .ad-security li,
+  .ad-absent {
+    padding: calc(var(--step) * 2.5);
   }
 }

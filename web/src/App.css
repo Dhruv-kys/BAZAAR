@@ -87,3 +87,9 @@ html.dark .cs {
     padding-block: calc(var(--step) * 4);
   }
 }
+
+@media (max-width: 620px) {
+  .cs {
+    height: 100dvh;
+  }
+}

@@ -27,7 +27,7 @@ html.dark .pg {
 
 .db-tiles {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(212px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 212px), 1fr));
   gap: 1px;
   margin-top: calc(var(--step) * 5);
   background: var(--rule);
@@ -206,5 +206,23 @@ html.dark .pg {
 @media (max-width: 620px) {
   .db-legend small {
     display: none;
+  }
+}
+
+@media (max-width: 620px) {
+  .db-tile {
+    padding: calc(var(--step) * 2);
+  }
+
+  .db-tile-value {
+    font-size: 26px;
+  }
+
+  .db-legend li {
+    flex-wrap: wrap;
+  }
+
+  .db-table td {
+    width: auto;
   }
 }
