@@ -49,6 +49,18 @@ export function SystemBar({
       </a>
 
       <div className="sb-actions">
+        <nav className="sb-links">
+          <a href="/dashboard" onClick={navigate("/dashboard")}>
+            Dashboard
+          </a>
+          <a href="/mcp" onClick={navigate("/mcp")}>
+            MCP
+          </a>
+          <a href="/protocols" onClick={navigate("/protocols")}>
+            Protocols
+          </a>
+        </nav>
+
         {started && (
           <button
             className={`sb-pill${auditOpen ? " is-on" : ""}`}

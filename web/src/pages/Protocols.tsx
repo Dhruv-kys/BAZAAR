@@ -114,19 +114,21 @@ export function Protocols() {
           <em>to authorize a machine</em>
         </h1>
         <p>
-          None of them is finished. Rather than adopt a draft, we implemented the primitive they
-          share &mdash; a signed, bounded, single-use spend mandate &mdash; and exposed it over MCP,
-          which exists today and real clients already speak.
+          BAZAAR does not claim conformance with any of them. It implements the primitive they all
+          share &mdash; a signed, bounded, single-use spend mandate, verified by a merchant that
+          cannot produce one &mdash; and exposes it over MCP, which exists today and which real
+          clients already speak. What follows is where that leaves us against each.
         </p>
       </section>
 
       <section className="pg-section" data-reveal>
         <h2>The primitive they agree on</h2>
         <p className="pg-lede">
-          Strip the wire formats away and every serious proposal answers the same question: how does
-          a merchant know a human authorized this specific spend, and for how much? The answer is
-          always a signed artifact with a limit, verified by someone who cannot produce it
-          themselves.
+          Strip the wire formats away and every serious proposal answers one question: how does a
+          merchant know a human authorized this exact spend, and for how much? The answer is always
+          a signed artifact carrying a limit, checked by a party who cannot forge it. That is what
+          this shop verifies on every agent order, and you can watch it refuse a forged one on the
+          MCP page.
         </p>
         <div className="pr-primitive">
           <div>
@@ -166,7 +168,7 @@ export function Protocols() {
               </dl>
               <p className="pr-what">{protocol.what}</p>
               <p className="pr-relation">
-                <strong>How BAZAAR relates.</strong> {protocol.relation}
+                <strong>Where BAZAAR stands.</strong> {protocol.relation}
               </p>
               <a className="pr-source" href={protocol.source.href} target="_blank" rel="noreferrer">
                 {protocol.source.label}

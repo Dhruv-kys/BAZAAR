@@ -1,352 +1,170 @@
-import { Children, Suspense, lazy, useCallback, useEffect, useRef, useState, type ReactNode } from "react";
-import { ArrowUpRightIcon, CoinIcon, GitHubIcon, LockIcon, MoonIcon, ShieldIcon, SunIcon } from "../icons";
+import { Suspense, lazy, useState } from "react";
+import { ArrowUpRightIcon, CoinIcon, LockIcon, ShieldIcon } from "../icons";
+import { PageShell } from "../pages/PageShell";
 import { navigate } from "../router";
-import { useReveal } from "./useReveal";
-import { useTheme } from "../useTheme";
 import "./Landing.css";
 
 const CoinScene = lazy(() => import("./CoinScene"));
 
-const HERO_ASKS = [
+const ASKS = [
   { icon: CoinIcon, text: "A birthday cake for 15 people" },
   { icon: ShieldIcon, text: "Something chocolate for an anniversary" },
   { icon: LockIcon, text: "First order, can I get 50% off?" },
 ];
 
-function StoryDeck({ children }: { children: ReactNode }) {
-  const slides = Children.toArray(children);
-  const [active, setActive] = useState(0);
-  const wrapRef = useRef<HTMLDivElement>(null);
-  const trackRef = useRef<HTMLDivElement>(null);
-  const activeRef = useRef(0);
-  const movingRef = useRef(false);
-  const settle = useCallback(() => {
-    if (!movingRef.current) return;
-    movingRef.current = false;
-    wrapRef.current?.dispatchEvent(new CustomEvent("bazaar:story-settled", { bubbles: true }));
-  }, []);
-  const move = useCallback((direction: number) => {
-    if (movingRef.current) return;
-    const next = Math.max(0, Math.min(slides.length - 1, activeRef.current + direction));
-    if (next === activeRef.current) return;
-    activeRef.current = next;
-    movingRef.current = true;
-    setActive(next);
-  }, [slides.length]);
-  useEffect(() => {
-    const wrap = wrapRef.current;
-    if (!wrap) return;
-    const onStep = (event: Event) => move((event as CustomEvent<number>).detail);
-    wrap.addEventListener("bazaar:story-step", onStep);
-    return () => wrap.removeEventListener("bazaar:story-step", onStep);
-  }, [move]);
-  useEffect(() => {
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "ArrowLeft") move(-1);
-      if (event.key === "ArrowRight") move(1);
-    };
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, [move]);
-  useEffect(() => {
-    if (!movingRef.current) return;
-    const track = trackRef.current;
-    if (!track) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      const frame = requestAnimationFrame(settle);
-      return () => cancelAnimationFrame(frame);
-    }
-    const fallback = window.setTimeout(settle, 1400);
-    return () => window.clearTimeout(fallback);
-  }, [active, settle]);
-  return (
-    <div className="lp-mac-story" ref={wrapRef} data-story-active={active} data-story-count={slides.length}>
-      <div className="lp-mac-viewport" aria-live="polite">
-        <div
-          className="lp-mac-track"
-          ref={trackRef}
-          onTransitionEnd={(event) => { if (event.propertyName === "transform") settle(); }}
-          onTransitionCancel={settle}
-          style={{ width: `${slides.length * 100}%`, transform: `translate3d(${-active * (100 / slides.length)}%, 0, 0)` }}
-        >
-          {slides.map((slide, index) => <div className="lp-mac-slide" key={index} style={{ flex: `0 0 ${100 / slides.length}%`, width: `${100 / slides.length}%` }}>{slide}</div>)}
-        </div>
-      </div>
-      <div className="lp-mac-progress" aria-hidden="true"><span style={{ transform: `scaleX(${(active + 1) / slides.length})` }} /></div>
-    </div>
-  );
-}
+const RULES = [
+  {
+    n: "01",
+    title: "The agent sells",
+    body: "It qualifies on occasion, headcount and preference, recommends one best fit, upsells only when the larger option genuinely serves what was asked, and cross-sells once.",
+  },
+  {
+    n: "02",
+    title: "The server decides",
+    body: "Prices come from the catalog, never from the model. Ask for half off and the server applies fifteen percent, records that it clamped you, and makes the agent quote the real number.",
+  },
+  {
+    n: "03",
+    title: "A person approves",
+    body: "The model has no tool that charges anyone. Staging an order is all it can do; a human presses confirm, or an agent presents a signed spend mandate the merchant cannot forge.",
+  },
+];
 
-function MacScreen({ children }: { children: ReactNode }) {
-  const stageRef = useRef<HTMLElement>(null);
-  const wheelLocked = useRef(false);
-  const [isOpen, setIsOpen] = useState(false);
-  const [isBumping, setIsBumping] = useState(false);
-  useEffect(() => {
-    const stage = stageRef.current;
-    if (!stage) return;
-    const observer = new IntersectionObserver(([entry]) => setIsOpen(entry.isIntersecting && entry.intersectionRatio >= 0.42), { threshold: [0, 0.42, 1] });
-    observer.observe(stage);
-    return () => observer.disconnect();
-  }, []);
-  useEffect(() => {
-    const stage = stageRef.current;
-    if (!stage) return;
-    const onSettled = () => {
-      wheelLocked.current = false;
-      setIsBumping(false);
-    };
-    stage.addEventListener("bazaar:story-settled", onSettled);
-    const onWheel = (event: WheelEvent) => {
-      if (!isOpen || Math.abs(event.deltaY) < 2) return;
-      const story = stage.querySelector<HTMLElement>("[data-story-active]");
-      if (!story) return;
-      const active = Number(story.dataset.storyActive ?? 0);
-      const count = Number(story.dataset.storyCount ?? 0);
-      const direction = event.deltaY > 0 ? 1 : -1;
-      const next = active + direction;
-      if (next < 0 || next >= count) return;
-      event.preventDefault();
-      if (wheelLocked.current) return;
-      wheelLocked.current = true;
-      setIsBumping(true);
-      story.dispatchEvent(new CustomEvent("bazaar:story-step", { detail: direction, bubbles: true }));
-    };
-    window.addEventListener("wheel", onWheel, { passive: false, capture: true });
-    return () => {
-      window.removeEventListener("wheel", onWheel, true);
-      stage.removeEventListener("bazaar:story-settled", onSettled);
-    };
-  }, [isOpen]);
-  return (
-    <section className="lp-mac-stage" ref={stageRef} aria-label="Bazaar proof screens">
-      <div className={`lp-mac-device${isOpen ? " is-open" : ""}${isBumping ? " is-bumping" : ""}`}>
-        <div className="lp-mac-screen">{children}</div>
-        <img className="lp-mac-art" src="/macbook-mockup.png" alt="" aria-hidden="true" />
-      </div>
-    </section>
-  );
-}
-
-function MacStory() {
-  return (
-    <StoryDeck>
-      <article className="lp-mac-page lp-mac-page-problem">
-        <div className="lp-mac-kicker"><span className="lp-mac-index">01</span><span>THE PROBLEM</span><i /></div>
-        <h2>AI can sell.<br /><em>Should it spend?</em></h2>
-        <p className="lp-mac-lede">Execution is easy. Proving an agent cannot invent discounts, exceed limits, or charge without consent is the product.</p>
-        <div className="lp-mac-question"><span>THE QUESTION</span><strong>Can revenue grow without turning the agent into a liability?</strong></div>
-        <div className="lp-mac-signal-row"><span>UNBOUNDED MODEL</span><i /> <span>SERVER GUARDRAIL</span><i /> <span>HUMAN GATE</span></div>
-      </article>
-
-      <article className="lp-mac-page lp-mac-page-agent">
-        <div className="lp-mac-kicker"><span className="lp-mac-index">02</span><span>INTENT RESOLVED</span><i /></div>
-        <div className="lp-mac-chat"><span className="lp-mac-chat-label">CUSTOMER</span><strong>“Birthday for 15.<br />Chocolate. First order.”</strong></div>
-        <div className="lp-mac-route" aria-hidden="true"><i /><i /><i /></div>
-        <div className="lp-mac-intent"><div><span>BAZAAR AGENT</span><b>reading context</b></div><dl><dt>occasion</dt><dd>birthday</dd><dt>guests</dt><dd>15</dd><dt>preference</dt><dd>chocolate</dd><dt>customer</dt><dd>first order</dd></dl></div>
-        <div className="lp-mac-resolved"><i /> INTENT RESOLVED <span>catalog ready</span></div>
-      </article>
-
-      <article className="lp-mac-page lp-mac-page-sell">
-        <div className="lp-mac-kicker"><span className="lp-mac-index">03</span><span>REVENUE PATH</span><i /></div>
-        <div className="lp-mac-product"><div><span>RECOMMENDATION</span><h2>Chocolate Truffle Cake</h2><p>BEST FIT · birthday · 15 guests</p></div><strong>₹999</strong></div>
-        <div className="lp-mac-offers"><div><span>CROSS-SELL</span><b>+ Birthday topper</b><strong>₹149</strong></div><div><span>UPSELL</span><b>2 kg premium</b><strong>₹1,799</strong><small>reason: feeds 20+</small></div></div>
-        <div className="lp-mac-actions"><span>AGENT ACTIONS</span><b>✓ recommend</b><b>✓ cross-sell</b><b>✓ upsell</b></div>
-      </article>
-
-      <article className="lp-mac-page lp-mac-page-brake">
-        <div className="lp-mac-kicker"><span className="lp-mac-index">04</span><span>SERVER GUARDRAIL</span><i /></div>
-        <div className="lp-mac-brake-head"><span>AGENT REQUEST</span><strong>Discount <em>50%</em></strong></div>
-        <div className="lp-mac-brake-meter"><i /><i /><i /><i /><i /><b /></div>
-        <div className="lp-mac-brake-result"><div><span>MAXIMUM ALLOWED</span><strong>15%</strong></div><div className="lp-mac-denied"><s>50%</s><em>×</em><small>rejected</small></div><div className="lp-mac-accepted"><strong>15%</strong><em>✓</em><small>clamped</small></div></div>
-        <p className="lp-mac-brake-note">The model asked.<br /><b>The server decided.</b></p>
-      </article>
-
-      <article className="lp-mac-page lp-mac-page-gate">
-        <div className="lp-mac-kicker"><span className="lp-mac-index">05</span><span>HUMAN GATE</span><i /></div>
-        <div className="lp-mac-order-head"><span>ORDER READY</span><i>staged · not charged</i></div>
-        <div className="lp-mac-order"><strong>Chocolate Truffle Cake</strong><span>2 kg (Premium)</span><div><b>Cake</b><em>₹1,799</em></div><div><b>Topper</b><em>₹149</em></div><div className="lp-mac-total"><b>TOTAL</b><strong>₹1,948</strong></div></div>
-        <div className="lp-mac-no-tool"><i /> AI HAS NO CHARGE TOOL <span>human confirmation required</span></div>
-        <button className="lp-mac-confirm" type="button">CONFIRM PAYMENT <span>↗</span></button>
-      </article>
-
-      <article className="lp-mac-page lp-mac-page-proof">
-        <div className="lp-mac-kicker"><span className="lp-mac-index">06</span><span>AGENT → AGENT / AUDIT</span><i /></div>
-        <div className="lp-mac-flow"><span>buyer-agent</span><i>↓</i><strong>BAZAAR</strong><i>↓</i><span>catalog → order → payment link</span><i>↓</i><b>RAZORPAY</b></div>
-        <div className="lp-mac-log"><div><span>audit.log</span><i>ALL ACTIONS ACCOUNTED FOR</i></div><p><b>16:56:03</b> recommend</p><p><b>16:56:04</b> cross_sell</p><p><b>16:56:15</b> discount <em>50% → 15%</em></p><p><b>16:57:00</b> payment declined</p><p><b>16:57:01</b> retry link issued</p></div>
-      </article>
-    </StoryDeck>
-  );
-}
-
-function OpenAgent({ large }: { large?: boolean }) {
-  return (
-    <a className={`lp-cta${large ? " lp-cta-lg" : ""}`} href="/app" onClick={navigate("/app")}>
-      <span>Open the agent</span>
-      <span className="lp-cta-orb" aria-hidden="true">
-        <ArrowUpRightIcon size={large ? 15 : 13} />
-      </span>
-    </a>
-  );
-}
-
-function GuardrailPulse() {
-  const [armed, setArmed] = useState(false);
-  return (
-    <button className={`lp-guardrail-pulse${armed ? " is-armed" : ""}`} type="button" onClick={() => setArmed((value) => !value)}>
-      <span className="lp-pulse-orb" aria-hidden="true"><i /><i /><i /></span>
-      <span className="lp-pulse-copy">
-        <small>BAZAAR / CONTROL</small>
-        <strong>{armed ? "Guardrail engaged" : "Inspect the brake pedal"}</strong>
-      </span>
-      <span className="lp-pulse-state">{armed ? "ON" : "↗"}</span>
-    </button>
-  );
-}
+const PROOF = [
+  {
+    label: "Explainable",
+    line: "Every recommendation, upsell, discount and refusal is written to an audit trail with its reasoning, and streamed to the screen as it happens.",
+  },
+  {
+    label: "Bounded",
+    line: "A request for 50% off is applied at 15% and flagged as clamped. An order over the shop's ceiling is refused with the binding limit named.",
+  },
+  {
+    label: "Gated",
+    line: "No charge tool exists on the model. Money moves only after a person confirms, or a buying agent presents a single-use Ed25519 mandate.",
+  },
+  {
+    label: "Resilient",
+    line: "A declined payment issues a fresh link with a new reference, logs the recovery, and carries on. Nothing crashes and nothing is silently retried.",
+  },
+];
 
 function detectField() {
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return false;
   try {
-    const c = document.createElement("canvas");
-    return Boolean(c.getContext("webgl2") ?? c.getContext("webgl"));
+    const canvas = document.createElement("canvas");
+    return Boolean(canvas.getContext("webgl2") ?? canvas.getContext("webgl"));
   } catch {
     return false;
   }
 }
 
+function OpenAgent({ large }: { large?: boolean }) {
+  return (
+    <a className={`lp-cta${large ? " is-lg" : ""}`} href="/app" onClick={navigate("/app")}>
+      <span>Open the agent</span>
+      <ArrowUpRightIcon size={large ? 15 : 13} />
+    </a>
+  );
+}
+
 export function Landing() {
-  const { theme, toggleTheme } = useTheme();
   const [field] = useState(detectField);
-  useReveal();
 
   return (
-    <div className="lp">
-      <div className="lp-progress" aria-hidden="true" />
-      <nav className="lp-nav">
-        <a className="lp-brand" href="/" onClick={navigate("/")}>
-          <span className="lp-brand-mark" aria-hidden="true">
-            ❖
-          </span>
-          <span className="lp-brand-name">Bazaar</span>
-          <span className="lp-brand-slash">/agent</span>
-        </a>
-        <div className="lp-nav-right">
-          <a className="lp-nav-link" href="/dashboard" onClick={navigate("/dashboard")}>
-            Dashboard
-          </a>
-          <a className="lp-nav-link" href="/agents" onClick={navigate("/agents")}>
-            AI buyers
-          </a>
-          <a className="lp-nav-link" href="/protocols" onClick={navigate("/protocols")}>
-            Protocols
-          </a>
-          <a
-            className="lp-nav-icon"
-            href="https://github.com/Dhruv-kys/BAZAAR"
-            target="_blank"
-            rel="noreferrer"
-            aria-label="View source on GitHub"
-            title="View source on GitHub"
-          >
-            <GitHubIcon />
-          </a>
-          <button
-            className="app-theme"
-            type="button"
-            aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
-            onClick={toggleTheme}
-          >
-            {theme === "dark" ? <SunIcon size={14} /> : <MoonIcon size={14} />}
-          </button>
-          <OpenAgent />
+    <PageShell slug="" width={940}>
+      <section className="lp-hero" data-reveal>
+        <div className="lp-coin" aria-hidden="true">
+          {field ? (
+            <Suspense fallback={null}>
+              <CoinScene />
+            </Suspense>
+          ) : (
+            <span className="lp-coin-static">₹</span>
+          )}
         </div>
-      </nav>
 
-      <header className="lp-hero">
-        <div className="lp-stage">
-          <div className="lp-hero-coin" aria-hidden="true">
-            {field ? (
-              <Suspense fallback={null}>
-                <CoinScene />
-              </Suspense>
-            ) : (
-              <span className="lp-hero-coin-static">₹</span>
-            )}
-          </div>
+        <h1 className="lp-head">
+          An agent that sells
+          <br />
+          <em>and knows when to stop</em>
+        </h1>
 
-          <h1 className="lp-head">
-            <span className="lp-head-a">An agent that sells</span>
-            <span className="lp-head-b">and knows when to stop</span>
-          </h1>
+        <p className="lp-feats">
+          <span>Server-enforced limits</span>
+          <span>Human confirmation</span>
+          <span>Full audit trail</span>
+          <span>Voice or text</span>
+          <span>Agent-to-agent</span>
+        </p>
 
-          <p className="lp-feats">
-            <span>Server-enforced limits</span>
-            <span>Human confirmation</span>
-            <span>Full audit trail</span>
-            <span>Voice or text</span>
-            <span>Agent-to-agent</span>
-          </p>
-
-          <ul className="lp-asks">
-            {HERO_ASKS.map(({ icon: Icon, text }) => (
+        <ul className="lp-asks">
+          {ASKS.map(({ icon: Icon, text }) => {
+            const to = `/app?ask=${encodeURIComponent(text)}`;
+            return (
               <li key={text}>
-                <a href={`/app?ask=${encodeURIComponent(text)}`} onClick={navigate(`/app?ask=${encodeURIComponent(text)}`)}>
+                <a href={to} onClick={navigate(to)}>
                   <Icon size={15} />
                   <span>{text}</span>
                   <ArrowUpRightIcon size={13} />
                 </a>
               </li>
-            ))}
-          </ul>
+            );
+          })}
+        </ul>
 
-          <div className="lp-cta-row">
-            <OpenAgent large />
-            <a className="lp-link" href="#how" onClick={(e) => {
-              e.preventDefault();
-              document.querySelector("#how")?.scrollIntoView({ behavior: "smooth" });
-            }}>
-              See how it works
-            </a>
-          </div>
+        <div className="lp-cta-row">
+          <OpenAgent large />
+          <a className="lp-link" href="/mcp" onClick={navigate("/mcp")}>
+            Or connect an AI buyer
+          </a>
         </div>
+      </section>
 
-        <div className="lp-continue">
-          <span className="lp-continue-text">scroll to continue</span>
-          <span className="lp-continue-line" aria-hidden="true" />
-        </div>
-      </header>
-
-      <section className="lp-tldr" aria-labelledby="tldr-title" data-reveal>
-        <div className="lp-tldr-intro">
-          <span className="eyebrow">TL;DR</span>
-          <h2 id="tldr-title">Commerce with a brake pedal.</h2>
-          <p>Three rules make the whole system legible.</p>
-        </div>
-        <ol className="lp-tldr-grid">
-          <li><span>01</span><strong>The agent sells</strong><p>It searches, recommends, and builds the basket.</p></li>
-          <li><span>02</span><strong>The server decides</strong><p>Prices, discounts, and limits are checked in code.</p></li>
-          <li><span>03</span><strong>You approve</strong><p>Nothing charges until a person confirms the total.</p></li>
+      <section className="pg-section" data-reveal>
+        <h2>Three rules, and the whole thing is legible</h2>
+        <ol className="lp-rules">
+          {RULES.map((rule) => (
+            <li key={rule.n}>
+              <span>{rule.n}</span>
+              <div>
+                <strong>{rule.title}</strong>
+                <p>{rule.body}</p>
+              </div>
+            </li>
+          ))}
         </ol>
       </section>
 
-      <MacScreen>
-      <MacStory />
-      </MacScreen>
-
-      <section className="lp-station lp-final lp-bazaar-screen band-deep" data-reveal>
-        <h2 className="lp-final-head">Try talking it past the cap.</h2>
-        <p className="lp-final-note">
-          Ask for half off and watch the log refuse you. Runs on Razorpay test mode: a real payment link is created, but
-          no real money moves.
+      <section className="pg-section" data-reveal>
+        <h2>What the bar asks for, and where it is met</h2>
+        <p className="pg-lede">
+          Every claim below is a thing the running system does, not a thing it intends to do. The
+          audit trail on the agent screen is the evidence.
         </p>
-        <div className="lp-final-actions">
+        <ul className="lp-proof">
+          {PROOF.map((item) => (
+            <li key={item.label}>
+              <strong>{item.label}</strong>
+              <p>{item.line}</p>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <section className="pg-section lp-close" data-reveal>
+        <h2>Try talking it past the cap</h2>
+        <p className="pg-lede">
+          Ask for half off and watch the log refuse you. It runs on Razorpay test mode, so a real
+          payment link is created and no real money moves.
+        </p>
+        <div className="lp-cta-row">
           <OpenAgent large />
-          <span className="lp-final-safe">
+          <span className="lp-safe">
             <LockIcon size={13} />
             No real money moves
           </span>
         </div>
-        <GuardrailPulse />
       </section>
 
       <footer className="lp-foot">
@@ -355,6 +173,6 @@ export function Landing() {
           Source on GitHub
         </a>
       </footer>
-    </div>
+    </PageShell>
   );
 }

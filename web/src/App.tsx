@@ -1,4 +1,4 @@
-import { AgentDoor } from "./agents/AgentDoor";
+import { McpDoor } from "./mcp/McpDoor";
 import { Dashboard } from "./dashboard/Dashboard";
 import { Landing } from "./landing/Landing";
 import { Protocols } from "./pages/Protocols";
@@ -9,7 +9,7 @@ function App() {
   const path = usePath();
   if (path === "/app") return <Workspace />;
   if (path === "/dashboard") return <Dashboard />;
-  if (path === "/agents") return <AgentDoor />;
+  if (path === "/mcp") return <McpDoor />;
   if (path === "/protocols") return <Protocols />;
   return <Landing />;
 }

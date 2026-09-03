@@ -5,9 +5,10 @@ import { useTheme } from "../useTheme";
 import "./pages.css";
 
 const LINKS = [
+  { href: "/", label: "Home" },
   { href: "/app", label: "Agent" },
   { href: "/dashboard", label: "Dashboard" },
-  { href: "/agents", label: "AI buyers" },
+  { href: "/mcp", label: "MCP" },
   { href: "/protocols", label: "Protocols" },
 ];
 
@@ -76,10 +77,10 @@ export function PageShell({
         <a className="pg-brand" href="/" onClick={navigate("/")}>
           <span aria-hidden="true">❖</span>
           <span className="pg-brand-name">BAZAAR</span>
-          <span className="pg-brand-slash">/{slug}</span>
+          {slug && <span className="pg-brand-slash">/{slug}</span>}
         </a>
         <nav className="pg-nav">
-          {LINKS.filter((link) => link.href !== `/${slug}`).map((link) => (
+          {LINKS.filter((link) => link.href !== (slug ? `/${slug}` : "/")).map((link) => (
             <a key={link.href} href={link.href} onClick={navigate(link.href)}>
               {link.label}
             </a>

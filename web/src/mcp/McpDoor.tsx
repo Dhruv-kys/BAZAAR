@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { apiUrl } from "../api";
 import { PageShell } from "../pages/PageShell";
-import "./AgentDoor.css";
+import "./McpDoor.css";
 
 interface Discovery {
   protocol: string;
@@ -115,7 +115,7 @@ function LiveRun() {
   );
 }
 
-export function AgentDoor() {
+export function McpDoor() {
   const [doc, setDoc] = useState<Discovery>();
   const [failed, setFailed] = useState(false);
 
@@ -129,7 +129,7 @@ export function AgentDoor() {
   const origin = doc ? new URL(apiUrl("/.well-known/bazaar-commerce")).origin : "";
 
   return (
-    <PageShell slug="agents">
+    <PageShell slug="mcp">
         <section className="pg-intro" data-reveal>
           <span className="pg-eyebrow">The other door</span>
           <h1>
