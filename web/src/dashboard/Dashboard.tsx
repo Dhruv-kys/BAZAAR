@@ -115,6 +115,9 @@ export function Dashboard() {
           <a href="/app" onClick={navigate("/app")}>
             Agent
           </a>
+          <a href="/agents" onClick={navigate("/agents")}>
+            AI buyers
+          </a>
           <a
             className="db-icon"
             href="https://github.com/Dhruv-kys/BAZAAR"
