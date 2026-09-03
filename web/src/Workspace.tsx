@@ -8,7 +8,10 @@ import { SystemBar } from "./system/SystemBar";
 import { useTheme } from "./useTheme";
 import "./App.css";
 
-const sessionId = crypto.randomUUID();
+const sessionId =
+  typeof crypto.randomUUID === "function"
+    ? crypto.randomUUID()
+    : `s-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
 
 export function Workspace() {
   const { theme, toggleTheme } = useTheme();

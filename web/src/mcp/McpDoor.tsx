@@ -50,6 +50,7 @@ interface DemoStep {
 function LiveRun() {
   const [steps, setSteps] = useState<DemoStep[]>([]);
   const [running, setRunning] = useState(false);
+  const [broke, setBroke] = useState(false);
   const sourceRef = useRef<EventSource | null>(null);
 
   useEffect(() => () => sourceRef.current?.close(), []);
@@ -57,6 +58,7 @@ function LiveRun() {
   function run() {
     sourceRef.current?.close();
     setSteps([]);
+    setBroke(false);
     setRunning(true);
     const source = new EventSource(apiUrl("/api/agents/demo"));
     sourceRef.current = source;
@@ -69,6 +71,7 @@ function LiveRun() {
     });
     source.onerror = () => {
       setRunning(false);
+      setBroke(true);
       source.close();
     };
   }
@@ -87,6 +90,13 @@ function LiveRun() {
           {running ? "Running…" : steps.length ? "Run again" : "Run a buyer agent"}
         </button>
       </div>
+
+      {broke && (
+        <p className="ad-run-broke" role="status">
+          The run could not reach the merchant server. The MCP endpoint itself may still be up &mdash;
+          this page needs the server to be reachable from your browser.
+        </p>
+      )}
 
       {steps.length > 0 && (
         <ol className="ad-run-steps">
@@ -143,6 +153,12 @@ export function McpDoor() {
             No screen, no browser, no human in the loop.
           </p>
         </section>
+
+        {!doc && !failed && (
+          <p className="ad-empty" role="status">
+            Fetching the merchant&rsquo;s live contract&hellip;
+          </p>
+        )}
 
         {failed && (
           <p className="ad-empty" data-reveal>

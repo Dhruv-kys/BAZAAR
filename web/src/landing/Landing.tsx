@@ -76,7 +76,7 @@ export function Landing() {
       <section className="lp-hero" data-reveal>
         <div className="lp-coin" aria-hidden="true">
           {field ? (
-            <Suspense fallback={null}>
+            <Suspense fallback={<span className="lp-coin-static">₹</span>}>
               <CoinScene />
             </Suspense>
           ) : (

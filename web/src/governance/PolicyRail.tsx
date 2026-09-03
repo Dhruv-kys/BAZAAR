@@ -60,21 +60,21 @@ export function PolicyRail() {
         <h2 className="cs-label" id="pr-title">
           What the agent is allowed to do
         </h2>
-        <span className="pr-source">set by the shop, not the agent</span>
+        <span className="rail-source">set by the shop, not the agent</span>
       </div>
 
       {unreachable && (
-        <p className="pr-offline" role="status">
+        <p className="rail-offline" role="status">
           Can't reach the shop's server right now, so these limits are unconfirmed.
         </p>
       )}
 
-      <dl className="pr-rows">
+      <dl className="rail-rows">
         {rows.map((row) => (
-          <div key={row.key} className={`pr-row pr-${row.tone}`}>
+          <div key={row.key} className={`rail-row rail-${row.tone}`}>
             <dt>{row.label}</dt>
             <dd>
-              {row.value ?? (unreachable ? <span className="pr-unknown">unconfirmed</span> : <span className="pr-pending" aria-label="loading" />)}
+              {row.value ?? (unreachable ? <span className="rail-unknown">unconfirmed</span> : <span className="rail-pending" aria-label="loading" />)}
               {row.sub && <em>{row.sub}</em>}
             </dd>
           </div>

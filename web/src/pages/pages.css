@@ -10,7 +10,7 @@
   --rule-2: #d2cab1;
   --ink: #2f2e26;
   --ink-2: #64604e;
-  --ink-3: #98917c;
+  --ink-3: #6f6a58;
   --live: #5a57d4;
   --live-soft: #eceafc;
   --warn: #9a7526;
@@ -111,23 +111,6 @@ html.dark .pg {
 .pg-icon:hover {
   color: var(--ink);
   border-color: var(--rule-2);
-}
-
-.pg-main {
-  width: min(880px, 100%);
-  margin: 0 auto;
-  padding: calc(var(--step) * 6) calc(var(--step) * 3) calc(var(--step) * 14);
-}
-
-[data-reveal] {
-  opacity: 0;
-  transform: translateY(12px);
-  transition: opacity 600ms var(--ease), transform 600ms var(--ease);
-}
-
-[data-reveal][data-shown="true"] {
-  opacity: 1;
-  transform: none;
 }
 
 .pg-main {

@@ -215,7 +215,19 @@
 }
 
 @media (max-width: 900px) {
+  .sb {
+    height: auto;
+    flex-wrap: wrap;
+    padding-block: calc(var(--step) * 1.25);
+  }
+
   .sb-links {
-    display: none;
+    order: 3;
+    width: 100%;
+    margin-right: 0;
+  }
+
+  .sb-links a {
+    padding-inline: 8px;
   }
 }

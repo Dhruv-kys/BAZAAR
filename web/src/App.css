@@ -10,7 +10,7 @@
 
   --ink: #2f2e26;
   --ink-2: #64604e;
-  --ink-3: #98917c;
+  --ink-3: #6f6a58;
 
   --ok: #5a57d4;
   --warn: #9a7526;
@@ -91,5 +91,15 @@ html.dark .cs {
 @media (max-width: 620px) {
   .cs {
     height: 100dvh;
+  }
+}
+
+.cs:has(.ad) .cs-main {
+  padding-bottom: 42dvh;
+}
+
+@media (max-width: 620px) {
+  .cs:has(.ad) .cs-main {
+    padding-bottom: 52dvh;
   }
 }

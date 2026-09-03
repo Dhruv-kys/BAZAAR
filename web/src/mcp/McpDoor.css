@@ -359,3 +359,13 @@
     padding: calc(var(--step) * 2.5);
   }
 }
+
+.ad-run-broke {
+  margin: 0;
+  padding: calc(var(--step) * 2.5) calc(var(--step) * 3);
+  border-top: 1px solid var(--rule);
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--warn);
+  background: var(--warn-soft);
+}

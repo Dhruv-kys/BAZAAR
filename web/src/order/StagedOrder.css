@@ -165,7 +165,7 @@
 
 .so-confirm {
   background: color-mix(in srgb, var(--ok) 88%, var(--ink));
-  color: #ffffff;
+  color: var(--bg);
   box-shadow: 0 0 0 0 color-mix(in srgb, var(--ok) 55%, transparent);
   animation: so-ready 2.6s var(--ease) infinite;
 }

@@ -115,6 +115,12 @@ export function Dashboard() {
           </p>
         </div>
 
+        {!metrics && !failed && (
+          <p className="db-empty" role="status">
+            Reading the audit trail&hellip;
+          </p>
+        )}
+
         {failed && (
           <p className="db-empty">
             The shop&rsquo;s server is not responding, so there are no figures to show.

@@ -91,7 +91,7 @@ export function ConversationPanel({
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.code !== "Space" || event.repeat) return;
       const target = event.target as HTMLElement | null;
-      if (target && (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable)) return;
+      if (target?.closest("button, a, input, textarea, select, [role=button], [contenteditable]")) return;
       if (!micReady || voice.micStatus === "transcribing") return;
       event.preventDefault();
       startTalking();
