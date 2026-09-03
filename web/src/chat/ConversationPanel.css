@@ -120,9 +120,18 @@
   color: var(--ink);
 }
 
+.cp-stage-sub {
+  max-width: 46ch;
+  margin: calc(var(--step) * 2.5) 0 0;
+  font-size: 13.5px;
+  line-height: 1.65;
+  color: var(--ink-3);
+  text-wrap: pretty;
+}
+
 .cp-suggestions {
   width: 100%;
-  margin: calc(var(--step) * 4) 0 0;
+  margin: calc(var(--step) * 3.5) 0 0;
   padding: 0;
   list-style: none;
   border-top: 1px solid var(--rule);

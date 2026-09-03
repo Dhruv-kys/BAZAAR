@@ -2890,3 +2890,24 @@ html.dark .lp {
     line-height: 1.65;
   }
 }
+
+.lp-nav-link {
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink-2);
+  text-decoration: none;
+  border-radius: 6px;
+  transition: color 0.25s var(--ease-fluid), background-color 0.25s var(--ease-fluid);
+}
+
+.lp-nav-link:hover {
+  color: var(--ink);
+  background: var(--tint);
+}
+
+@media (max-width: 860px) {
+  .lp-nav-link {
+    display: none;
+  }
+}

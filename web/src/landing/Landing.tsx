@@ -303,6 +303,15 @@ export function Landing() {
           <span className="lp-brand-slash">/agent</span>
         </a>
         <div className="lp-nav-right">
+          <a className="lp-nav-link" href="/dashboard" onClick={navigate("/dashboard")}>
+            Dashboard
+          </a>
+          <a className="lp-nav-link" href="/agents" onClick={navigate("/agents")}>
+            AI buyers
+          </a>
+          <a className="lp-nav-link" href="/protocols" onClick={navigate("/protocols")}>
+            Protocols
+          </a>
           <a
             className="lp-nav-icon"
             href="https://github.com/Dhruv-kys/BAZAAR"
@@ -346,6 +355,7 @@ export function Landing() {
             <span>Server-enforced limits</span>
             <span>Human confirmation</span>
             <span>Full audit trail</span>
+            <span>Voice or text</span>
             <span>Agent-to-agent</span>
           </p>
 

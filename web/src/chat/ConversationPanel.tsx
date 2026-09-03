@@ -194,12 +194,12 @@ export function ConversationPanel({
       {empty ? (
         <div className="cp-stage">
           <div className="cp-stage-inner">
-            {voice.micAvailable ? (
+            {micReady ? (
               <VoiceCoin
                 state={coinState}
-                level={voice.level}
+                level={coinLevel}
                 size="hero"
-                onClick={() => voice.toggleMic(empty ? SPOKEN_GREETING : undefined)}
+                onClick={startTalking}
                 disabled={voice.micStatus === "transcribing"}
                 label={micLabel}
               />
@@ -215,6 +215,11 @@ export function ConversationPanel({
               <em>what are we baking?</em>
             </h1>
 
+            <p className="cp-stage-sub">
+              A sales agent that recommends, upsells with a reason, and stops at the limits the shop
+              set. Nothing is charged until you confirm.
+            </p>
+
             <ul className="cp-suggestions">
               {STARTERS.map(({ icon: Icon, text }) => (
                 <li key={text}>
@@ -229,12 +234,12 @@ export function ConversationPanel({
             <div className="cp-stage-foot">
               <Waveform state={coinState} level={coinLevel} />
               <p className="cp-stage-hint">
-                {voice.micAvailable ? (
+                {micReady ? (
                   <>
-                    Tap the coin to speak <kbd>Space</kbd> or type below
+                    Type what you need, or tap the coin to talk <kbd>Space</kbd>
                   </>
                 ) : (
-                  <>Type below to start &mdash; voice input is unavailable in this browser</>
+                  <>Type what you need to get started</>
                 )}
               </p>
             </div>
