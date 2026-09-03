@@ -1,4 +1,4 @@
-import catalogData from "./catalog.json" with { type: "json" };
+import { merchant } from "../merchant/profile.js";
 
 export interface Variant {
   id: string;
@@ -24,8 +24,8 @@ export interface AddOn {
   tags: string[];
 }
 
-const products = catalogData.products as Product[];
-const addOns = catalogData.addOns as AddOn[];
+const products = merchant.products as Product[];
+const addOns = merchant.addOns as AddOn[];
 
 export function searchCatalog(query?: string, occasionTag?: string, category?: string): Product[] {
   return products.filter((product) => {

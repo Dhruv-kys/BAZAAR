@@ -1,0 +1,138 @@
+{
+  "id": "dealer",
+  "name": "BAZAAR Motors",
+  "currency": "INR",
+  "trade": "a car dealership",
+  "qualifiers": "how they will use the car, how many people it must seat, and their budget",
+  "guardrails": {
+    "maxDiscountPercent": 3,
+    "maxDiscountFlatPaise": 5000000,
+    "maxOrderValuePaise": 300000000,
+    "quoteTtlMs": 900000
+  },
+  "products": [
+    {
+      "id": "compact-hatch",
+      "name": "Meridian Compact Hatch",
+      "category": "hatchback",
+      "tags": [
+        "city",
+        "first-car",
+        "commute",
+        "compact"
+      ],
+      "variants": [
+        {
+          "id": "hatch-base",
+          "label": "Base petrol",
+          "priceInPaise": 68000000
+        },
+        {
+          "id": "hatch-mid",
+          "label": "Mid, automatic",
+          "priceInPaise": 79000000
+        },
+        {
+          "id": "hatch-hybrid",
+          "label": "Hybrid, automatic",
+          "priceInPaise": 94000000,
+          "premium": true,
+          "upsellReason": "Roughly a third less fuel on city driving, which pays back the difference over a long ownership"
+        }
+      ]
+    },
+    {
+      "id": "family-suv",
+      "name": "Meridian Seven SUV",
+      "category": "suv",
+      "tags": [
+        "family",
+        "highway",
+        "seven-seat",
+        "long-drive"
+      ],
+      "variants": [
+        {
+          "id": "suv-five",
+          "label": "Five seat",
+          "priceInPaise": 142000000
+        },
+        {
+          "id": "suv-seven",
+          "label": "Seven seat",
+          "priceInPaise": 168000000
+        },
+        {
+          "id": "suv-seven-awd",
+          "label": "Seven seat, all-wheel drive",
+          "priceInPaise": 198000000,
+          "premium": true,
+          "upsellReason": "Only trim rated for unsealed roads, which matters if the long drives leave the highway"
+        }
+      ]
+    },
+    {
+      "id": "electric-sedan",
+      "name": "Meridian E-Sedan",
+      "category": "sedan",
+      "tags": [
+        "electric",
+        "commute",
+        "highway",
+        "premium"
+      ],
+      "variants": [
+        {
+          "id": "sedan-standard",
+          "label": "Standard range",
+          "priceInPaise": 187000000
+        },
+        {
+          "id": "sedan-long",
+          "label": "Long range",
+          "priceInPaise": 224000000,
+          "premium": true,
+          "upsellReason": "Adds enough range to do the intercity run without a charging stop"
+        }
+      ]
+    }
+  ],
+  "addOns": [
+    {
+      "id": "extended-warranty",
+      "name": "Two-year Extended Warranty",
+      "priceInPaise": 4500000,
+      "crossSellFor": [
+        "hatchback",
+        "suv",
+        "sedan"
+      ],
+      "tags": [
+        "ownership"
+      ]
+    },
+    {
+      "id": "ceramic-coating",
+      "name": "Ceramic Paint Protection",
+      "priceInPaise": 2800000,
+      "crossSellFor": [
+        "suv",
+        "sedan"
+      ],
+      "tags": [
+        "ownership"
+      ]
+    },
+    {
+      "id": "home-charger",
+      "name": "Home Fast Charger, installed",
+      "priceInPaise": 6500000,
+      "crossSellFor": [
+        "sedan"
+      ],
+      "tags": [
+        "electric"
+      ]
+    }
+  ]
+}

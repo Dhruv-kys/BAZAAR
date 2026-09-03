@@ -1,9 +1,10 @@
+import { merchant } from "../merchant/profile.js";
+
+const ALLOWED_DISCOUNT_REASON_CODES = ["FIRST_ORDER", "BULK_ADDON", "SEASONAL_PROMO"] as const;
+
 export const GUARDRAILS = {
-  maxDiscountPercent: 15,
-  maxDiscountFlatPaise: 20000,
-  maxOrderValuePaise: 500000,
-  quoteTtlMs: 300000,
-  allowedDiscountReasonCodes: ["FIRST_ORDER", "BULK_ADDON", "SEASONAL_PROMO"] as const,
+  ...merchant.guardrails,
+  allowedDiscountReasonCodes: ALLOWED_DISCOUNT_REASON_CODES,
 } as const;
 
-export type DiscountReasonCode = (typeof GUARDRAILS.allowedDiscountReasonCodes)[number];
+export type DiscountReasonCode = (typeof ALLOWED_DISCOUNT_REASON_CODES)[number];

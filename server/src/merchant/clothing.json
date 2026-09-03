@@ -1,0 +1,139 @@
+{
+  "id": "clothing",
+  "name": "BAZAAR Supply Co.",
+  "currency": "INR",
+  "trade": "a clothing store",
+  "qualifiers": "the occasion, their usual size and how they like the fit",
+  "guardrails": {
+    "maxDiscountPercent": 20,
+    "maxDiscountFlatPaise": 60000,
+    "maxOrderValuePaise": 2500000,
+    "quoteTtlMs": 300000
+  },
+  "products": [
+    {
+      "id": "oxford-shirt",
+      "name": "Cotton Oxford Shirt",
+      "category": "shirt",
+      "tags": [
+        "office",
+        "everyday",
+        "wedding",
+        "formal"
+      ],
+      "variants": [
+        {
+          "id": "oxford-single",
+          "label": "Single",
+          "priceInPaise": 249000
+        },
+        {
+          "id": "oxford-two",
+          "label": "Pack of 2",
+          "priceInPaise": 449000
+        },
+        {
+          "id": "oxford-supima",
+          "label": "Supima cotton",
+          "priceInPaise": 649000,
+          "premium": true,
+          "upsellReason": "Longer staple cotton, so it keeps its shape through far more washes - worth it for a shirt worn weekly"
+        }
+      ]
+    },
+    {
+      "id": "merino-overshirt",
+      "name": "Merino Overshirt",
+      "category": "outerwear",
+      "tags": [
+        "winter",
+        "travel",
+        "everyday",
+        "gift"
+      ],
+      "variants": [
+        {
+          "id": "merino-light",
+          "label": "Lightweight",
+          "priceInPaise": 549000
+        },
+        {
+          "id": "merino-heavy",
+          "label": "Heavyweight",
+          "priceInPaise": 749000
+        },
+        {
+          "id": "merino-lined",
+          "label": "Lined, heavyweight",
+          "priceInPaise": 1149000,
+          "premium": true,
+          "upsellReason": "Rated far colder than the unlined one, so it works as an actual winter layer rather than a mid-season jacket"
+        }
+      ]
+    },
+    {
+      "id": "tapered-chinos",
+      "name": "Tapered Chinos",
+      "category": "trousers",
+      "tags": [
+        "office",
+        "everyday",
+        "formal"
+      ],
+      "variants": [
+        {
+          "id": "chinos-single",
+          "label": "Single",
+          "priceInPaise": 329000
+        },
+        {
+          "id": "chinos-two",
+          "label": "Pack of 2",
+          "priceInPaise": 599000,
+          "premium": true,
+          "upsellReason": "Works out cheaper per pair, and two colours cover both office and weekend"
+        }
+      ]
+    }
+  ],
+  "addOns": [
+    {
+      "id": "leather-belt",
+      "name": "Full-grain Leather Belt",
+      "priceInPaise": 189000,
+      "crossSellFor": [
+        "trousers",
+        "shirt"
+      ],
+      "tags": [
+        "office",
+        "formal"
+      ]
+    },
+    {
+      "id": "garment-bag",
+      "name": "Travel Garment Bag",
+      "priceInPaise": 129000,
+      "crossSellFor": [
+        "outerwear",
+        "shirt"
+      ],
+      "tags": [
+        "travel"
+      ]
+    },
+    {
+      "id": "gift-wrap",
+      "name": "Cloth Gift Wrap",
+      "priceInPaise": 29000,
+      "crossSellFor": [
+        "shirt",
+        "outerwear",
+        "trousers"
+      ],
+      "tags": [
+        "gift"
+      ]
+    }
+  ]
+}

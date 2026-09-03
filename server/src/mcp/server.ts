@@ -9,6 +9,7 @@ import { signedMandateSchema } from "../commerce/mandate.js";
 import { requestQuote } from "../commerce/quote.js";
 import { isRefusal, type Refusal } from "../commerce/refusals.js";
 import { REFUSAL_CODES } from "../commerce/refusals.js";
+import { merchant } from "../merchant/profile.js";
 import { GUARDRAILS } from "../guardrails/config.js";
 import { agentSessionId, resolveAgentId } from "./agents.js";
 
@@ -167,7 +168,7 @@ export const wellKnownRouter = Router();
 wellKnownRouter.get("/bazaar-commerce", (_req, res) => {
   res.json({
     protocol: "bazaar-commerce/1",
-    merchant: { name: "BAZAAR Bakery", currency: "INR" },
+    merchant: { name: merchant.name, currency: merchant.currency, trade: merchant.trade },
     transport: { mcp: "/mcp", auth: "Authorization: Bearer <agent credential>" },
     authorization: {
       scheme: "ed25519-signed-mandate",
