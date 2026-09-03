@@ -21,6 +21,10 @@ function credentialMap(): Map<string, string> {
   return new Map(entries);
 }
 
+export function firstCredential(): string | null {
+  return [...credentialMap().keys()][0] ?? null;
+}
+
 export function resolveAgentId(req: Request): string | null {
   const header = req.header("authorization") ?? "";
   const token = header.toLowerCase().startsWith("bearer ") ? header.slice(7).trim() : "";

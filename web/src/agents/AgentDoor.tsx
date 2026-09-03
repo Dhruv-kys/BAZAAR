@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { apiUrl } from "../api";
 import { PageShell } from "../pages/PageShell";
 import "./AgentDoor.css";
@@ -37,6 +37,83 @@ const REFUSALS_SHOWN = [
     proves: "With no credentials configured, nobody gets in. It fails closed.",
   },
 ];
+
+interface DemoStep {
+  n: number;
+  title: string;
+  status: "ok" | "refused" | "info";
+  detail: string;
+  code?: string;
+  data?: string[];
+}
+
+function LiveRun() {
+  const [steps, setSteps] = useState<DemoStep[]>([]);
+  const [running, setRunning] = useState(false);
+  const sourceRef = useRef<EventSource | null>(null);
+
+  useEffect(() => () => sourceRef.current?.close(), []);
+
+  function run() {
+    sourceRef.current?.close();
+    setSteps([]);
+    setRunning(true);
+    const source = new EventSource(apiUrl("/api/agents/demo"));
+    sourceRef.current = source;
+    source.addEventListener("step", (event) => {
+      setSteps((prev) => [...prev, JSON.parse((event as MessageEvent).data) as DemoStep]);
+    });
+    source.addEventListener("done", () => {
+      setRunning(false);
+      source.close();
+    });
+    source.onerror = () => {
+      setRunning(false);
+      source.close();
+    };
+  }
+
+  return (
+    <div className="ad-run">
+      <div className="ad-run-head">
+        <div>
+          <h3>Watch an agent connect</h3>
+          <p>
+            This runs a real MCP session against this merchant, right now. Nothing is simulated and
+            no payment link is created.
+          </p>
+        </div>
+        <button className="ad-run-go" type="button" onClick={run} disabled={running}>
+          {running ? "Running…" : steps.length ? "Run again" : "Run a buyer agent"}
+        </button>
+      </div>
+
+      {steps.length > 0 && (
+        <ol className="ad-run-steps">
+          {steps.map((step) => (
+            <li key={step.n} className={`is-${step.status}`}>
+              <span className="ad-run-n">{String(step.n).padStart(2, "0")}</span>
+              <div>
+                <strong>
+                  {step.title}
+                  {step.code && <code>{step.code}</code>}
+                </strong>
+                <p>{step.detail}</p>
+                {step.data && step.data.length > 0 && (
+                  <ul>
+                    {step.data.map((line) => (
+                      <li key={line}>{line}</li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            </li>
+          ))}
+        </ol>
+      )}
+    </div>
+  );
+}
 
 export function AgentDoor() {
   const [doc, setDoc] = useState<Discovery>();
@@ -132,6 +209,11 @@ export function AgentDoor() {
                   <p>{doc.not_exposed.apply_discount}</p>
                 </div>
               )}
+            </section>
+
+            <section className="pg-section" data-reveal>
+              <h2>See it happen</h2>
+              <LiveRun />
             </section>
 
             <section className="pg-section" data-reveal>

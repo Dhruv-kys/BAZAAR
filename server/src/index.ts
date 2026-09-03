@@ -10,6 +10,7 @@ import { ordersRouter } from "./routes/orders.js";
 import { paymentsRouter } from "./routes/payments.js";
 import { voiceRouter } from "./routes/voice.js";
 import { realtimeRouter } from "./routes/realtime.js";
+import { agentsDemoRouter } from "./routes/agentsDemo.js";
 
 function allowedOrigins(): string[] {
   const configured = (process.env.APP_ORIGIN ?? "")
@@ -38,6 +39,7 @@ app.use("/api/audit", auditRouter);
 app.use("/api/orders", rateLimit(30, 60_000), ordersRouter);
 app.use("/api/voice", rateLimit(30, 60_000), voiceRouter);
 app.use("/api/realtime", rateLimit(60, 60_000), realtimeRouter);
+app.use("/api/agents", rateLimit(10, 60_000), agentsDemoRouter);
 app.use("/.well-known", wellKnownRouter);
 app.use("/mcp", rateLimit(60, 60_000), mcpRouter);
 
