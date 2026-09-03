@@ -9,6 +9,7 @@ dist-ssr
 server/data/*.sqlite
 
 *.md
+!README.md
 
 .DS_Store
 *.log
