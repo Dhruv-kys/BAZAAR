@@ -14,13 +14,17 @@ ordersRouter.post("/:summaryId/confirm", async (req, res) => {
     return;
   }
 
-  const result = await confirmOrder({ summaryId, actor: humanActor(order.sessionId) });
-  if (!result.ok) {
-    res.status(httpStatusFor(result.code)).json({ error: result.message, code: result.code });
-    return;
+  try {
+    const result = await confirmOrder({ summaryId, actor: humanActor(order.sessionId) });
+    if (!result.ok) {
+      res.status(httpStatusFor(result.code)).json({ error: result.message, code: result.code });
+      return;
+    }
+    res.json({ paymentUrl: result.paymentUrl });
+  } catch (error) {
+    console.error("confirm failed:", error);
+    res.status(500).json({ error: "Couldn't confirm this order right now. Please try again." });
   }
-
-  res.json({ paymentUrl: result.paymentUrl });
 });
 
 ordersRouter.get("/:summaryId/status", (req, res) => {

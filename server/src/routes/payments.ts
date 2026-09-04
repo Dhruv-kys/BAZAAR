@@ -44,7 +44,14 @@ paymentsRouter.post("/webhook", express.raw({ type: "application/json" }), async
     return;
   }
 
-  const event = JSON.parse(rawBody) as RazorpayWebhookEvent;
+  let event: RazorpayWebhookEvent;
+  try {
+    event = JSON.parse(rawBody) as RazorpayWebhookEvent;
+  } catch {
+    res.status(400).json({ error: "Webhook body is not valid JSON" });
+    return;
+  }
+
   const summaryId = extractSummaryId(event);
   const order = summaryId ? getPendingOrder(summaryId) : undefined;
 
