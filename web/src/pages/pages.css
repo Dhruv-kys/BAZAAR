@@ -14,7 +14,7 @@
   --ease: cubic-bezier(0.16, 1, 0.3, 1);
 
   min-height: 100dvh;
-  background: var(--bg);
+  background: transparent;
   color: var(--ink-2);
   font-family: var(--human);
 }

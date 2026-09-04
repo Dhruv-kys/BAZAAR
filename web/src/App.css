@@ -24,7 +24,7 @@
   display: grid;
   grid-template-rows: auto minmax(0, 1fr);
   height: 100dvh;
-  background: var(--bg);
+  background: transparent;
   color: var(--ink-2);
   font-family: var(--human);
   overflow: hidden;

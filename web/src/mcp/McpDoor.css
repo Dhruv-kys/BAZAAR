@@ -16,17 +16,6 @@
   color: var(--note);
 }
 
-/* The paper itself, bled past the shell's max-width. */
-.mcp::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  background:
-    radial-gradient(1100px 700px at 12% -8%, var(--paper-3), transparent 62%),
-    var(--paper);
-}
-
 .mcp ::selection {
   background: color-mix(in srgb, var(--gold) 42%, transparent);
   color: var(--note);

@@ -12,7 +12,9 @@
 
   --ink-strong: #3a3a3a;
   --ink-body: #5f5a52;
-  --ink-soft: #767065;
+  /* Carries small muted labels, which sit directly on the wash. Held well
+     clear of 4.5:1 on bare paper so a tinted backdrop cannot push it under. */
+  --ink-soft: #625d54;
 
   /*
    * Two tiers. The vivid hues are the reference's and carry display type,
@@ -21,7 +23,7 @@
    * the mistake this split exists to prevent.
    */
   --flame: #ed682b;
-  --flame-ink: #b8501f;
+  --flame-ink: #a34418;
   --ember: #c45c2a;
   --ochre: #c98a2a;
   --ochre-ink: #946316;
@@ -101,7 +103,7 @@ html.dark {
 
   --ink-strong: #ede4d4;
   --ink-body: #b3aa9b;
-  --ink-soft: #857d71;
+  --ink-soft: #a2988a;
 
   --flame: #ff8a52;
   --flame-ink: #ff8a52;
