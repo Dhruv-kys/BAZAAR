@@ -3,7 +3,7 @@ import { Dashboard } from "./dashboard/Dashboard";
 import { Landing } from "./landing/Landing";
 import { Protocols } from "./pages/Protocols";
 import { usePath } from "./router";
-import { WatercolorField } from "./WatercolorField";
+import { AmbientFlowers } from "./AmbientFlowers";
 import { Workspace } from "./Workspace";
 
 function Route() {
@@ -18,7 +18,7 @@ function Route() {
 function App() {
   return (
     <>
-      <WatercolorField />
+      <AmbientFlowers />
       <Route />
     </>
   );
