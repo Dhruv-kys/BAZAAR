@@ -18,6 +18,7 @@ export const REFUSAL_CODES = [
   "PRICE_CHANGED",
   "PAYMENT_IN_PROGRESS",
   "PAYMENT_PROVIDER_ERROR",
+  "PAYMENT_PROVIDER_LIMIT",
 ] as const;
 
 export type RefusalCode = (typeof REFUSAL_CODES)[number];
@@ -57,6 +58,7 @@ const HTTP_STATUS: Partial<Record<RefusalCode, number>> = {
   PAYMENT_IN_PROGRESS: 409,
   QUOTE_NOT_FOUND: 404,
   PAYMENT_PROVIDER_ERROR: 502,
+  PAYMENT_PROVIDER_LIMIT: 503,
 };
 
 export function httpStatusFor(code: RefusalCode): number {

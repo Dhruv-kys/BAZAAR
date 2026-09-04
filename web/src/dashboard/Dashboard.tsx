@@ -148,7 +148,9 @@ export function Dashboard() {
               <Tile
                 label="Uplift over first recommendation"
                 value={`${metrics.upliftPercent >= 0 ? "+" : ""}${metrics.upliftPercent.toFixed(0)}%`}
-                note={`${rupeesShort(metrics.upliftInPaise)} above ${rupeesShort(metrics.baselineTotalInPaise)}`}
+                note={`${rupeesShort(Math.abs(metrics.upliftInPaise))} ${
+                  metrics.upliftInPaise < 0 ? "below" : "above"
+                } ${rupeesShort(metrics.baselineTotalInPaise)}`}
                 emphasis
               />
               <Tile

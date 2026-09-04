@@ -3,7 +3,7 @@ import { describe, it } from "node:test";
 import { createPendingOrder, getPendingOrder, recordPaymentAttempt } from "./pendingOrderStore.js";
 import crypto from "node:crypto";
 import Razorpay from "razorpay";
-import { paymentReferenceId, summaryIdFromReference, verifyWebhookSignature } from "./razorpay.js";
+import { paymentReferenceId, summaryIdFromReference, verifyWebhookSignature, PaymentProviderError } from "./razorpay.js";
 
 function stagedOrder() {
   return createPendingOrder({
@@ -132,5 +132,37 @@ describe("webhook signature verification", () => {
 
   it("fails closed when no webhook secret is configured", () => {
     assert.throws(() => withSecret(undefined, () => verifyWebhookSignature(BODY, signature)));
+  });
+});
+
+describe("payment provider errors", () => {
+  const capBody = JSON.stringify({
+    error: { code: "RATE_LIMIT_EXCEEDED", description: "test mode limit of 30 reached for payment_link" },
+  });
+
+  it("reads the code and description out of Razorpay's envelope", () => {
+    const failure = new PaymentProviderError(400, capBody);
+    assert.equal(failure.code, "RATE_LIMIT_EXCEEDED");
+    assert.match(failure.description, /test mode limit of 30/);
+  });
+
+  it("recognises the lifetime test-mode link cap", () => {
+    assert.equal(new PaymentProviderError(400, capBody).isTestModeLinkLimit, true);
+  });
+
+  it("does not mistake other refusals for the cap", () => {
+    const duplicate = JSON.stringify({
+      error: { code: "BAD_REQUEST_ERROR", description: "payment link with given reference_id already exists" },
+    });
+    assert.equal(new PaymentProviderError(400, duplicate).isTestModeLinkLimit, false);
+
+    const throttled = JSON.stringify({ error: { code: "RATE_LIMIT_EXCEEDED", description: "too many requests" } });
+    assert.equal(new PaymentProviderError(429, throttled).isTestModeLinkLimit, false);
+  });
+
+  it("survives a body that is not JSON", () => {
+    const html = new PaymentProviderError(502, "<html>bad gateway</html>");
+    assert.equal(html.code, "HTTP_502");
+    assert.equal(html.isTestModeLinkLimit, false);
   });
 });

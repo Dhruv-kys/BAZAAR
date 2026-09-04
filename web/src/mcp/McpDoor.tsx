@@ -311,6 +311,18 @@ signed    ${doc.authorization.scheme}, single use`}
               <pre className="mcp-wire">
                 <code>{`MERCHANT_MCP_URL=${origin}${doc.transport.mcp} npm run buyer`}</code>
               </pre>
+              <p className="pg-lede">
+                And to check the door rather than take its word for it &mdash; {doc.refusal_codes?.length ?? 19}{" "}
+                published refusal codes, fail-closed authentication, bounds intersecting, all
+                asserted against the running server:
+              </p>
+              <pre className="mcp-wire">
+                <code>npm run verify:mcp</code>
+              </pre>
+              <p className="pg-note">
+                Every confirm it attempts is one the merchant must refuse, so the run never reaches
+                payment link creation and costs the demo account nothing.
+              </p>
               <Note>credentials are issued by the merchant, not self-served</Note>
             </section>
           </>

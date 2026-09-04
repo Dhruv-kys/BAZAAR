@@ -13,6 +13,37 @@ export function paymentLinkDescription(order: Pick<PendingOrder, "items">): stri
   return order.items.map((item) => `${item.quantity}x ${item.productName} (${item.variantLabel})`).join(", ");
 }
 
+/**
+ * Razorpay's REST errors carry a code and a description. Test mode allows 30
+ * payment links for the lifetime of an account and never resets — cancelling
+ * old links does not free a slot, because creation is what counts. That failure
+ * is permanent, so it must not be reported as something worth retrying.
+ */
+export class PaymentProviderError extends Error {
+  readonly code: string;
+  readonly description: string;
+
+  constructor(status: number, body: string) {
+    let code = `HTTP_${status}`;
+    let description = body.slice(0, 300);
+    try {
+      const parsed = JSON.parse(body) as { error?: { code?: string; description?: string } };
+      if (parsed.error?.code) code = parsed.error.code;
+      if (parsed.error?.description) description = parsed.error.description;
+    } catch {
+      // Not JSON; the raw body is the best description available.
+    }
+    super(`Razorpay ${code}: ${description}`);
+    this.name = "PaymentProviderError";
+    this.code = code;
+    this.description = description;
+  }
+
+  get isTestModeLinkLimit(): boolean {
+    return this.code === "RATE_LIMIT_EXCEEDED" && /test mode limit/i.test(this.description);
+  }
+}
+
 export async function createPaymentLink(order: PendingOrder): Promise<{ id: string; shortUrl: string }> {
   const keyId = process.env.RAZORPAY_KEY_ID;
   const keySecret = process.env.RAZORPAY_KEY_SECRET;
@@ -39,8 +70,7 @@ export async function createPaymentLink(order: PendingOrder): Promise<{ id: stri
   });
 
   if (!res.ok) {
-    const body = await res.text();
-    throw new Error(`Razorpay payment link creation failed: ${res.status} ${body}`);
+    throw new PaymentProviderError(res.status, await res.text());
   }
 
   const data = (await res.json()) as { id: string; short_url: string };

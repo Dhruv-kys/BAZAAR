@@ -3,7 +3,7 @@ import { logAuditEvent } from "../audit/auditStore.js";
 import { handlePaymentFailure } from "../payments/handlePaymentFailure.js";
 import { watchPaymentLink } from "../payments/paymentWatcher.js";
 import { getPendingOrder, markOrderPaid } from "../payments/pendingOrderStore.js";
-import { summaryIdFromReference, verifyWebhookSignature } from "../payments/razorpay.js";
+import { summaryIdFromReference, verifyWebhookSignature, PaymentProviderError } from "../payments/razorpay.js";
 
 export const paymentsRouter = Router();
 
@@ -85,6 +85,17 @@ paymentsRouter.post("/:summaryId/simulate-failure", async (req, res) => {
     res.json(result);
   } catch (error) {
     console.error("simulate-failure failed:", error);
+
+    // The retry needs a link of its own, so the decline demo hits the same
+    // permanent cap the confirm does. Say which wall was hit, not "not found".
+    if (error instanceof PaymentProviderError && error.isTestModeLinkLimit) {
+      res.status(503).json({
+        code: "PAYMENT_PROVIDER_LIMIT",
+        error:
+          "The decline was recorded and the retry is authorized, but the merchant's Razorpay test account has used all 30 of its lifetime payment links, so no replacement link can be issued.",
+      });
+      return;
+    }
     res.status(404).json({ error: "Unknown order, or a retry payment link couldn't be generated" });
   }
 });

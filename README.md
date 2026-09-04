@@ -50,6 +50,7 @@ message rather than failing at request time.
 | `npm run build -w server` | `server/dist/` |
 | `npm run wallet -- keygen` | mint the buyer keypair for the agent door |
 | `npm run buyer` | drive the merchant over real MCP |
+| `npm run verify:mcp` | 21 assertions against the running agent door; spends no payment links |
 
 ## Environment
 
@@ -114,6 +115,22 @@ survives a process restart.
 Settlement is deliberately split, and declared as `authorization-agentic/settlement-human`: the
 mandate is the authorization gate, and Razorpay's hosted Payment Link stays the settlement gate.
 
+## Verify the agent door yourself
+
+```bash
+npm run dev
+npm run verify:mcp        # 21 assertions against the running merchant, over real MCP
+```
+
+It drives the live endpoint as a real MCP client and asserts what unit tests cannot reach: that an
+unknown or missing credential is turned away over HTTP, that a tool-calling model's explicit nulls
+survive the wire, that every mandate failure is refused with the code the contract publishes, that
+bounds intersect and the binding constraint is handed back, and that an agent's quote cannot be
+confirmed through the human route.
+
+**Every confirm it makes is one the merchant must refuse, so the run cannot reach payment link
+creation.** It is safe to run repeatedly against the demo account.
+
 ## Payment testing
 
 Test mode; no money moves.
@@ -124,6 +141,13 @@ Test mode; no money moves.
 **Razorpay test mode caps Payment Links at 30 for the lifetime of the account, with no reset.**
 Cancelling old links does not free slots — creation is what counts. Conversation, clamping and the
 whole MCP flow cost nothing; only `confirm` consumes one. Do not burn links rehearsing.
+
+A decline costs **two** links, not one: the original, plus the replacement the retry mints. Budget
+accordingly — thirty links is roughly a dozen complete run-throughs.
+
+When the cap is reached the order is still staged, priced and authorized; only settlement is
+unavailable. The refusal says so, with the code `PAYMENT_PROVIDER_LIMIT`, rather than inviting a
+retry that can never succeed.
 
 ## Deployment
 

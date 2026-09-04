@@ -8,7 +8,7 @@ import {
   recordPaymentAttempt,
   type PendingOrder,
 } from "../payments/pendingOrderStore.js";
-import { createPaymentLink } from "../payments/razorpay.js";
+import { createPaymentLink, PaymentProviderError } from "../payments/razorpay.js";
 import { watchPaymentLink } from "../payments/paymentWatcher.js";
 import type { Actor } from "./actor.js";
 import { consumeMandate, releaseMandate, verifyMandate, type VerifiedMandate } from "./mandate.js";
@@ -193,7 +193,24 @@ export async function confirmOrder(request: ConfirmOrderRequest): Promise<Confir
   } catch (error) {
     if (mandate) releaseMandate(mandate.claims.mandateId);
     console.error("payment link creation failed:", error);
-    return deny(request, refuse("PAYMENT_PROVIDER_ERROR", "Couldn't create the payment link right now. Please try again."));
+
+    /*
+     * The test-mode link cap is permanent — it never resets and cancelling old
+     * links does not free a slot — so telling the customer to try again would
+     * be false. Every gate has already passed at this point; the order is
+     * staged and authorized, and only settlement is unavailable. Saying so is
+     * the honest failure, and it keeps the audit record accurate.
+     */
+    if (error instanceof PaymentProviderError && error.isTestModeLinkLimit) {
+      return deny(
+        request,
+        refuse(
+          "PAYMENT_PROVIDER_LIMIT",
+          "This order passed every check and is authorized, but the merchant's Razorpay test account has used all 30 of its lifetime payment links, so no new one can be issued. That limit never resets. Nothing is wrong with the order.",
+        ),
+      );
+    }
+    return deny(request, refuse("PAYMENT_PROVIDER_ERROR", "The payment provider could not issue a link for this order."));
   } finally {
     endPaymentLinkCreation(summaryId);
   }
