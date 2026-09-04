@@ -3,7 +3,7 @@
   "name": "BAZAAR Bakery",
   "currency": "INR",
   "trade": "an online bakery",
-  "qualifiers": "the occasion, the headcount and any flavour preference",
+  "qualifiers": "the occasion, the headcount, any dietary need such as eggless, and the budget they have in mind",
   "guardrails": {
     "maxDiscountPercent": 15,
     "maxDiscountFlatPaise": 20000,
@@ -93,6 +93,133 @@
           "upsellReason": "Better per-cupcake price and enough for a bigger group"
         }
       ]
+    },
+    {
+      "id": "mango-cheesecake",
+      "name": "Alphonso Mango Cheesecake",
+      "category": "dessert",
+      "tags": [
+        "anniversary",
+        "romantic",
+        "summer",
+        "gifting"
+      ],
+      "variants": [
+        {
+          "id": "cheesecake-0.5kg",
+          "label": "0.5 kg",
+          "priceInPaise": 74900
+        },
+        {
+          "id": "cheesecake-1kg",
+          "label": "1 kg",
+          "priceInPaise": 129900
+        },
+        {
+          "id": "cheesecake-1kg-baked",
+          "label": "1 kg, slow-baked (Premium)",
+          "priceInPaise": 174900,
+          "premium": true,
+          "upsellReason": "Slow-baked rather than set, so it holds a clean slice at the table instead of softening - worth it when the dessert is the moment"
+        }
+      ]
+    },
+    {
+      "id": "tiramisu-jars",
+      "name": "Tiramisu Jars",
+      "category": "dessert",
+      "tags": [
+        "dinner party",
+        "office",
+        "gifting"
+      ],
+      "variants": [
+        {
+          "id": "tiramisu-4",
+          "label": "Set of 4",
+          "priceInPaise": 49900
+        },
+        {
+          "id": "tiramisu-8",
+          "label": "Set of 8 (Premium)",
+          "priceInPaise": 89900,
+          "premium": true,
+          "upsellReason": "Individually sealed jars travel and keep, so a set of 8 serves a table without anyone slicing or plating anything"
+        }
+      ]
+    },
+    {
+      "id": "fudge-brownie-slab",
+      "name": "Fudge Brownie Slab",
+      "category": "dessert",
+      "tags": [
+        "party",
+        "kids",
+        "office"
+      ],
+      "variants": [
+        {
+          "id": "brownie-9",
+          "label": "9 pieces",
+          "priceInPaise": 39900
+        },
+        {
+          "id": "brownie-16",
+          "label": "16 pieces (Premium)",
+          "priceInPaise": 64900,
+          "premium": true,
+          "upsellReason": "Sixteen pieces cover a full office floor and cost less per head than nine"
+        }
+      ]
+    },
+    {
+      "id": "sourdough-loaf",
+      "name": "Sourdough Loaf",
+      "category": "bread",
+      "tags": [
+        "everyday",
+        "breakfast",
+        "housewarming"
+      ],
+      "variants": [
+        {
+          "id": "sourdough-1",
+          "label": "One loaf",
+          "priceInPaise": 29900
+        },
+        {
+          "id": "sourdough-2",
+          "label": "Two loaves, one seeded (Premium)",
+          "priceInPaise": 54900,
+          "premium": true,
+          "upsellReason": "The second loaf is seeded and freezes well, so a housewarming gift keeps giving past the first morning"
+        }
+      ]
+    },
+    {
+      "id": "festive-hamper",
+      "name": "Festive Gift Hamper",
+      "category": "hamper",
+      "tags": [
+        "diwali",
+        "festival",
+        "corporate",
+        "gifting"
+      ],
+      "variants": [
+        {
+          "id": "hamper-classic",
+          "label": "Classic",
+          "priceInPaise": 159900
+        },
+        {
+          "id": "hamper-grand",
+          "label": "Grand (Premium)",
+          "priceInPaise": 289900,
+          "premium": true,
+          "upsellReason": "Adds the cheesecake and two sourdough loaves to the box, which is what makes it read as a corporate gift rather than a courtesy"
+        }
+      ]
     }
   ],
   "addOns": [
@@ -124,7 +251,80 @@
       "priceInPaise": 4900,
       "crossSellFor": [
         "cake",
-        "cupcakes"
+        "cupcakes",
+        "dessert",
+        "bread",
+        "hamper"
+      ],
+      "tags": [
+        "birthday",
+        "anniversary",
+        "romantic",
+        "gifting"
+      ]
+    },
+    {
+      "id": "name-piping",
+      "name": "Name Piped On Top",
+      "priceInPaise": 7900,
+      "crossSellFor": [
+        "cake",
+        "dessert"
+      ],
+      "tags": [
+        "birthday",
+        "anniversary",
+        "personal"
+      ]
+    },
+    {
+      "id": "photo-print",
+      "name": "Edible Photo Print",
+      "priceInPaise": 19900,
+      "crossSellFor": [
+        "cake"
+      ],
+      "tags": [
+        "birthday",
+        "personal"
+      ]
+    },
+    {
+      "id": "eggless-swap",
+      "name": "Eggless Preparation",
+      "priceInPaise": 12900,
+      "crossSellFor": [
+        "cake",
+        "cupcakes",
+        "dessert"
+      ],
+      "tags": [
+        "dietary",
+        "eggless"
+      ]
+    },
+    {
+      "id": "gift-wrap",
+      "name": "Festive Gift Wrap",
+      "priceInPaise": 9900,
+      "crossSellFor": [
+        "hamper",
+        "dessert",
+        "bread"
+      ],
+      "tags": [
+        "diwali",
+        "festival",
+        "gifting"
+      ]
+    },
+    {
+      "id": "midnight-surprise",
+      "name": "Midnight Surprise Delivery",
+      "priceInPaise": 14900,
+      "crossSellFor": [
+        "cake",
+        "dessert"
       ],
       "tags": [
         "birthday",

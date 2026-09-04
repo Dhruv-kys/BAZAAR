@@ -58,3 +58,39 @@ describe("guardrail intersection", () => {
     assert.equal(isRefusal(authorizeTotal(200000, agentActor("s1", "a"), mandate(200000))), false);
   });
 });
+
+describe("a budget the customer set", () => {
+  it("joins the intersection and can bind", () => {
+    const result = authorizeTotal(120000, humanActor("s1", 100000));
+    assert.equal(result.ok, false);
+    if (result.ok) return;
+    assert.equal(result.code, "CEILING_EXCEEDED");
+    assert.equal(result.binding?.source, "customer_budget");
+    assert.equal(result.binding?.limitInPaise, 100000);
+  });
+
+  it("allows a total that sits on the budget exactly", () => {
+    assert.equal(authorizeTotal(100000, humanActor("s1", 100000)).ok, true);
+  });
+
+  it("never widens the merchant cap, however large it is set", () => {
+    const overCap = GUARDRAILS.maxOrderValuePaise + 1;
+    const result = authorizeTotal(overCap, humanActor("s1", overCap * 10));
+    assert.equal(result.ok, false);
+    if (result.ok) return;
+    assert.equal(result.binding?.source, "merchant_order_cap");
+  });
+
+  it("is ignored when it is absent or nonsense", () => {
+    assert.equal(boundsFor(humanActor("s1")).length, 1);
+    assert.equal(boundsFor(humanActor("s1", 0)).length, 1);
+    assert.equal(boundsFor(humanActor("s1", -500)).length, 1);
+  });
+
+  it("names the budget in the refusal so the shopper knows which wall they hit", () => {
+    const result = authorizeTotal(120000, humanActor("s1", 100000));
+    assert.equal(result.ok, false);
+    if (result.ok) return;
+    assert.match(result.message, /budget you set/i);
+  });
+});

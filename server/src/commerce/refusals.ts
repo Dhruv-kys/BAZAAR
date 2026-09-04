@@ -23,7 +23,7 @@ export const REFUSAL_CODES = [
 
 export type RefusalCode = (typeof REFUSAL_CODES)[number];
 
-export type BoundSource = "mandate" | "merchant_order_cap";
+export type BoundSource = "mandate" | "merchant_order_cap" | "customer_budget";
 
 export interface BindingConstraint {
   source: BoundSource;

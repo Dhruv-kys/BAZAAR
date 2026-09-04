@@ -399,3 +399,52 @@
     min-height: 46px;
   }
 }
+
+/*
+ * The budget is the customer's own bound. It is shown next to the composer
+ * because it belongs to the person, not to the shop — and the note says plainly
+ * that it intersects the merchant cap rather than overriding it.
+ */
+.cp-budget {
+  padding: 10px calc(var(--step) * 2) 0;
+}
+
+.cp-budget label {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.cp-budget label span {
+  font-family: var(--sys);
+  font-size: var(--t-micro);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.cp-budget label strong {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.cp-budget input[type="range"] {
+  width: 100%;
+  margin: 8px 0 0;
+  accent-color: var(--live);
+  height: 22px;
+}
+
+.cp-budget p {
+  margin: 2px 0 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--ink-3);
+}
+
+@media (max-width: 820px) {
+  .cp-budget input[type="range"] {
+    height: 30px;
+  }
+}

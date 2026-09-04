@@ -14,7 +14,7 @@ const SESSION_ID_PATTERN = /^[A-Za-z0-9-]{8,64}$/;
 export const chatRouter = Router();
 
 chatRouter.post("/", async (req, res) => {
-  const { sessionId, message } = req.body ?? {};
+  const { sessionId, message, budgetInPaise } = req.body ?? {};
 
   if (typeof sessionId !== "string" || typeof message !== "string" || !message.trim()) {
     res.status(400).json({ error: "sessionId and message are required strings" });
@@ -30,7 +30,13 @@ chatRouter.post("/", async (req, res) => {
   }
 
   try {
-    const result = await runChatTurn(sessionId, message);
+    // A budget is the customer's own bound. Trust it only as a number, and
+    // only to tighten: the merchant cap still intersects it either way.
+    const budget =
+      typeof budgetInPaise === "number" && Number.isFinite(budgetInPaise) && budgetInPaise > 0
+        ? Math.floor(budgetInPaise)
+        : undefined;
+    const result = await runChatTurn(sessionId, message, budget);
     res.json(result);
   } catch (error) {
     if (error instanceof AgentNotConfiguredError) {

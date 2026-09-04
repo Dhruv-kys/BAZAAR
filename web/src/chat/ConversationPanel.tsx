@@ -53,6 +53,8 @@ export function ConversationPanel({
     (message) => setMessages((prev) => [...prev, { role: "notice", content: message }]),
   );
 
+  const [budget, setBudget] = useState(0);
+
   const realtime = useRealtimeVoice(sessionId, {
     onUserTranscript: (text) => {
       onStarted();
@@ -114,7 +116,7 @@ export function ConversationPanel({
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ sessionId, message: text }),
+          body: JSON.stringify({ sessionId, message: text, budgetInPaise: budget > 0 ? budget * 100 : undefined }),
         },
       );
       if (!ok || !data.reply) {
@@ -282,6 +284,28 @@ export function ConversationPanel({
           <span>{agentState}</span>
         </div>
       )}
+
+      <div className="cp-budget">
+        <label htmlFor="cp-budget-input">
+          <span>Budget</span>
+          <strong>{budget > 0 ? `₹${budget.toLocaleString("en-IN")}` : "none set"}</strong>
+        </label>
+        <input
+          id="cp-budget-input"
+          type="range"
+          min={0}
+          max={5000}
+          step={100}
+          value={budget}
+          onChange={(e) => setBudget(Number(e.target.value))}
+          aria-describedby="cp-budget-note"
+        />
+        <p id="cp-budget-note">
+          {budget > 0
+            ? "The server holds the agent to this. It intersects the shop's own cap — whichever is tighter binds."
+            : "Set one and the agent has to work inside it."}
+        </p>
+      </div>
 
       <form
         className="cp-composer"

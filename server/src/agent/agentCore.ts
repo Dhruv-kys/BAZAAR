@@ -13,7 +13,11 @@ export interface ChatTurnResult {
   orderSummary?: PendingOrder;
 }
 
-export async function runChatTurn(sessionId: string, userMessage: string): Promise<ChatTurnResult> {
+export async function runChatTurn(
+  sessionId: string,
+  userMessage: string,
+  budgetInPaise?: number,
+): Promise<ChatTurnResult> {
   const history = getSessionMessages(sessionId);
   if (history.length === 0) {
     history.push({ role: "system", content: SYSTEM_PROMPT });
@@ -35,7 +39,7 @@ export async function runChatTurn(sessionId: string, userMessage: string): Promi
     for (const toolCall of message.tool_calls) {
       if (toolCall.type !== "function") continue;
 
-      const result = runTool(toolCall.function.name, toolCall.function.arguments, { actor: humanActor(sessionId) });
+      const result = runTool(toolCall.function.name, toolCall.function.arguments, { actor: humanActor(sessionId, budgetInPaise) });
       if (toolCall.function.name === "present_order_summary" && result.ok) {
         orderSummary = result.result as PendingOrder;
       }

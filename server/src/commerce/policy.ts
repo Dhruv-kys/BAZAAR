@@ -33,6 +33,12 @@ export function boundsFor(actor: Actor, mandate?: VerifiedMandate): Bound[] {
   if (actor.kind === "agent" && mandate) {
     bounds.push({ source: "mandate", limitInPaise: mandate.claims.ceilingInPaise });
   }
+  // A budget the customer set is a bound like any other: it joins the
+  // intersection, it can only ever tighten, and the refusal names it when it
+  // is the one that binds.
+  if (typeof actor.budgetInPaise === "number" && actor.budgetInPaise > 0) {
+    bounds.push({ source: "customer_budget", limitInPaise: actor.budgetInPaise });
+  }
   return bounds;
 }
 
@@ -55,7 +61,9 @@ export function authorizeTotal(
       "CEILING_EXCEEDED",
       binding.source === "mandate"
         ? `This order exceeds the spend ceiling the mandate authorizes.`
-        : `This order exceeds the maximum value the merchant can approve without direct involvement.`,
+        : binding.source === "customer_budget"
+          ? `This order is over the budget you set. Lower the basket, or raise the budget.`
+          : `This order exceeds the maximum value the merchant can approve without direct involvement.`,
       {
         source: binding.source,
         limitInPaise: binding.limitInPaise,
