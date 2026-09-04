@@ -1,4 +1,4 @@
-import Razorpay from "razorpay";
+import crypto from "node:crypto";
 import type { PendingOrder } from "./pendingOrderStore.js";
 
 export function paymentReferenceId(order: Pick<PendingOrder, "summaryId" | "attemptCount">): string {
@@ -65,8 +65,16 @@ export async function getPaymentLinkStatus(paymentLinkId: string): Promise<strin
   return data.status;
 }
 
+/**
+ * The same HMAC the Razorpay SDK computes, compared in constant time: the SDK's
+ * own validateWebhookSignature ends in a plain `===` over the hex digest, which
+ * leaks a comparison-length signal. razorpay.test.ts pins the two to agree.
+ */
 export function verifyWebhookSignature(rawBody: string, signature: string): boolean {
   const secret = process.env.RAZORPAY_WEBHOOK_SECRET;
   if (!secret) throw new Error("RAZORPAY_WEBHOOK_SECRET is not configured");
-  return Razorpay.validateWebhookSignature(rawBody, signature, secret);
+
+  const expected = crypto.createHmac("sha256", secret).update(rawBody).digest();
+  const provided = Buffer.from(signature, "hex");
+  return expected.length === provided.length && crypto.timingSafeEqual(expected, provided);
 }
