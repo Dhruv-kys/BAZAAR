@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { growFlower, layFlower, rand, type Flower } from "./flowers";
+import { growFlower, layAll, layNext, rand, type Flower } from "./flowers";
 import "./AmbientFlowers.css";
 
 /*
@@ -9,7 +9,7 @@ import "./AmbientFlowers.css";
  */
 
 const SPAWN_MS = 4200;
-const GROW_MS = 4200;
+const STROKES_PER_FRAME = 2;
 const FADE_PER_FRAME = 0.00035;
 const MAX_LIVE = 14;
 
@@ -67,11 +67,9 @@ export function AmbientFlowers() {
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       ctx.restore();
 
-      for (const flower of live) {
-        const age = now - flower.born;
-        if (age > GROW_MS) continue;
-        layFlower(ctx, flower, 1 - Math.pow(1 - Math.min(1, age / GROW_MS), 3));
-      }
+      // Only the unfinished ones cost anything: a finished flower is already
+      // on the canvas and is never painted twice.
+      for (const flower of live) layNext(ctx, flower, STROKES_PER_FRAME);
     };
 
     const run = () => {
@@ -81,12 +79,23 @@ export function AmbientFlowers() {
         // A settled garden rather than none: painted once, then left alone.
         if (!live.length) {
           for (let i = 0; i < 7; i++) sow(0);
-          live.forEach((flower) => layFlower(ctx, flower, 1));
+          live.forEach((flower) => layAll(ctx, flower));
         }
         return;
       }
       raf = requestAnimationFrame(tick);
     };
+
+    // A page should never be arrived at bare. Two flowers are already open
+    // before the first frame; the rest are sown at the slow cadence.
+    if (!still.matches) {
+      for (let i = 0; i < 2; i++) {
+        const at = marginPoint();
+        const seeded = growFlower(at.x, at.y, 0);
+        layAll(ctx, seeded);
+        live.push(seeded);
+      }
+    }
 
     document.addEventListener("visibilitychange", run);
     still.addEventListener("change", run);

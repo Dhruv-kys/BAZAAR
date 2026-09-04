@@ -1,10 +1,10 @@
 import { useEffect, useRef } from "react";
-import { growFlower, layFlower, rand, type Flower } from "../flowers";
+import { growFlower, layAll, layNext, rand, type Flower } from "../flowers";
 import "./FlowerField.css";
 
 const SPAWN_MS = 620;
 const FADE_PER_FRAME = 0.0009;
-const GROW_MS = 1500;
+const STROKES_PER_FRAME = 9;
 
 export function FlowerField({ painting }: { painting: boolean }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -46,10 +46,8 @@ export function FlowerField({ painting }: { painting: boolean }) {
       ctx.restore();
 
       for (const flower of open) {
-        const age = now - flower.born;
-        if (age > GROW_MS) continue;
-        const eased = still ? 1 : 1 - Math.pow(1 - Math.min(1, age / GROW_MS), 3);
-        layFlower(ctx, flower, eased);
+        if (still) layAll(ctx, flower);
+        else layNext(ctx, flower, STROKES_PER_FRAME);
       }
     };
 
