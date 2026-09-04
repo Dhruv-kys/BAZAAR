@@ -25,6 +25,11 @@ export function firstCredential(): string | null {
   return [...credentialMap().keys()][0] ?? null;
 }
 
+export function firstAgent(): { key: string; agentId: string } | null {
+  const [entry] = [...credentialMap().entries()];
+  return entry ? { key: entry[0], agentId: entry[1] } : null;
+}
+
 export function resolveAgentId(req: Request): string | null {
   const header = req.header("authorization") ?? "";
   const token = header.toLowerCase().startsWith("bearer ") ? header.slice(7).trim() : "";

@@ -10,7 +10,8 @@
     "test": "npm run test -w server",
     "typecheck": "tsc --noEmit -p server/tsconfig.json && tsc -b web",
     "wallet": "npm run wallet -w server --",
-    "buyer": "npm run buyer -w server"
+    "buyer": "npm run buyer -w server",
+    "verify:mcp": "npm run verify:mcp -w server"
   },
   "devDependencies": {
     "concurrently": "^9.1.0"
