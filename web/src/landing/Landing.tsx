@@ -1,6 +1,7 @@
 import { Suspense, lazy, useEffect, useState } from "react";
 import { Note } from "../Marginalia";
 import { FlowerField } from "./FlowerField";
+import { Postcard } from "./Postcard";
 import { ArrowUpRightIcon, CoinIcon, LockIcon, ShieldIcon } from "../icons";
 import { PageShell } from "../pages/PageShell";
 import { navigate } from "../router";
@@ -106,7 +107,7 @@ export function Landing() {
           });
         }}
       >
-        {painting ? "bring it back" : "tap to see magic"}
+        {painting ? "Wisdom" : "tap to see magic"}
       </button>
 
       {painting && (
@@ -219,6 +220,7 @@ export function Landing() {
           Source on GitHub
         </a>
       </footer>
+        <Postcard />
       </PageShell>
     </>
   );

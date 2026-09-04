@@ -443,8 +443,10 @@
   color: var(--ink-3);
 }
 
+/* A slider is dragged, not tapped, so it needs more height on a phone than a
+   button does. */
 @media (max-width: 820px) {
   .cp-budget input[type="range"] {
-    height: 30px;
+    height: 44px;
   }
 }

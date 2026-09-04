@@ -10,6 +10,7 @@ const LINKS = [
   { href: "/dashboard", label: "Dashboard" },
   { href: "/mcp", label: "MCP" },
   { href: "/protocols", label: "Protocols" },
+  { href: "/help", label: "Help" },
 ];
 
 function useReveal() {

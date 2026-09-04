@@ -1,0 +1,64 @@
+.hp-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.hp-list > li {
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr);
+  gap: 0 12px;
+  padding: 26px 0;
+  border-top: 1px solid var(--rule);
+}
+
+.hp-n {
+  font-family: var(--sys);
+  font-size: var(--t-micro);
+  letter-spacing: 0.12em;
+  color: var(--ink-3);
+  padding-top: 5px;
+}
+
+.hp-list h2 {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.018em;
+  color: var(--ink);
+}
+
+.hp-list p {
+  margin: 8px 0 0;
+  max-width: 62ch;
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--ink-2);
+}
+
+/* The reason it exists, set apart from what it does. */
+.hp-why {
+  padding-left: 12px;
+  border-left: 2px solid color-mix(in srgb, var(--flame) 40%, transparent);
+  color: var(--ink-3) !important;
+}
+
+.hp-list a {
+  display: inline-block;
+  margin: 14px 0 0;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--flame-ink);
+}
+
+@media (max-width: 620px) {
+  .hp-list > li {
+    grid-template-columns: 1fr;
+    gap: 6px;
+    padding: 22px 0;
+  }
+
+  .hp-n {
+    padding-top: 0;
+  }
+}

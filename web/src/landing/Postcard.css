@@ -1,0 +1,133 @@
+/*
+ * A closing card, held for a full screen. The page warms a shade while it is
+ * in view — paper only, never the ink, so nothing gets harder to read for the
+ * sake of a mood.
+ */
+:root[data-soft] {
+  --paper: #fdf1d6;
+  --paper-raised: #fffaee;
+  --hairline: #e4d9bd;
+}
+
+:root[data-soft] .garden {
+  opacity: 0.2;
+}
+
+html.dark:root[data-soft] {
+  --paper: #191512;
+  --paper-raised: #221d17;
+}
+
+html {
+  transition: background-color 1.2s ease;
+}
+
+.pc {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  padding: calc(var(--step) * 8) calc(var(--step) * 3);
+  overflow: hidden;
+}
+
+.pc-garden {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  mix-blend-mode: multiply;
+  opacity: 0.5;
+}
+
+html.dark .pc-garden {
+  mix-blend-mode: screen;
+  opacity: 0.42;
+}
+
+/* The card itself: a print pinned to paper, slightly off-square. */
+.pc-card {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 260px) minmax(0, 1fr);
+  align-items: center;
+  gap: calc(var(--step) * 4);
+  max-width: 720px;
+  margin: 0;
+  padding: calc(var(--step) * 3);
+  background: var(--paper-raised);
+  border: 1px solid var(--hairline-firm);
+  border-radius: 3px;
+  box-shadow: 0 1px 2px rgba(58, 58, 58, 0.06), 0 26px 60px -34px rgba(58, 58, 58, 0.5);
+  transform: rotate(-0.9deg) translateY(18px);
+  opacity: 0;
+  transition: transform 1s cubic-bezier(0.2, 0.7, 0.28, 1), opacity 1s ease;
+}
+
+.pc.is-here .pc-card {
+  transform: rotate(-0.9deg) translateY(0);
+  opacity: 1;
+}
+
+.pc-card img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 2px;
+  filter: sepia(0.12) saturate(0.94);
+}
+
+.pc-card figcaption {
+  min-width: 0;
+}
+
+.pc-stamp {
+  display: inline-block;
+  font-family: var(--sys);
+  font-size: var(--t-micro);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--flame-ink);
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.pc-hand {
+  margin: 18px 0 0;
+  font-family: var(--hand);
+  font-size: clamp(23px, 3vw, 31px);
+  line-height: 1.24;
+  color: var(--ink);
+}
+
+.pc-meta {
+  margin: 20px 0 0;
+  font-family: var(--sys);
+  font-size: var(--t-micro-sm);
+  line-height: 1.9;
+  letter-spacing: 0.06em;
+  color: var(--ink-3);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pc-card,
+  html {
+    transition: none;
+  }
+}
+
+@media (max-width: 720px) {
+  .pc-card {
+    grid-template-columns: minmax(0, 1fr);
+    gap: calc(var(--step) * 2.5);
+    max-width: 380px;
+  }
+
+  .pc-card img {
+    max-width: 220px;
+    margin: 0 auto;
+  }
+}

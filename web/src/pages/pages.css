@@ -290,6 +290,14 @@
   .pg-icon {
     min-width: 40px;
   }
+
+  /* Six links and two icons will not share a row on a handset, and the one
+     that overflowed was always the lone theme toggle. The source link is the
+     least useful of them on a phone and still sits in the footer, so it is the
+     one that goes. */
+  .pg-nav a[href*="github.com"] {
+    display: none;
+  }
 }
 
 /* The smallest handsets are nine pixels short of fitting the row, and the
