@@ -1,9 +1,11 @@
 import { logAuditEvent } from "../audit/auditStore.js";
+import { getVariant } from "../catalog/catalog.js";
 import { createDiscountRequest } from "../payments/discountRequestStore.js";
 import { createPendingOrder } from "../payments/pendingOrderStore.js";
 import type { Actor } from "./actor.js";
 import {
   BULK_DISCOUNT_OFFER_PERCENT,
+  bulkDiscountPercent,
   bulkDiscountQualifies,
   offersFor,
   parseOffer,
@@ -48,6 +50,12 @@ export function requestQuote(request: QuoteRequest): QuoteResult {
     if (application.addAddOnId) addOnIds.push(application.addAddOnId);
     if (application.upgrade) {
       const { productId, toVariantId } = application.upgrade;
+      // An unresolvable upgrade used to apply as a silent no-op, which both lied
+      // to the agent about what it bought and let arbitrary counterparty text
+      // through the offer code into the merchant's audit reasoning (I8).
+      if (!items.some((item) => item.productId === productId) || !getVariant(productId, toVariantId)) {
+        return refuse("UNKNOWN_PRODUCT", `Offer ${request.acceptOffer} does not apply to this basket.`);
+      }
       items = items.map((item) =>
         item.productId === productId ? { ...item, variantId: toVariantId } : item,
       );
@@ -66,11 +74,12 @@ export function requestQuote(request: QuoteRequest): QuoteResult {
         "This order does not reach the bulk-order threshold, so that discount cannot be applied.",
       );
     }
+    const appliedPercent = bulkDiscountPercent();
     const discountRequest = createDiscountRequest({
       requestedPercent: BULK_DISCOUNT_OFFER_PERCENT,
-      appliedPercent: BULK_DISCOUNT_OFFER_PERCENT,
+      appliedPercent,
       reasonCode: "BULK_ADDON",
-      wasClamped: false,
+      wasClamped: appliedPercent < BULK_DISCOUNT_OFFER_PERCENT,
     });
     discountRequestId = discountRequest.discountRequestId;
   }
