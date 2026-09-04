@@ -26,7 +26,7 @@ export function Postcard() {
         // The warm shade is a page-level mood, so it rides on the root.
         document.documentElement.toggleAttribute("data-soft", entry.isIntersecting);
       },
-      { threshold: 0.4 },
+      { threshold: 0.15 },
     );
     watcher.observe(section);
 

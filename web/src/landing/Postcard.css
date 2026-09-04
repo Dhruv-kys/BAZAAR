@@ -33,6 +33,13 @@ html {
 
 .pc {
   position: relative;
+  /* Full bleed out of the shell's centred column. Held inside it, the light
+     stopped at the column edge and read as a rectangle laid over the page. */
+  width: 100vw;
+  margin-inline: calc(50% - 50vw);
+  /* The shell reserves bottom padding for ordinary pages. A full-bleed closing
+     section has to take it back, or the page ends on a band of bare ground. */
+  margin-bottom: calc(var(--step) * -14);
   min-height: 100vh;
   min-height: 100svh;
   display: grid;
@@ -47,11 +54,20 @@ html {
   position: absolute;
   inset: -20%;
   pointer-events: none;
+  /* Dawn rather than daylight: gold at the centre, rose beneath it, and a
+     cool violet along the top so the warm has something to be warm against.
+     The flat cream it replaced had none of the depth the dark mode got. */
   background:
-    radial-gradient(ellipse 46% 38% at 50% 40%, rgba(255, 249, 226, 0.95), transparent 72%),
-    radial-gradient(ellipse 78% 62% at 50% 44%, rgba(255, 226, 168, 0.55), transparent 76%);
+    radial-gradient(ellipse 40% 32% at 50% 40%, color-mix(in srgb, var(--paper-raised) 92%, var(--gold)), transparent 70%),
+    radial-gradient(ellipse 66% 52% at 50% 42%, color-mix(in srgb, var(--gold) 46%, transparent), transparent 74%),
+    radial-gradient(ellipse 90% 46% at 50% 88%, color-mix(in srgb, var(--flame) 22%, transparent), transparent 76%),
+    radial-gradient(ellipse 96% 40% at 50% 2%, color-mix(in srgb, var(--azure) 22%, transparent), transparent 74%);
+  /* Faded at both edges so the light has no border. Without this the section
+     announces itself with a hard line across the page. */
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 18%, #000 82%, transparent);
+  mask-image: linear-gradient(to bottom, transparent, #000 18%, #000 82%, transparent);
   opacity: 0;
-  transition: opacity 1.6s ease;
+  transition: opacity 2.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .pc.is-here::before {
@@ -60,8 +76,9 @@ html {
 
 html.dark .pc::before {
   background:
-    radial-gradient(ellipse 44% 36% at 50% 40%, rgba(255, 214, 150, 0.20), transparent 70%),
-    radial-gradient(ellipse 80% 64% at 50% 44%, rgba(198, 158, 255, 0.10), transparent 78%);
+    radial-gradient(ellipse 42% 34% at 50% 40%, color-mix(in srgb, var(--gold) 24%, transparent), transparent 70%),
+    radial-gradient(ellipse 80% 62% at 50% 44%, color-mix(in srgb, var(--azure) 16%, transparent), transparent 78%),
+    radial-gradient(ellipse 92% 44% at 50% 92%, color-mix(in srgb, var(--flame) 12%, transparent), transparent 76%);
 }
 
 .pc-garden {
@@ -159,6 +176,12 @@ html.dark .pc-card {
   .pc::before,
   html {
     transition: none;
+  }
+}
+
+@media (max-width: 900px) {
+  .pc {
+    margin-bottom: calc(var(--step) * -10);
   }
 }
 

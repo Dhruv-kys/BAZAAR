@@ -401,52 +401,87 @@
 }
 
 /*
- * The budget is the customer's own bound. It is shown next to the composer
- * because it belongs to the person, not to the shop — and the note says plainly
- * that it intersects the merchant cap rather than overriding it.
+ * A single quiet row above the composer: the shopper's own bound on the left,
+ * and the things they remember at the last second on the right.
  */
+.cp-tray {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  padding: 0 calc(var(--step) * 2) 8px;
+}
+
 .cp-budget {
-  padding: 10px calc(var(--step) * 2) 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: none;
 }
 
 .cp-budget label {
   display: flex;
   align-items: baseline;
-  gap: 8px;
+  gap: 6px;
+  white-space: nowrap;
 }
 
 .cp-budget label span {
   font-family: var(--sys);
   font-size: var(--t-micro);
-  letter-spacing: 0.14em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--ink-3);
 }
 
 .cp-budget label strong {
-  font-size: 13px;
+  font-size: 12.5px;
   font-weight: 600;
   color: var(--ink);
+  min-width: 34px;
 }
 
 .cp-budget input[type="range"] {
-  width: 100%;
-  margin: 8px 0 0;
+  width: 92px;
+  height: 18px;
   accent-color: var(--live);
-  height: 22px;
+  cursor: pointer;
 }
 
-.cp-budget p {
-  margin: 2px 0 0;
+.cp-touches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+}
+
+.cp-touches button {
+  padding: 4px 10px;
+  font-family: var(--human);
   font-size: 12px;
-  line-height: 1.5;
   color: var(--ink-3);
+  background: transparent;
+  border: 1px dashed var(--rule-2);
+  border-radius: 999px;
+  transition: color 0.2s var(--ease), border-color 0.2s var(--ease);
 }
 
-/* A slider is dragged, not tapped, so it needs more height on a phone than a
-   button does. */
+.cp-touches button:hover {
+  color: var(--ink);
+  border-color: var(--live);
+  border-style: solid;
+}
+
 @media (max-width: 820px) {
   .cp-budget input[type="range"] {
-    height: 44px;
+    height: 40px;
+    width: 108px;
+  }
+
+  .cp-touches button {
+    padding: 8px 11px;
   }
 }

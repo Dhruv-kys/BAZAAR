@@ -30,6 +30,13 @@ function greeting(): string {
   return "Good evening";
 }
 
+const PERSONAL_TOUCHES = [
+  "make it eggless",
+  "pipe a name on top",
+  "add a handwritten card",
+  "deliver at midnight",
+];
+
 export function ConversationPanel({
   sessionId,
   onOrderStaged,
@@ -285,26 +292,43 @@ export function ConversationPanel({
         </div>
       )}
 
-      <div className="cp-budget">
-        <label htmlFor="cp-budget-input">
-          <span>Budget</span>
-          <strong>{budget > 0 ? `₹${budget.toLocaleString("en-IN")}` : "none set"}</strong>
-        </label>
-        <input
-          id="cp-budget-input"
-          type="range"
-          min={0}
-          max={5000}
-          step={100}
-          value={budget}
-          onChange={(e) => setBudget(Number(e.target.value))}
-          aria-describedby="cp-budget-note"
-        />
-        <p id="cp-budget-note">
-          {budget > 0
-            ? "The server holds the agent to this. It intersects the shop's own cap — whichever is tighter binds."
-            : "Set one and the agent has to work inside it."}
-        </p>
+      <div className="cp-tray">
+        <div className="cp-budget">
+          <label htmlFor="cp-budget-input">
+            <span>Budget</span>
+            <strong>{budget > 0 ? `₹${budget.toLocaleString("en-IN")}` : "any"}</strong>
+          </label>
+          <input
+            id="cp-budget-input"
+            type="range"
+            min={0}
+            max={5000}
+            step={100}
+            value={budget}
+            onChange={(e) => setBudget(Number(e.target.value))}
+            title={
+              budget > 0
+                ? "The server holds the agent to this, intersected with the shop's own cap"
+                : "Set one and the agent has to work inside it"
+            }
+          />
+        </div>
+
+        {/* The things people remember at the last second. Tapping one writes it
+            into the message rather than sending on its own, so the shopper stays
+            in the sentence they were already making. */}
+        <ul className="cp-touches">
+          {PERSONAL_TOUCHES.map((touch) => (
+            <li key={touch}>
+              <button
+                type="button"
+                onClick={() => setInput((prev) => (prev ? `${prev.trim()}, ${touch}` : touch))}
+              >
+                {touch}
+              </button>
+            </li>
+          ))}
+        </ul>
       </div>
 
       <form
