@@ -8,6 +8,16 @@ import "./Landing.css";
 
 const CoinScene = lazy(() => import("./CoinScene"));
 
+const MONEY = [
+  { line: "Money often costs too much.", who: "Ralph Waldo Emerson" },
+  { line: "Price is what you pay. Value is what you get.", who: "Warren Buffett" },
+  { line: "Beware of little expenses; a small leak will sink a great ship.", who: "Benjamin Franklin" },
+  { line: "Wealth consists not in having great possessions, but in having few wants.", who: "Epictetus" },
+  { line: "Never spend your money before you have it.", who: "Thomas Jefferson" },
+  { line: "An investment in knowledge pays the best interest.", who: "Benjamin Franklin" },
+  { line: "A wise person should have money in their head, but not in their heart.", who: "Jonathan Swift" },
+];
+
 const ASKS = [
   { icon: CoinIcon, text: "A birthday cake for 15 people" },
   { icon: ShieldIcon, text: "Something chocolate for an anniversary" },
@@ -73,6 +83,7 @@ function OpenAgent({ large }: { large?: boolean }) {
 export function Landing() {
   const [field] = useState(detectField);
   const [painting, setPainting] = useState(false);
+  const [saying, setSaying] = useState(() => Math.floor(Math.random() * MONEY.length));
 
   // The shell is what fades, so the flag rides on the root rather than on any
   // element inside it.
@@ -88,10 +99,22 @@ export function Landing() {
         type="button"
         className={`lp-paint${painting ? " is-open" : ""}`}
         aria-pressed={painting}
-        onClick={() => setPainting((on) => !on)}
+        onClick={() => {
+          setPainting((on) => {
+            if (!on) setSaying((i) => (i + 1 + Math.floor(Math.random() * (MONEY.length - 1))) % MONEY.length);
+            return !on;
+          });
+        }}
       >
         {painting ? "bring it back" : "click here"}
       </button>
+
+      {painting && (
+        <figure className="lp-saying" key={saying}>
+          <blockquote>{MONEY[saying].line}</blockquote>
+          <figcaption>{MONEY[saying].who}</figcaption>
+        </figure>
+      )}
 
       <PageShell slug="" width={940}>
       <section className="lp-hero" data-reveal>
