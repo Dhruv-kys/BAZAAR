@@ -18,15 +18,15 @@ function faceTexture(caption: string, mirrored = false): THREE.Texture {
   const g = c.getContext("2d")!;
   const R = s / 2;
 
-  g.fillStyle = "#d7dde0";
+  g.fillStyle = "#e8cf9a";
   g.beginPath();
   g.arc(R, R, R, 0, Math.PI * 2);
   g.fill();
 
   const field = g.createRadialGradient(R * 0.8, R * 0.7, R * 0.1, R, R, R);
-  field.addColorStop(0, "#f7fafb");
-  field.addColorStop(0.62, "#b9c4c8");
-  field.addColorStop(1, "#68777d");
+  field.addColorStop(0, "#fdf6e6");
+  field.addColorStop(0.62, "#d9b878");
+  field.addColorStop(1, "#9a7434");
   g.fillStyle = field;
   g.beginPath();
   g.arc(R, R, R * 0.9, 0, Math.PI * 2);
@@ -46,7 +46,7 @@ function faceTexture(caption: string, mirrored = false): THREE.Texture {
     g.fill();
   }
 
-  g.fillStyle = "#26343a";
+  g.fillStyle = "#6b4f1e";
   g.font = `700 ${s * 0.42}px "Inter Tight", ui-sans-serif, system-ui, sans-serif`;
   g.textAlign = "center";
   g.textBaseline = "middle";
@@ -76,7 +76,7 @@ function Coin({ state, level }: { state: CoinState; level: number }) {
 
   const materials = useMemo(() => {
     const edge = new THREE.MeshStandardMaterial({
-      color: "#8b989d",
+      color: "#c39a52",
       metalness: 0.95,
       roughness: 0.28,
     });
@@ -138,7 +138,7 @@ function Coin({ state, level }: { state: CoinState; level: number }) {
       </mesh>
       <mesh>
         <torusGeometry args={[1.28, 0.035, 12, 96]} />
-        <meshStandardMaterial color="#dfe6e8" metalness={0.95} roughness={0.22} />
+        <meshStandardMaterial color="#e6c98c" metalness={0.95} roughness={0.22} />
       </mesh>
     </group>
   );
@@ -163,7 +163,7 @@ function Halo({ state, level }: { state: CoinState; level: number }) {
   return (
     <mesh ref={ring}>
       <ringGeometry args={[0.92, 1, 96]} />
-      <meshBasicMaterial ref={mat} color="#7a78f0" transparent opacity={0} depthWrite={false} />
+      <meshBasicMaterial ref={mat} color="#ed682b" transparent opacity={0} depthWrite={false} />
     </mesh>
   );
 }
@@ -185,7 +185,7 @@ const LINE_FRAG = `
     float core = pow(y, 70.0);
     float glow = pow(y, 5.0) * 0.09;
     float fade = 1.0 - smoothstep(0.18, 0.5, abs(vUv.x - 0.5));
-    gl_FragColor = vec4(vec3(0.45, 0.60, 0.78), (core + glow) * fade * uPulse);
+    gl_FragColor = vec4(vec3(0.93, 0.66, 0.29), (core + glow) * fade * uPulse);
   }
 `;
 
@@ -232,11 +232,11 @@ export default function CoinScene({ state = "idle", level = 0, ceiling = true }:
       camera={{ position: [0, 0.1, 5.4], fov: 40 }}
       gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
     >
-      <ambientLight intensity={0.55} color="#edf3fb" />
-      <directionalLight position={[3, 4, 5]} intensity={2.1} color="#f2f6fd" />
-      <directionalLight position={[-4, 1.5, 2]} intensity={1.0} color="#8baed8" />
-      <directionalLight position={[0, -3, 3]} intensity={0.55} color="#c9d6e6" />
-      <pointLight position={[0, 0, 3]} intensity={12} distance={12} color="#ffffff" />
+      <ambientLight intensity={0.55} color="#fff6e6" />
+      <directionalLight position={[3, 4, 5]} intensity={2.1} color="#fff3dd" />
+      <directionalLight position={[-4, 1.5, 2]} intensity={1.0} color="#d4a64f" />
+      <directionalLight position={[0, -3, 3]} intensity={0.55} color="#e8cfa0" />
+      <pointLight position={[0, 0, 3]} intensity={12} distance={12} color="#fff4e0" />
       <Rig damping={state === "idle" ? 0.22 : 0.06}>
         <Coin state={state} level={level} />
         <Halo state={state} level={level} />

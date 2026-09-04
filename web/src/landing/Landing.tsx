@@ -1,4 +1,5 @@
 import { Suspense, lazy, useState } from "react";
+import { Note } from "../Marginalia";
 import { ArrowUpRightIcon, CoinIcon, LockIcon, ShieldIcon } from "../icons";
 import { PageShell } from "../pages/PageShell";
 import { navigate } from "../router";
@@ -134,6 +135,7 @@ export function Landing() {
             </li>
           ))}
         </ol>
+        <Note>the model proposes — the server is what actually decides</Note>
       </section>
 
       <section className="pg-section" data-reveal>
@@ -150,6 +152,7 @@ export function Landing() {
             </li>
           ))}
         </ul>
+        <Note>every one of these is checked by a test, not by a promise</Note>
       </section>
 
       <section className="pg-section lp-close" data-reveal>

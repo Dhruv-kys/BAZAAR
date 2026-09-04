@@ -29,18 +29,18 @@
 
 .lp-head {
   margin: calc(var(--step) * 3) 0 0;
-  font-family: var(--serif);
-  font-weight: 400;
-  font-size: clamp(38px, 6vw, 76px);
-  line-height: 1.02;
-  letter-spacing: -0.02em;
-  color: var(--ink-2);
+  font-family: var(--text);
+  font-weight: 600;
+  font-size: clamp(38px, 6vw, 74px);
+  line-height: 1.03;
+  letter-spacing: -0.037em;
+  color: var(--ink);
   text-wrap: balance;
 }
 
 .lp-head em {
-  font-style: italic;
-  color: var(--ink);
+  font-style: normal;
+  color: var(--flame);
 }
 
 .lp-feats {
@@ -203,12 +203,20 @@
   padding: 0;
   list-style: none;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+  /* Four guarantees on a two-up grid: auto-fit left an empty track whose
+     gap colour read as a fifth, blank card. */
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1px;
   background: var(--rule);
   border: 1px solid var(--rule);
-  border-radius: 12px;
+  border-radius: 4px;
   overflow: hidden;
+}
+
+@media (max-width: 620px) {
+  .lp-proof {
+    grid-template-columns: 1fr;
+  }
 }
 
 .lp-proof li {
