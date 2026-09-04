@@ -20,6 +20,6 @@ html.dark .garden {
 /* A phone has no margins to spare, so the garden steps back further. */
 @media (max-width: 820px) {
   .garden {
-    opacity: 0.2;
+    opacity: 0.13;
   }
 }

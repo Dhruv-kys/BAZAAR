@@ -74,7 +74,7 @@
 
 .as-time {
   font-family: var(--sys);
-  font-size: 10px;
+  font-size: var(--t-micro);
   font-variant-numeric: tabular-nums;
   color: var(--ink-3);
 }
@@ -111,14 +111,14 @@
 
 .as-tool {
   font-family: var(--sys);
-  font-size: 10px;
+  font-size: var(--t-micro);
   color: var(--ink-3);
 }
 
 .as-flag {
   padding: 2px 6px;
   font-family: var(--sys);
-  font-size: 9px;
+  font-size: var(--t-micro-sm);
   font-weight: 600;
   letter-spacing: 0.1em;
   text-transform: uppercase;

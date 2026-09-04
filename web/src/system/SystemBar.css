@@ -41,7 +41,7 @@
   gap: 6px;
   margin-left: var(--step);
   font-family: var(--sys);
-  font-size: 10px;
+  font-size: var(--t-micro);
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--ink-3);
@@ -100,7 +100,7 @@
 
 .sb-pill b {
   font-family: var(--sys);
-  font-size: 10px;
+  font-size: var(--t-micro);
   font-weight: 500;
   font-variant-numeric: tabular-nums;
   padding: 1px 6px;
@@ -229,5 +229,33 @@
 
   .sb-links a {
     padding-inline: 8px;
+  }
+}
+
+@media (max-width: 820px) {
+  .sb-icon,
+  .sb-links a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .sb-brand {
+    align-items: center;
+    min-height: 44px;
+  }
+
+  /* Once the links are wide enough to tap they fit beside the icons, so the
+     row they had been given to themselves only stranded the icons above it. */
+  .sb-links {
+    order: 0;
+    width: auto;
+  }
+
+  .sb-actions {
+    flex: 1;
+    justify-content: flex-end;
   }
 }

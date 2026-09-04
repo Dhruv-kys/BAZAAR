@@ -76,6 +76,11 @@
   --sans: var(--text);
   --mono: var(--wire);
 
+  /* Uppercase tracked labels. Held as tokens so a phone can raise them all
+     at once — 9px is legible on a desktop and a squint on a handset. */
+  --t-micro: 10px;
+  --t-micro-sm: 9.5px;
+
   --t-xs: 12px;
   --t-sm: 13px;
   --t-base: 15px;
@@ -236,4 +241,11 @@ a {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--ink-3);
+}
+
+@media (max-width: 820px) {
+  :root {
+    --t-micro: 11.5px;
+    --t-micro-sm: 11px;
+  }
 }

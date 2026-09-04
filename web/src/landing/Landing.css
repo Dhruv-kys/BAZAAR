@@ -223,7 +223,7 @@
   display: block;
   margin-bottom: 9px;
   font-family: var(--sys);
-  font-size: 10px;
+  font-size: var(--t-micro);
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--live);

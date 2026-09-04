@@ -110,7 +110,7 @@
 
 .pg-eyebrow {
   font-family: var(--sys);
-  font-size: 10px;
+  font-size: var(--t-micro);
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--live);
@@ -219,7 +219,7 @@
 
 @media (max-width: 520px) {
   .pg-nav > a:not(.pg-icon) {
-    padding: 6px 10px;
+    padding: 6px 7px;
     font-size: 12px;
   }
 
@@ -237,5 +237,71 @@
 
   .pg-code code {
     font-size: 11.5px;
+  }
+}
+
+/*
+ * Touch targets. A 30px icon and a 33px nav pill are both misses on a phone.
+ * Controls get a real minimum; inline links grow their hit box with padding and
+ * take it back with margin, so the target moves without the layout doing so.
+ */
+/* Four pills plus two icons do not fit a phone at desktop padding, and the
+   overflow stranded the theme toggle alone on a third row. */
+@media (max-width: 480px) {
+  @media (max-width: 820px) {
+  .pg-nav a,
+  .pg-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .pg-brand {
+    align-items: center;
+    min-height: 44px;
+  }
+
+  .pg-main a:not(.pg-nav a) {
+    padding-block: 11px;
+    margin-block: -11px;
+  }
+}
+
+/* Beside the brand there is not room for four pills and two icons, and the
+     overflow stranded the theme toggle alone on a third row. Give the nav the
+     whole of the second row instead. */
+  .pg-head {
+    flex-wrap: wrap;
+    height: auto;
+    padding-block: calc(var(--step) * 1.25);
+    gap: var(--step);
+  }
+
+  .pg-nav {
+    width: 100%;
+    justify-content: flex-start;
+    gap: 2px;
+  }
+
+  /* 40px still clears the 24px minimum comfortably, and the eight pixels it
+     gives back are what fit the theme toggle onto the same row. */
+  .pg-icon {
+    min-width: 40px;
+  }
+}
+
+/* The smallest handsets are nine pixels short of fitting the row, and the
+   overflow is always the lone theme toggle. 38px still clears the 24px
+   minimum by half again, which is the cheaper of the two compromises. */
+@media (max-width: 380px) {
+  .pg-nav > a:not(.pg-icon) {
+    padding: 6px 5px;
+    min-width: 40px;
+  }
+
+  .pg-icon {
+    min-width: 38px;
   }
 }

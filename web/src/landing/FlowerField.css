@@ -85,15 +85,17 @@ html.dark .bloom {
   display: none;
 }
 
+/* Docked bottom-right it sat straight on top of the primary call to action.
+   The upper right of the hero is the one corner a phone leaves empty. */
 @media (max-width: 820px) {
   .lp-paint {
-    width: 88px;
-    height: 88px;
-    right: 20px;
-    top: auto;
-    bottom: 24px;
+    width: 76px;
+    height: 76px;
+    right: 12px;
+    top: 104px;
+    bottom: auto;
     transform: none;
-    font-size: 20px;
+    font-size: 18px;
   }
 
   .lp-paint:hover {

@@ -15,11 +15,20 @@ const MAX_LIVE = 14;
 
 /* Text runs down the middle of every page, so pigment is sown to either side
    of it. Measuring contrast over the old background is what put it there. */
+const isNarrow = () => window.innerWidth < 820;
+
+/*
+ * A phone has no margin: the text column is the whole width, and the header is
+ * the worst place a flower could land. There, blooms are pinned to the very
+ * edges and kept below the chrome, so only their outer petals reach the page.
+ */
 function marginPoint(): { x: number; y: number } {
   const left = Math.random() < 0.5;
+  const narrow = isNarrow();
+  const inset = narrow ? 0.08 : 0.2;
   return {
-    x: (left ? rand(0.01, 0.2) : rand(0.8, 0.99)) * window.innerWidth,
-    y: rand(0.05, 0.95) * window.innerHeight,
+    x: (left ? rand(-0.04, inset - 0.04) : rand(1.04 - inset, 1.04)) * window.innerWidth,
+    y: rand(narrow ? 0.32 : 0.05, 0.95) * window.innerHeight,
   };
 }
 
@@ -47,7 +56,7 @@ export function AmbientFlowers() {
     const sow = (now: number) => {
       const at = marginPoint();
       const flower = growFlower(at.x, at.y, now);
-      flower.scale *= 1.15;
+      flower.scale *= isNarrow() ? 0.6 : 1.15;
       live.push(flower);
       if (live.length > MAX_LIVE) live.shift();
     };
@@ -92,6 +101,7 @@ export function AmbientFlowers() {
       for (let i = 0; i < 2; i++) {
         const at = marginPoint();
         const seeded = growFlower(at.x, at.y, 0);
+        seeded.scale *= isNarrow() ? 0.6 : 1.15;
         layAll(ctx, seeded);
         live.push(seeded);
       }

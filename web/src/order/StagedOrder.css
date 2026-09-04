@@ -1,6 +1,6 @@
 .so-id {
   font-family: var(--sys);
-  font-size: 10px;
+  font-size: var(--t-micro);
   color: var(--ink-3);
 }
 
@@ -184,7 +184,7 @@
 .so-decline {
   padding: 8px 12px;
   font-family: var(--sys);
-  font-size: 10px;
+  font-size: var(--t-micro);
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--ink-3);
