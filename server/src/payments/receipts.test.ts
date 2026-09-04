@@ -3,13 +3,15 @@ import { describe, it } from "node:test";
 import { issueReceiptNumber } from "./receipts.js";
 
 describe("receipt numbering", () => {
+  // Dated well past the demo so a test run does not advance today's series.
   it("never hands the same number to two orders", () => {
-    const issued = new Set(Array.from({ length: 200 }, () => issueReceiptNumber()));
+    const day = new Date(2030, 0, 1);
+    const issued = new Set(Array.from({ length: 200 }, () => issueReceiptNumber(day)));
     assert.equal(issued.size, 200);
   });
 
   it("reads as a merchant record: series, date, sequence", () => {
-    assert.match(issueReceiptNumber(new Date(2026, 8, 5)), /^[A-Z]{1,3}-20260905-\d{4}$/);
+    assert.match(issueReceiptNumber(new Date(2030, 0, 1)), /^[A-Z]{1,3}-20300101-\d{4}$/);
   });
 
   it("counts each day separately", () => {

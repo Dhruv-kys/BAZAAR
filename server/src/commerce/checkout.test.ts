@@ -1,5 +1,7 @@
 import assert from "node:assert/strict";
+import crypto from "node:crypto";
 import { describe, it } from "node:test";
+import { getAuditEvents } from "../audit/auditStore.js";
 import { GUARDRAILS } from "../guardrails/config.js";
 import {
   beginPaymentLinkCreation,
@@ -8,6 +10,8 @@ import {
   recordPaymentAttempt,
   type NewPendingOrder,
 } from "../payments/pendingOrderStore.js";
+import { getPendingOrder } from "../payments/pendingOrderStore.js";
+import { stopWatching } from "../payments/paymentWatcher.js";
 import { agentActor, humanActor } from "./actor.js";
 import { confirmOrder } from "./checkout.js";
 import { isRefusal } from "./refusals.js";
@@ -154,6 +158,62 @@ describe("the billing gate", () => {
       ),
       "MANDATE_REQUIRED",
     );
+  });
+});
+
+describe("a confirmed order's record", () => {
+  async function confirmWithStubbedProvider(sessionId: string) {
+    const order = stage({ sessionId });
+    const realFetch = globalThis.fetch;
+    globalThis.fetch = (async () =>
+      new Response(JSON.stringify({ id: "plink_stub", short_url: "https://rzp.io/i/stub" }), {
+        status: 200,
+        headers: { "content-type": "application/json" },
+      })) as typeof fetch;
+    process.env.RAZORPAY_KEY_ID = "rzp_test_key";
+    process.env.RAZORPAY_KEY_SECRET = "secret";
+
+    try {
+      const result = await confirmOrder({ summaryId: order.summaryId, actor: humanActor(sessionId), billing });
+      assert.ok(result.ok);
+      return { order: getPendingOrder(order.summaryId)!, result };
+    } finally {
+      globalThis.fetch = realFetch;
+      stopWatching(order.summaryId);
+    }
+  }
+
+  it("issues a receipt number and bills it to the payer who confirmed", async () => {
+    const { order, result } = await confirmWithStubbedProvider("s-receipt");
+    assert.match(result.receiptNo, /^[A-Z]{1,3}-\d{8}-\d{4}$/);
+    assert.equal(order.receiptNo, result.receiptNo);
+    assert.equal(order.billing?.name, billing.name);
+    assert.equal(order.billing?.contact, "+919876543210");
+  });
+
+  it("records the payer in the audit trail without republishing their contact details", async () => {
+    // The audit store is a real SQLite file that outlives a test run, so this
+    // session has to be one no earlier run can have written to.
+    const sessionId = `s-audit-${crypto.randomUUID()}`;
+    const { result } = await confirmWithStubbedProvider(sessionId);
+    const created = getAuditEvents(sessionId).find((event) => event.type === "payment_link_created");
+    assert.ok(created);
+
+    const payload = created.payload as { receiptNo: string; billedTo: { name: string; email: string; contact: string } };
+    assert.equal(payload.receiptNo, result.receiptNo);
+    assert.equal(payload.billedTo.name, billing.name);
+    assert.ok(!payload.billedTo.email.includes("ananya@"));
+    assert.ok(!payload.billedTo.contact.includes("543"));
+    assert.ok(!JSON.stringify(created).includes(billing.email));
+  });
+
+  // A decline is a second attempt against one receipt, never a second receipt.
+  it("keeps one receipt number across a re-confirm", async () => {
+    const { order, result } = await confirmWithStubbedProvider("s-again");
+    const again = await confirmOrder({ summaryId: order.summaryId, actor: humanActor("s-again"), billing });
+    assert.ok(again.ok);
+    assert.equal(again.receiptNo, result.receiptNo);
+    stopWatching(order.summaryId);
   });
 });
 
