@@ -3,19 +3,28 @@
  * in view — paper only, never the ink, so nothing gets harder to read for the
  * sake of a mood.
  */
+/*
+ * The page lifts rather than merely warming: paper goes luminous and the ink
+ * stays exactly where it was, so everything gets easier to read, not harder.
+ */
 :root[data-soft] {
-  --paper: #fdf1d6;
-  --paper-raised: #fffaee;
-  --hairline: #e4d9bd;
+  --paper: #fffdf4;
+  --paper-raised: #ffffff;
+  --hairline: #eee4cb;
+  --hairline-firm: #ded0ad;
 }
 
 :root[data-soft] .garden {
-  opacity: 0.2;
+  opacity: 0.22;
 }
 
+/* Night, but a lit one — a trace of indigo under the warmth, so the gold has
+   something to be gold against. */
 html.dark:root[data-soft] {
-  --paper: #191512;
-  --paper-raised: #221d17;
+  --paper: #14121d;
+  --paper-raised: #1d1a29;
+  --hairline: rgba(240, 230, 210, 0.16);
+  --hairline-firm: rgba(240, 230, 210, 0.28);
 }
 
 html {
@@ -30,6 +39,29 @@ html {
   place-items: center;
   padding: calc(var(--step) * 8) calc(var(--step) * 3);
   overflow: hidden;
+}
+
+/* The light itself. Held behind the flowers so they read as lit from within. */
+.pc::before {
+  content: "";
+  position: absolute;
+  inset: -20%;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 46% 38% at 50% 40%, rgba(255, 249, 226, 0.95), transparent 72%),
+    radial-gradient(ellipse 78% 62% at 50% 44%, rgba(255, 226, 168, 0.55), transparent 76%);
+  opacity: 0;
+  transition: opacity 1.6s ease;
+}
+
+.pc.is-here::before {
+  opacity: 1;
+}
+
+html.dark .pc::before {
+  background:
+    radial-gradient(ellipse 44% 36% at 50% 40%, rgba(255, 214, 150, 0.20), transparent 70%),
+    radial-gradient(ellipse 80% 64% at 50% 44%, rgba(198, 158, 255, 0.10), transparent 78%);
 }
 
 .pc-garden {
@@ -61,7 +93,10 @@ html.dark .pc-garden {
   background: var(--paper-raised);
   border: 1px solid var(--hairline-firm);
   border-radius: 3px;
-  box-shadow: 0 1px 2px rgba(58, 58, 58, 0.06), 0 26px 60px -34px rgba(58, 58, 58, 0.5);
+  box-shadow:
+    0 1px 2px rgba(58, 58, 58, 0.06),
+    0 26px 60px -34px rgba(58, 58, 58, 0.45),
+    0 0 90px -10px rgba(255, 226, 168, 0.55);
   transform: rotate(-0.9deg) translateY(18px);
   opacity: 0;
   transition: transform 1s cubic-bezier(0.2, 0.7, 0.28, 1), opacity 1s ease;
@@ -112,8 +147,16 @@ html.dark .pc-garden {
   color: var(--ink-3);
 }
 
+html.dark .pc-card {
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.5),
+    0 26px 60px -34px rgba(0, 0, 0, 0.8),
+    0 0 110px -20px rgba(255, 200, 130, 0.28);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .pc-card,
+  .pc::before,
   html {
     transition: none;
   }

@@ -50,6 +50,9 @@ export function SystemBar({
 
       <div className="sb-actions">
         <nav className="sb-links">
+          <a href="/" onClick={navigate("/")}>
+            Home
+          </a>
           <a href="/dashboard" onClick={navigate("/dashboard")}>
             Dashboard
           </a>
@@ -58,6 +61,9 @@ export function SystemBar({
           </a>
           <a href="/protocols" onClick={navigate("/protocols")}>
             Protocols
+          </a>
+          <a href="/help" onClick={navigate("/help")}>
+            Help
           </a>
         </nav>
 
