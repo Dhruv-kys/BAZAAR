@@ -1,46 +1,19 @@
 /*
  * The MCP page is a protocol transcript, so it is set as a lab notebook:
- * warm paper, hairline rules, monospace for anything the wire carries, and
- * handwritten marginalia for the asides that would bloat the body copy.
- * Page-scoped tokens only — the shared shell in pages.css still owns chrome.
+ * hairline rules, monospace for anything the wire carries, and handwritten
+ * marginalia for the asides that would bloat the body copy. Colour and type
+ * come from the shared palette in index.css.
  */
 .mcp {
-  --paper: #fff8e8;
-  --paper-2: #fdf3de;
-  --paper-3: #f8ead0;
-  --rule: rgba(58, 58, 58, 0.13);
-  --rule-firm: rgba(58, 58, 58, 0.26);
-  --note: #3a3a3a;
-  --note-2: #6d6862;
-  --note-3: #a8a59f;
-  --flame: #ed682b;
-  --ember: #c45c2a;
-  --ochre: #c98a2a;
-  --gold: #d4a64f;
-  --sage: #2d8a56;
-  --azure: #4a7ab5;
-
-  --hand: "Caveat", "Segoe Script", cursive;
-  --wire: "Fragment Mono", "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --paper-2: var(--paper-raised);
+  --paper-3: var(--paper-sunk);
+  --rule: var(--hairline);
+  --rule-firm: var(--hairline-firm);
+  --note: var(--ink);
+  --note-2: var(--ink-2);
+  --note-3: var(--ink-3);
 
   color: var(--note);
-}
-
-html.dark .mcp {
-  --paper: #1a1714;
-  --paper-2: #211d18;
-  --paper-3: #2a241d;
-  --rule: rgba(240, 230, 210, 0.13);
-  --rule-firm: rgba(240, 230, 210, 0.24);
-  --note: #ede4d4;
-  --note-2: #b3aa9b;
-  --note-3: #857d71;
-  --flame: #ff8a52;
-  --ember: #e8794a;
-  --ochre: #e0ab5c;
-  --gold: #d4a64f;
-  --sage: #6fbf8f;
-  --azure: #7ea8dd;
 }
 
 /* The paper itself, bled past the shell's max-width. */
@@ -59,51 +32,10 @@ html.dark .mcp {
   color: var(--note);
 }
 
-/* ── Marginalia ─────────────────────────────────────────────── */
-
-.mcp-note {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  margin: 14px 0 0;
-  color: var(--ember);
-}
-
-.mcp-note svg {
-  flex: none;
-  margin-top: 4px;
-  color: var(--gold);
-}
-
-.mcp-note span {
-  font-family: var(--hand);
-  font-size: 21px;
-  line-height: 1.32;
-  letter-spacing: 0.01em;
-  transform: rotate(-0.7deg);
-  transform-origin: left center;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .mcp-note {
-    animation: mcp-note-in 0.5s cubic-bezier(0.2, 0.7, 0.3, 1) both;
-  }
-}
-
-@keyframes mcp-note-in {
-  from { opacity: 0; transform: translateY(4px); }
-  to { opacity: 1; transform: none; }
-}
-
 /* ── Headings and body ──────────────────────────────────────── */
 
 .mcp .pg-intro h1 {
   letter-spacing: -0.028em;
-}
-
-.mcp .pg-intro h1 em {
-  font-style: normal;
-  color: var(--ember);
 }
 
 .mcp .pg-section {

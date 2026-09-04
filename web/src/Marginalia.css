@@ -1,0 +1,43 @@
+/*
+ * A margin note. Handwriting earns its place only for asides — the thing you
+ * would say pointing at the screen, which would read as padding in body copy.
+ */
+.note {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 14px 0 0;
+  color: var(--flame-ink);
+}
+
+.note svg {
+  flex: none;
+  margin-top: 4px;
+  color: var(--gold);
+}
+
+.note span {
+  font-family: var(--hand);
+  font-size: 21px;
+  line-height: 1.32;
+  letter-spacing: 0.01em;
+  transform: rotate(-0.7deg);
+  transform-origin: left center;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .note {
+    animation: note-in 0.5s cubic-bezier(0.2, 0.7, 0.3, 1) both;
+  }
+}
+
+@keyframes note-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (max-width: 720px) {
+  .note span {
+    font-size: 19px;
+  }
+}
