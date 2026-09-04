@@ -15,6 +15,8 @@ import { refuse, type BoundSource, type Refusal } from "./refusals.js";
  * I6 One code path creates a payment link, and claims the order before awaiting.
  * I7 Refusals are audit events with codes, not bare HTTP errors.
  * I8 Counterparty-supplied text never becomes merchant audit reasoning.
+ * I9 A quote is confirmed only through the door that staged it, so the gate a
+ *    quote was created under cannot be swapped for a weaker one.
  */
 
 export interface Bound {

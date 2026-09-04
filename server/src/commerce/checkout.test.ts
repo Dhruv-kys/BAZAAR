@@ -5,6 +5,7 @@ import {
   beginPaymentLinkCreation,
   createPendingOrder,
   endPaymentLinkCreation,
+  recordPaymentAttempt,
   type NewPendingOrder,
 } from "../payments/pendingOrderStore.js";
 import { agentActor, humanActor } from "./actor.js";
@@ -70,6 +71,39 @@ describe("confirm gating", () => {
     assert.equal(
       await codeOf(confirmOrder({ summaryId: order.summaryId, actor: humanActor("s1") })),
       "PRICE_CHANGED",
+    );
+  });
+
+  it("refuses to confirm an agent's quote through the human door", async () => {
+    const order = stage({ actor: "agent", agentId: "agent-alpha", sessionId: "agent:agent-alpha" });
+    assert.equal(
+      await codeOf(confirmOrder({ summaryId: order.summaryId, actor: humanActor("agent:agent-alpha") })),
+      "ORDER_ACTOR_MISMATCH",
+    );
+  });
+
+  it("refuses to confirm a human's quote as an agent", async () => {
+    const order = stage();
+    assert.equal(
+      await codeOf(confirmOrder({ summaryId: order.summaryId, actor: agentActor("s1", "agent-alpha") })),
+      "ORDER_ACTOR_MISMATCH",
+    );
+  });
+
+  it("refuses to confirm another agent's quote", async () => {
+    const order = stage({ actor: "agent", agentId: "agent-alpha" });
+    assert.equal(
+      await codeOf(confirmOrder({ summaryId: order.summaryId, actor: agentActor("s1", "agent-beta") })),
+      "ORDER_ACTOR_MISMATCH",
+    );
+  });
+
+  it("refuses the mismatched actor even once a payment link exists", async () => {
+    const order = stage({ actor: "agent", agentId: "agent-alpha" });
+    recordPaymentAttempt(order.summaryId, { paymentLinkId: "plink-1", url: "https://rzp.io/a" });
+    assert.equal(
+      await codeOf(confirmOrder({ summaryId: order.summaryId, actor: humanActor("s1") })),
+      "ORDER_ACTOR_MISMATCH",
     );
   });
 

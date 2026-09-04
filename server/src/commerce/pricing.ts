@@ -66,7 +66,7 @@ export function priceOrder(request: PriceOrderRequest): PricingResult {
     }
     discountInPaise =
       discountRequest.appliedPercent !== undefined
-        ? Math.round((subtotalInPaise * discountRequest.appliedPercent) / 100)
+        ? Math.floor((subtotalInPaise * discountRequest.appliedPercent) / 100)
         : (discountRequest.appliedAmountInPaise ?? 0);
     discountInPaise = Math.min(discountInPaise, subtotalInPaise);
   }

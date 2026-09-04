@@ -75,6 +75,11 @@ export interface VerifyOptions {
   now?: number;
 }
 
+/**
+ * I8: a refusal message is logged verbatim as merchant audit reasoning, so no
+ * claim value is interpolated here. A signature proves the principal authored
+ * the mandate, not that its text belongs in the merchant's compliance record.
+ */
 export function verifyMandate(raw: unknown, options: VerifyOptions): VerifiedMandate | Refusal {
   const parsed = signedMandateSchema.safeParse(raw);
   if (!parsed.success) {
@@ -106,7 +111,7 @@ export function verifyMandate(raw: unknown, options: VerifyOptions): VerifiedMan
   if (claims.agentId !== options.expectedAgentId) {
     return refuse(
       "MANDATE_AGENT_MISMATCH",
-      `This mandate authorizes agent "${claims.agentId}", but the request is from "${options.expectedAgentId}".`,
+      "This mandate authorizes a different agent than the one making the request.",
     );
   }
 
@@ -115,7 +120,7 @@ export function verifyMandate(raw: unknown, options: VerifyOptions): VerifiedMan
     return refuse("MANDATE_MALFORMED", "The mandate's expiresAt is not a valid timestamp.");
   }
   if (expiresAt <= (options.now ?? Date.now())) {
-    return refuse("MANDATE_EXPIRED", `This mandate expired at ${claims.expiresAt}.`);
+    return refuse("MANDATE_EXPIRED", "This mandate has expired.");
   }
 
   return { claims };

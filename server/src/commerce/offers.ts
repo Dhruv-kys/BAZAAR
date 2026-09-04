@@ -19,9 +19,12 @@ export interface Offer {
   shortfallInPaise?: number;
 }
 
+export function bulkDiscountPercent(): number {
+  return Math.min(BULK_DISCOUNT_PERCENT, GUARDRAILS.maxDiscountPercent);
+}
+
 function bulkDiscountFor(subtotalInPaise: number): number {
-  const percent = Math.min(BULK_DISCOUNT_PERCENT, GUARDRAILS.maxDiscountPercent);
-  return Math.round((subtotalInPaise * percent) / 100);
+  return Math.floor((subtotalInPaise * bulkDiscountPercent()) / 100);
 }
 
 export function offersFor(priced: PricedOrder): Offer[] {
@@ -68,7 +71,7 @@ export function offersFor(priced: PricedOrder): Offer[] {
   offers.push({
     code: "BULK_DISCOUNT",
     kind: "BULK_DISCOUNT",
-    description: `${Math.min(BULK_DISCOUNT_PERCENT, GUARDRAILS.maxDiscountPercent)}% off orders over ₹${BULK_DISCOUNT_THRESHOLD_PAISE / 100}`,
+    description: `${bulkDiscountPercent()}% off orders over ₹${BULK_DISCOUNT_THRESHOLD_PAISE / 100}`,
     rationale: `Merchant bulk-order offer, capped by the merchant's ${GUARDRAILS.maxDiscountPercent}% maximum discount`,
     deltaInPaise: 0,
     newSubtotalInPaise: priced.subtotalInPaise,

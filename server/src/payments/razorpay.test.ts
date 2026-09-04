@@ -1,7 +1,9 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import { createPendingOrder, getPendingOrder, recordPaymentAttempt } from "./pendingOrderStore.js";
-import { paymentReferenceId, summaryIdFromReference } from "./razorpay.js";
+import crypto from "node:crypto";
+import Razorpay from "razorpay";
+import { paymentReferenceId, summaryIdFromReference, verifyWebhookSignature } from "./razorpay.js";
 
 function stagedOrder() {
   return createPendingOrder({
@@ -86,5 +88,49 @@ describe("pending order payment attempts", () => {
   it("ignores attempts for unknown orders", () => {
     recordPaymentAttempt("does-not-exist", { paymentLinkId: "x", url: "y" });
     assert.equal(getPendingOrder("does-not-exist"), undefined);
+  });
+});
+
+describe("webhook signature verification", () => {
+  const SECRET = "whsec_test_only";
+  const BODY = JSON.stringify({ event: "payment_link.paid", payload: {} });
+
+  function withSecret<T>(secret: string | undefined, run: () => T): T {
+    const previous = process.env.RAZORPAY_WEBHOOK_SECRET;
+    if (secret === undefined) delete process.env.RAZORPAY_WEBHOOK_SECRET;
+    else process.env.RAZORPAY_WEBHOOK_SECRET = secret;
+    try {
+      return run();
+    } finally {
+      if (previous === undefined) delete process.env.RAZORPAY_WEBHOOK_SECRET;
+      else process.env.RAZORPAY_WEBHOOK_SECRET = previous;
+    }
+  }
+
+  const signature = crypto.createHmac("sha256", SECRET).update(BODY).digest("hex");
+
+  it("agrees with the Razorpay SDK on a genuine signature", () => {
+    assert.equal(Razorpay.validateWebhookSignature(BODY, signature, SECRET), true);
+    assert.equal(withSecret(SECRET, () => verifyWebhookSignature(BODY, signature)), true);
+  });
+
+  it("rejects a body altered after signing", () => {
+    const tampered = BODY.replace("paid", "failed");
+    assert.equal(withSecret(SECRET, () => verifyWebhookSignature(tampered, signature)), false);
+  });
+
+  it("rejects a signature made with a different secret", () => {
+    const forged = crypto.createHmac("sha256", "not-the-secret").update(BODY).digest("hex");
+    assert.equal(withSecret(SECRET, () => verifyWebhookSignature(BODY, forged)), false);
+  });
+
+  it("rejects a truncated or non-hex signature rather than matching a prefix", () => {
+    for (const bogus of [signature.slice(0, 32), "", "zz", `${signature}00`]) {
+      assert.equal(withSecret(SECRET, () => verifyWebhookSignature(BODY, bogus)), false, bogus);
+    }
+  });
+
+  it("fails closed when no webhook secret is configured", () => {
+    assert.throws(() => withSecret(undefined, () => verifyWebhookSignature(BODY, signature)));
   });
 });

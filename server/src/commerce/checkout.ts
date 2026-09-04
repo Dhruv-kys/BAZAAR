@@ -54,6 +54,20 @@ function repriceMatchesQuote(order: PendingOrder): Refusal | null {
   return null;
 }
 
+/**
+ * The mandate gate is selected by actor kind, so a quote staged over the agent
+ * door must not be confirmable through the human one: that route hardcodes a
+ * human actor and would skip mandate verification, consumption and ceiling
+ * intersection entirely.
+ */
+function actorMismatch(order: PendingOrder, actor: Actor): Refusal | null {
+  if (order.actor === actor.kind && order.agentId === actor.agentId) return null;
+  return refuse(
+    "ORDER_ACTOR_MISMATCH",
+    "This quote was staged by a different party and can only be confirmed through the door that created it.",
+  );
+}
+
 function deny(request: ConfirmOrderRequest, refusal: Refusal): Refusal {
   logAuditEvent({
     sessionId: request.actor.sessionId,
@@ -75,6 +89,9 @@ export async function confirmOrder(request: ConfirmOrderRequest): Promise<Confir
   if (!order) {
     return deny(request, refuse("QUOTE_NOT_FOUND", "Unknown or expired order summary."));
   }
+
+  const mismatch = actorMismatch(order, actor);
+  if (mismatch) return deny(request, mismatch);
 
   if (order.paymentAttempt) {
     if (!order.paidAt) watchPaymentLink(summaryId, order.paymentAttempt.paymentLinkId);
