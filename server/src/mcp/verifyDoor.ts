@@ -4,7 +4,7 @@ import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/
 import type { MandateClaims } from "../commerce/mandate.js";
 import { config } from "../config.js";
 import { signMandate } from "../wallet/principal.js";
-import { firstAgent } from "./agents.js";
+import { agentRoster, firstAgent } from "./agents.js";
 
 /**
  * Exercises the agent door against a running server over real MCP.
@@ -165,6 +165,36 @@ async function main(): Promise<void> {
   check("a ceiling under the total refuses", tight.code === "CEILING_EXCEEDED", tight);
   check("the binding constraint is named", tight.binding?.source === "mandate", tight.binding);
   check("its limit is handed back so the agent can self-correct", typeof tight.binding?.limitInPaise === "number");
+
+  heading("One agent, one quote");
+  const roster = agentRoster();
+  const other = roster.find((entry) => entry.agentId !== agent.agentId);
+  if (!other) {
+    console.log("  \x1b[33m–\x1b[0m only one credential configured; multi-tenancy check skipped");
+  } else {
+    const second = session(other.key);
+    await second.client.connect(second.transport);
+    const stolen = payload(
+      await second.client.callTool({
+        name: "confirm_order",
+        arguments: {
+          quoteId: quote.quoteId,
+          mandate: signMandate(claims({ agentId: other.agentId })),
+        },
+      }),
+    );
+    check(
+      `${other.agentId} cannot confirm a quote ${agent.agentId} staged`,
+      stolen.code === "ORDER_ACTOR_MISMATCH",
+      stolen,
+    );
+    check(
+      "and is told nothing about the quote it does not own",
+      typeof stolen.message === "string" && !stolen.message.includes(quote.quoteId as string),
+      stolen.message,
+    );
+    await second.client.close().catch(() => {});
+  }
 
   heading("One quote, one door");
   const crossed = await fetch(`${BASE}/api/orders/${quote.quoteId}/confirm`, { method: "POST" });

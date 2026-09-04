@@ -8,7 +8,7 @@ import { confirmOrder } from "../commerce/checkout.js";
 import { signedMandateSchema } from "../commerce/mandate.js";
 import { requestQuote } from "../commerce/quote.js";
 import { isRefusal, type Refusal } from "../commerce/refusals.js";
-import { REFUSAL_CODES } from "../commerce/refusals.js";
+import { httpStatusFor, REFUSAL_CODES, REFUSAL_CONTRACT } from "../commerce/refusals.js";
 import { merchant } from "../merchant/profile.js";
 import { GUARDRAILS } from "../guardrails/config.js";
 import { agentSessionId, resolveAgentId } from "./agents.js";
@@ -236,5 +236,10 @@ wellKnownRouter.get("/bazaar-commerce", (_req, res) => {
         "Discounts are merchant-offered, never counterparty-requested. A buying agent cannot ask for one, and no counterparty text is ever written into the merchant's audit record.",
     },
     refusal_codes: REFUSAL_CODES,
+    errors: REFUSAL_CODES.map((code) => ({
+      code,
+      status: httpStatusFor(code),
+      ...REFUSAL_CONTRACT[code],
+    })),
   });
 });

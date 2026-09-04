@@ -25,6 +25,11 @@ export function firstCredential(): string | null {
   return [...credentialMap().keys()][0] ?? null;
 }
 
+/** Every agent the merchant has issued a credential to, in configured order. */
+export function agentRoster(): { key: string; agentId: string }[] {
+  return [...credentialMap().entries()].map(([key, agentId]) => ({ key, agentId }));
+}
+
 export function firstAgent(): { key: string; agentId: string } | null {
   const [entry] = [...credentialMap().entries()];
   return entry ? { key: entry[0], agentId: entry[1] } : null;
