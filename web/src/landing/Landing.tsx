@@ -1,5 +1,6 @@
-import { Suspense, lazy, useState } from "react";
+import { Suspense, lazy, useEffect, useState } from "react";
 import { Note } from "../Marginalia";
+import { FlowerField } from "./FlowerField";
 import { ArrowUpRightIcon, CoinIcon, LockIcon, ShieldIcon } from "../icons";
 import { PageShell } from "../pages/PageShell";
 import { navigate } from "../router";
@@ -71,9 +72,28 @@ function OpenAgent({ large }: { large?: boolean }) {
 
 export function Landing() {
   const [field] = useState(detectField);
+  const [painting, setPainting] = useState(false);
+
+  // The shell is what fades, so the flag rides on the root rather than on any
+  // element inside it.
+  useEffect(() => {
+    document.documentElement.classList.toggle("lp-ghosted", painting);
+    return () => document.documentElement.classList.remove("lp-ghosted");
+  }, [painting]);
 
   return (
-    <PageShell slug="" width={940}>
+    <>
+      <FlowerField painting={painting} />
+      <button
+        type="button"
+        className={`lp-paint${painting ? " is-open" : ""}`}
+        aria-pressed={painting}
+        onClick={() => setPainting((on) => !on)}
+      >
+        {painting ? "bring it back" : "click here"}
+      </button>
+
+      <PageShell slug="" width={940}>
       <section className="lp-hero" data-reveal>
         <div className="lp-coin" aria-hidden="true">
           {field ? (
@@ -176,6 +196,7 @@ export function Landing() {
           Source on GitHub
         </a>
       </footer>
-    </PageShell>
+      </PageShell>
+    </>
   );
 }
