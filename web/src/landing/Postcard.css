@@ -111,17 +111,63 @@ html.dark .pc-garden {
   border: 1px solid var(--hairline-firm);
   border-radius: 3px;
   box-shadow:
-    0 1px 2px rgba(58, 58, 58, 0.06),
-    0 26px 60px -34px rgba(58, 58, 58, 0.45),
-    0 0 90px -10px rgba(255, 226, 168, 0.55);
-  transform: rotate(-0.9deg) translateY(18px);
+    0 2px 4px rgba(58, 58, 58, 0.05),
+    0 44px 80px -40px rgba(58, 58, 58, 0.5),
+    0 0 90px -10px color-mix(in srgb, var(--gold) 45%, transparent);
+  transform: rotate(-0.9deg) translateY(22px);
   opacity: 0;
-  transition: transform 1s cubic-bezier(0.2, 0.7, 0.28, 1), opacity 1s ease;
 }
 
+/*
+ * It rises into place, then keeps drifting. Two animations rather than a
+ * transition: the float has to take over the same transform once the entrance
+ * has finished, and a transition cannot hand off to a loop.
+ */
 .pc.is-here .pc-card {
-  transform: rotate(-0.9deg) translateY(0);
-  opacity: 1;
+  animation:
+    pc-rise 1.1s cubic-bezier(0.2, 0.7, 0.28, 1) both,
+    pc-float 8s ease-in-out 1.2s infinite;
+}
+
+@keyframes pc-rise {
+  from { opacity: 0; transform: rotate(-0.9deg) translateY(22px); }
+  to { opacity: 1; transform: rotate(-0.9deg) translateY(0); }
+}
+
+@keyframes pc-float {
+  0%, 100% { transform: rotate(-0.9deg) translateY(0); }
+  50% { transform: rotate(-0.4deg) translateY(-14px); }
+}
+
+/* The ground it is floating above: a soft cast shadow that breathes with it,
+   which is what sells the height more than the card's own shadow does. */
+.pc-card::after {
+  content: "";
+  position: absolute;
+  left: 8%;
+  right: 8%;
+  bottom: -34px;
+  height: 26px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, color-mix(in srgb, var(--ink) 26%, transparent), transparent 70%);
+  filter: blur(10px);
+  opacity: 0;
+  z-index: -1;
+}
+
+.pc.is-here .pc-card::after {
+  animation:
+    pc-cast-in 1.1s ease both,
+    pc-cast 8s ease-in-out 1.2s infinite;
+}
+
+@keyframes pc-cast-in {
+  to { opacity: 1; }
+}
+
+@keyframes pc-cast {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(0.9); }
 }
 
 .pc-card img {
@@ -166,16 +212,23 @@ html.dark .pc-garden {
 
 html.dark .pc-card {
   box-shadow:
-    0 1px 2px rgba(0, 0, 0, 0.5),
-    0 26px 60px -34px rgba(0, 0, 0, 0.8),
-    0 0 110px -20px rgba(255, 200, 130, 0.28);
+    0 2px 4px rgba(0, 0, 0, 0.45),
+    0 48px 90px -44px rgba(0, 0, 0, 0.85),
+    0 0 110px -20px color-mix(in srgb, var(--gold) 26%, transparent);
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .pc-card,
   .pc::before,
   html {
     transition: none;
+  }
+
+  /* No drift, but it still has to arrive. */
+  .pc.is-here .pc-card,
+  .pc.is-here .pc-card::after {
+    animation: none;
+    opacity: 1;
+    transform: rotate(-0.9deg);
   }
 }
 
