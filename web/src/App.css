@@ -23,6 +23,10 @@
 
   display: grid;
   grid-template-rows: auto minmax(0, 1fr);
+  /* Without an explicit minmax the implicit column sizes to max-content, so a
+     header row that cannot shrink widens the whole app and clips every child
+     against overflow: hidden — silently, with no scrollbar to give it away. */
+  grid-template-columns: minmax(0, 1fr);
   height: 100dvh;
   background: transparent;
   color: var(--ink-2);

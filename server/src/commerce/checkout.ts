@@ -6,11 +6,14 @@ import {
   getPendingOrder,
   isQuoteExpired,
   recordPaymentAttempt,
+  recordReceiptIdentity,
   type PendingOrder,
 } from "../payments/pendingOrderStore.js";
+import { issueReceiptNumber } from "../payments/receipts.js";
 import { createPaymentLink, PaymentProviderError } from "../payments/razorpay.js";
 import { watchPaymentLink } from "../payments/paymentWatcher.js";
 import type { Actor } from "./actor.js";
+import { maskedBilling, parseBillingDetails, type BillingDetails } from "./billing.js";
 import { consumeMandate, releaseMandate, verifyMandate, type VerifiedMandate } from "./mandate.js";
 import { authorizeTotal, scopeAllows } from "./policy.js";
 import { priceOrder } from "./pricing.js";
@@ -20,6 +23,7 @@ export interface ConfirmOrderRequest {
   summaryId: string;
   actor: Actor;
   mandate?: unknown;
+  billing?: unknown;
 }
 
 export interface ConfirmOrderSuccess {
@@ -28,6 +32,7 @@ export interface ConfirmOrderSuccess {
   paymentUrl: string;
   paymentLinkId: string;
   totalInPaise: number;
+  receiptNo: string;
   mandateId?: string;
 }
 
@@ -101,12 +106,26 @@ export async function confirmOrder(request: ConfirmOrderRequest): Promise<Confir
       paymentUrl: order.paymentAttempt.url,
       paymentLinkId: order.paymentAttempt.paymentLinkId,
       totalInPaise: order.totalInPaise,
+      receiptNo: order.receiptNo ?? "",
       mandateId: order.mandateId,
     };
   }
 
   if (isQuoteExpired(order)) {
     return deny(request, refuse("QUOTE_EXPIRED", "This quote has expired. Request a fresh quote before confirming."));
+  }
+
+  /*
+   * Identity is the same gate on both doors, asked for in the form each door
+   * can actually answer. An agent proves who is spending with a principal's
+   * signature; a human proves it by naming themselves on the bill. Neither door
+   * mints a payment link for an anonymous payer.
+   */
+  let billing: BillingDetails | undefined;
+  if (actor.kind === "human") {
+    const parsedBilling = parseBillingDetails(request.billing);
+    if (isRefusal(parsedBilling)) return deny(request, parsedBilling);
+    billing = parsedBilling;
   }
 
   let mandate: VerifiedMandate | undefined;
@@ -158,6 +177,7 @@ export async function confirmOrder(request: ConfirmOrderRequest): Promise<Confir
   }
 
   try {
+    recordReceiptIdentity(summaryId, issueReceiptNumber(), billing);
     const paymentLink = await createPaymentLink(order);
     recordPaymentAttempt(summaryId, { paymentLinkId: paymentLink.id, url: paymentLink.shortUrl });
     order.mandateId = mandate?.claims.mandateId;
@@ -174,9 +194,11 @@ export async function confirmOrder(request: ConfirmOrderRequest): Promise<Confir
         : `Customer confirmed order ${summaryId}; payment link created for ₹${order.totalInPaise / 100}`,
       payload: {
         summaryId,
+        receiptNo: order.receiptNo,
         paymentLinkId: paymentLink.id,
         totalInPaise: order.totalInPaise,
         binding: authorization.binding,
+        billedTo: billing ? maskedBilling(billing) : undefined,
         mandateId: mandate?.claims.mandateId,
         principalId: mandate?.claims.principalId,
       },
@@ -188,6 +210,7 @@ export async function confirmOrder(request: ConfirmOrderRequest): Promise<Confir
       paymentUrl: paymentLink.shortUrl,
       paymentLinkId: paymentLink.id,
       totalInPaise: order.totalInPaise,
+      receiptNo: order.receiptNo ?? "",
       mandateId: mandate?.claims.mandateId,
     };
   } catch (error) {
@@ -216,9 +239,18 @@ export async function confirmOrder(request: ConfirmOrderRequest): Promise<Confir
   }
 }
 
-export function orderStatus(
-  summaryId: string,
-): { ok: true; status: string; paymentUrl?: string; totalInPaise: number } | Refusal {
+export interface OrderStatus {
+  ok: true;
+  status: string;
+  paymentUrl?: string;
+  totalInPaise: number;
+  receiptNo?: string;
+  billedTo?: string;
+  paymentLinkId?: string;
+  paidAt?: string;
+}
+
+export function orderStatus(summaryId: string): OrderStatus | Refusal {
   const order = getPendingOrder(summaryId);
   if (!order) return refuse("QUOTE_NOT_FOUND", "Unknown or expired order summary.");
 
@@ -227,5 +259,9 @@ export function orderStatus(
     status: order.paidAt ? "paid" : order.paymentAttempt ? "awaiting_payment" : "staged",
     paymentUrl: order.paymentAttempt?.url,
     totalInPaise: order.totalInPaise,
+    receiptNo: order.receiptNo,
+    billedTo: order.billing?.name,
+    paymentLinkId: order.paymentAttempt?.paymentLinkId,
+    paidAt: order.paidAt ? new Date(order.paidAt).toISOString() : undefined,
   };
 }

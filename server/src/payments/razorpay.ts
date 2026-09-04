@@ -65,7 +65,23 @@ export async function createPaymentLink(order: PendingOrder): Promise<{ id: stri
       currency: "INR",
       description,
       reference_id: referenceId,
-      notes: { summaryId: order.summaryId, sessionId: order.sessionId },
+      customer: order.billing
+        ? { name: order.billing.name, email: order.billing.email, contact: order.billing.contact }
+        : undefined,
+      /*
+       * Razorpay sends the payer an SMS and an email of its own when notify is
+       * on, and reminders after that. The address on a staged order is typed
+       * into a demo, so the merchant must not have Razorpay mail it: the link
+       * is handed back over the API and shown in the browser instead.
+       */
+      notify: { sms: false, email: false },
+      reminder_enable: false,
+      notes: {
+        summaryId: order.summaryId,
+        sessionId: order.sessionId,
+        ...(order.receiptNo ? { receiptNo: order.receiptNo } : {}),
+        ...(order.billing ? { billingName: order.billing.name } : {}),
+      },
     }),
   });
 

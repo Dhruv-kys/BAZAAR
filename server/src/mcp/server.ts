@@ -156,6 +156,7 @@ function buildServer(sessionId: string, agentId: string): McpServer {
         quoteId: result.summaryId,
         paymentUrl: result.paymentUrl,
         totalInPaise: result.totalInPaise,
+        receiptNo: result.receiptNo,
         mandateId: result.mandateId,
         settlement: "Authorization is agentic; settlement completes on the human-approved rail at paymentUrl.",
       });

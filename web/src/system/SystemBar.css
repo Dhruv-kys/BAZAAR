@@ -5,6 +5,7 @@
   gap: calc(var(--step) * 3);
   padding: 0 calc(var(--step) * 3);
   height: 56px;
+  min-width: 0;
 }
 
 .sb-brand {
@@ -260,5 +261,39 @@
   .sb-actions {
     flex: 1;
     justify-content: flex-end;
+  }
+}
+
+/* The links scroll instead of forcing the row wider than the screen, and the
+   source icon steps out here as it does in the shell — it is still in the
+   landing footer. */
+@media (max-width: 700px) {
+  .sb-actions {
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .sb-links {
+    overflow-x: auto;
+    scrollbar-width: none;
+    min-width: 0;
+    /* Fades at the cut so a half-seen pill reads as more to scroll to,
+       rather than as a broken edge. */
+    -webkit-mask-image: linear-gradient(to right, #000 82%, transparent);
+    mask-image: linear-gradient(to right, #000 82%, transparent);
+  }
+
+  .sb-links::-webkit-scrollbar {
+    display: none;
+  }
+
+  .sb-links a {
+    flex: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .sb-icon[href*="github.com"] {
+    display: none;
   }
 }

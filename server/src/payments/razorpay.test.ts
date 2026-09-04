@@ -3,7 +3,14 @@ import { describe, it } from "node:test";
 import { createPendingOrder, getPendingOrder, recordPaymentAttempt } from "./pendingOrderStore.js";
 import crypto from "node:crypto";
 import Razorpay from "razorpay";
-import { paymentReferenceId, summaryIdFromReference, verifyWebhookSignature, PaymentProviderError } from "./razorpay.js";
+import {
+  createPaymentLink,
+  paymentReferenceId,
+  summaryIdFromReference,
+  verifyWebhookSignature,
+  PaymentProviderError,
+} from "./razorpay.js";
+import { recordReceiptIdentity } from "./pendingOrderStore.js";
 
 function stagedOrder() {
   return createPendingOrder({
@@ -88,6 +95,72 @@ describe("pending order payment attempts", () => {
   it("ignores attempts for unknown orders", () => {
     recordPaymentAttempt("does-not-exist", { paymentLinkId: "x", url: "y" });
     assert.equal(getPendingOrder("does-not-exist"), undefined);
+  });
+});
+
+describe("the payment link request", () => {
+  async function capturedBody(): Promise<Record<string, any>> {
+    const order = stagedOrder();
+    recordReceiptIdentity(
+      order.summaryId,
+      "BAK-20260905-0007",
+      { name: "Ananya Rao", email: "ananya@example.com", contact: "+919876543210" },
+    );
+
+    const realFetch = globalThis.fetch;
+    let sent: Record<string, any> = {};
+    globalThis.fetch = (async (_url: string, init: RequestInit) => {
+      sent = JSON.parse(init.body as string);
+      return new Response(JSON.stringify({ id: "plink_1", short_url: "https://rzp.io/i/x" }), {
+        status: 200,
+        headers: { "content-type": "application/json" },
+      });
+    }) as typeof fetch;
+
+    process.env.RAZORPAY_KEY_ID = "rzp_test_key";
+    process.env.RAZORPAY_KEY_SECRET = "secret";
+    try {
+      await createPaymentLink(getPendingOrder(order.summaryId)!);
+    } finally {
+      globalThis.fetch = realFetch;
+    }
+    return sent;
+  }
+
+  it("bills a named payer, in the contact format Razorpay accepts", async () => {
+    const body = await capturedBody();
+    assert.deepEqual(body.customer, {
+      name: "Ananya Rao",
+      email: "ananya@example.com",
+      contact: "+919876543210",
+    });
+    // customer.contact must be 8-14 characters including the country code.
+    assert.ok(body.customer.contact.length >= 8 && body.customer.contact.length <= 14);
+  });
+
+  /*
+   * The payer's address is typed into a demo, so Razorpay must not mail or text
+   * it on the merchant's behalf. The link is handed back over the API instead.
+   */
+  it("never asks Razorpay to notify or remind the payer", async () => {
+    const body = await capturedBody();
+    assert.deepEqual(body.notify, { sms: false, email: false });
+    assert.equal(body.reminder_enable, false);
+  });
+
+  it("carries the receipt number into the merchant's own notes", async () => {
+    const body = await capturedBody();
+    assert.equal(body.notes.receiptNo, "BAK-20260905-0007");
+    assert.equal(body.notes.billingName, "Ananya Rao");
+    assert.ok(body.notes.summaryId);
+    // Razorpay caps notes at 15 pairs and 255 characters per value.
+    assert.ok(Object.keys(body.notes).length <= 15);
+    for (const value of Object.values(body.notes)) assert.ok(String(value).length <= 255);
+  });
+
+  it("keeps reference_id inside Razorpay's 40-character limit", async () => {
+    const body = await capturedBody();
+    assert.ok(body.reference_id.length <= 40);
   });
 });
 

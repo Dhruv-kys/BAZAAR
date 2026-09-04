@@ -37,6 +37,8 @@ function stage(overrides: Partial<NewPendingOrder> = {}, now = Date.now()) {
   );
 }
 
+const billing = { name: "Ananya Rao", email: "ananya@example.com", contact: "+919876543210" };
+
 async function codeOf(promise: ReturnType<typeof confirmOrder>): Promise<string | undefined> {
   const result = await promise;
   return isRefusal(result) ? result.code : undefined;
@@ -69,7 +71,7 @@ describe("confirm gating", () => {
   it("refuses a quote whose stored total no longer matches the catalog", async () => {
     const order = stage({ totalInPaise: 12345, subtotalInPaise: 12345 });
     assert.equal(
-      await codeOf(confirmOrder({ summaryId: order.summaryId, actor: humanActor("s1") })),
+      await codeOf(confirmOrder({ summaryId: order.summaryId, actor: humanActor("s1"), billing })),
       "PRICE_CHANGED",
     );
   });
@@ -111,10 +113,47 @@ describe("confirm gating", () => {
     const order = stage();
     assert.equal(beginPaymentLinkCreation(order.summaryId), true);
     assert.equal(
-      await codeOf(confirmOrder({ summaryId: order.summaryId, actor: humanActor("s1") })),
+      await codeOf(confirmOrder({ summaryId: order.summaryId, actor: humanActor("s1"), billing })),
       "PAYMENT_IN_PROGRESS",
     );
     endPaymentLinkCreation(order.summaryId);
+  });
+});
+
+describe("the billing gate", () => {
+  it("refuses a human confirm that names no payer", async () => {
+    const order = stage();
+    assert.equal(
+      await codeOf(confirmOrder({ summaryId: order.summaryId, actor: humanActor("s1") })),
+      "BILLING_DETAILS_REQUIRED",
+    );
+  });
+
+  it("refuses billing details that are present but not valid", async () => {
+    for (const invalid of [
+      { ...billing, email: "not-an-email" },
+      { ...billing, contact: "12345" },
+      { ...billing, name: "A" },
+    ]) {
+      const order = stage();
+      assert.equal(
+        await codeOf(confirmOrder({ summaryId: order.summaryId, actor: humanActor("s1"), billing: invalid })),
+        "BILLING_DETAILS_INVALID",
+      );
+    }
+  });
+
+  // I8: an agent's counterparty text must never reach the merchant's record.
+  // The agent door identifies the payer by the mandate's principal, so billing
+  // sent by an agent is not a shortcut past the mandate gate.
+  it("does not let an agent substitute billing details for a mandate", async () => {
+    const order = stage({ actor: "agent", agentId: "agent-alpha" });
+    assert.equal(
+      await codeOf(
+        confirmOrder({ summaryId: order.summaryId, actor: agentActor("s1", "agent-alpha"), billing }),
+      ),
+      "MANDATE_REQUIRED",
+    );
   });
 });
 

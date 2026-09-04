@@ -30,11 +30,13 @@ function greeting(): string {
   return "Good evening";
 }
 
+/* Short enough to sit in a row on a phone; the sentence that reaches the agent
+   is the longer one, so nothing is lost by the chip being brief. */
 const PERSONAL_TOUCHES = [
-  "make it eggless",
-  "pipe a name on top",
-  "add a handwritten card",
-  "deliver at midnight",
+  { chip: "Eggless", says: "make it eggless" },
+  { chip: "Name on top", says: "pipe a name on top" },
+  { chip: "Gift card", says: "add a handwritten card" },
+  { chip: "Midnight", says: "deliver at midnight" },
 ];
 
 export function ConversationPanel({
@@ -319,12 +321,15 @@ export function ConversationPanel({
             in the sentence they were already making. */}
         <ul className="cp-touches">
           {PERSONAL_TOUCHES.map((touch) => (
-            <li key={touch}>
+            <li key={touch.chip}>
               <button
                 type="button"
-                onClick={() => setInput((prev) => (prev ? `${prev.trim()}, ${touch}` : touch))}
+                title={touch.says}
+                onClick={() =>
+                  setInput((prev) => (prev ? `${prev.trim()}, ${touch.says}` : touch.says))
+                }
               >
-                {touch}
+                {touch.chip}
               </button>
             </li>
           ))}

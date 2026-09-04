@@ -1,4 +1,5 @@
 import type { ActorKind } from "../commerce/actor.js";
+import type { BillingDetails } from "../commerce/billing.js";
 import { GUARDRAILS } from "../guardrails/config.js";
 
 export interface PendingOrderItem {
@@ -27,6 +28,8 @@ export interface PendingOrder {
   actor: ActorKind;
   agentId?: string;
   mandateId?: string;
+  billing?: BillingDetails;
+  receiptNo?: string;
   items: PendingOrderItem[];
   addOns: PendingOrderAddOn[];
   subtotalInPaise: number;
@@ -79,6 +82,18 @@ export function markOrderPaid(summaryId: string): boolean {
   if (!order || order.paidAt) return false;
   order.paidAt = Date.now();
   return true;
+}
+
+/**
+ * Billing identity and the receipt number are written once, before the first
+ * payment link exists, and every later attempt on the order reuses them: a
+ * decline is a second attempt against one receipt, not a second receipt.
+ */
+export function recordReceiptIdentity(summaryId: string, receiptNo: string, billing?: BillingDetails): void {
+  const order = pendingOrders.get(summaryId);
+  if (!order) return;
+  if (billing) order.billing = billing;
+  order.receiptNo ??= receiptNo;
 }
 
 export function recordPaymentAttempt(summaryId: string, attempt: PaymentAttempt): void {
