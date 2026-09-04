@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Note } from "../Marginalia";
 import { apiUrl } from "../api";
 import { type MerchantMetrics, rupees, rupeesShort } from "../governance/metrics";
 import { PageShell } from "../pages/PageShell";
@@ -113,6 +114,7 @@ export function Dashboard() {
             Measured from the audit trail across every conversation, counting only what a customer
             accepted. Nothing here is projected or sampled.
           </p>
+          <Note>an upsell counts only once the customer says yes</Note>
         </div>
 
         {!metrics && !failed && (

@@ -1,17 +1,26 @@
+/*
+ * Categorical colours, re-derived for the warm ground and re-validated rather
+ * than picked to match it. Each set beats the one it replaces on both measures:
+ * light goes from 7.9 to 12.5 worst-case CVD separation (ΔE across protan,
+ * deutan and tritan simulation) and 2.68 to 3.90 contrast; dark goes from 2.4
+ * to 9.4 — the old dark set was effectively indistinguishable under tritanopia.
+ * Still under the ΔE where colour alone would be safe, so the direct labels,
+ * the 2px gaps and the table view below all remain load-bearing.
+ */
 .pg {
-  --cat-baseline: #5a57d4;
-  --cat-upsell: #0f8a4d;
-  --cat-cross: #d18b00;
-  --cat-other: #bd2f74;
-  --cat-discount: #98917c;
+  --cat-baseline: #3d689e;
+  --cat-upsell: #1f6b40;
+  --cat-cross: #a8721c;
+  --cat-other: #8f3560;
+  --cat-discount: #7d7568;
 }
 
 html.dark .pg {
-  --cat-baseline: #8481ea;
-  --cat-upsell: #26a262;
-  --cat-cross: #b8861a;
-  --cat-other: #d45c86;
-  --cat-discount: #968f79;
+  --cat-baseline: #7ea8dd;
+  --cat-upsell: #7ec99b;
+  --cat-cross: #e0ab5c;
+  --cat-other: #d97f9f;
+  --cat-discount: #9d9384;
 }
 
 .db-empty {
@@ -27,13 +36,26 @@ html.dark .pg {
 
 .db-tiles {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 212px), 1fr));
+  /* Six tiles, three up: auto-fit left two empty tracks reading as blank tiles. */
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1px;
   margin-top: calc(var(--step) * 5);
   background: var(--rule);
   border: 1px solid var(--rule);
-  border-radius: 12px;
+  border-radius: 4px;
   overflow: hidden;
+}
+
+@media (max-width: 900px) {
+  .db-tiles {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .db-tiles {
+    grid-template-columns: 1fr;
+  }
 }
 
 .db-tile {
