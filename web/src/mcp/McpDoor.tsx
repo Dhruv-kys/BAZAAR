@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { apiUrl } from "../api";
+import { apiOrigin, apiUrl } from "../api";
 import { PageShell } from "../pages/PageShell";
 import "./McpDoor.css";
 
@@ -19,24 +19,77 @@ const REFUSALS_SHOWN = [
   {
     code: "MANDATE_SIGNATURE_INVALID",
     what: "The mandate was altered after signing, or signed by a principal we do not know.",
-    proves: "An agent cannot raise its own ceiling.",
+    proves: "an agent cannot raise its own ceiling",
   },
   {
     code: "CEILING_EXCEEDED",
     what: "The order costs more than the mandate authorizes. The refusal names the binding constraint.",
-    proves: "The tighter of mandate and merchant cap always binds.",
+    proves: "the tighter of mandate and merchant cap always binds",
   },
   {
     code: "MANDATE_ALREADY_CONSUMED",
     what: "That mandate id was spent. Consumed ids live in SQLite, not memory.",
-    proves: "Replay protection survives a process restart.",
+    proves: "replay protection survives a restart",
   },
   {
     code: "AGENT_UNAUTHENTICATED",
     what: "No recognised agent credential was presented.",
-    proves: "With no credentials configured, nobody gets in. It fails closed.",
+    proves: "with no credentials set, nobody gets in",
   },
 ];
+
+const PRINCIPLES = [
+  {
+    tag: "I5",
+    title: "Asymmetric, not shared",
+    body: "The buyer's wallet holds the private key; the merchant holds only MANDATE_PUBLIC_KEY. A merchant that could compute the signature could forge the consent, and the gate would be decoration.",
+  },
+  {
+    tag: "I4",
+    title: "Single use, durably",
+    body: "Spent mandate ids are inserted into a SQLite table with a primary key. The atomic compare-and-set is the constraint violation. In memory, every spent mandate would be replayable after a restart.",
+  },
+  {
+    tag: "I2",
+    title: "Bounds intersect, never union",
+    body: "",
+  },
+  {
+    tag: "I8",
+    title: "Fails closed, stays quiet",
+    body: "With AGENT_CREDENTIALS unset no agent can authenticate, and no counterparty text ever becomes merchant audit reasoning. There is no default credential and no tool that writes our record.",
+  },
+];
+
+/* A drawn arrow rather than a glyph, so the marginalia reads as ink on paper. */
+function Scribble() {
+  return (
+    <svg width="26" height="14" viewBox="0 0 26 14" fill="none" aria-hidden="true">
+      <path
+        d="M1 8.4c4.2-3.1 8.9-5.4 13.9-6.1 3.1-.4 6.3.1 9.1 1.5"
+        stroke="currentColor"
+        strokeWidth="1.3"
+        strokeLinecap="round"
+      />
+      <path
+        d="M20.2 1.4c1.4.6 2.7 1.4 3.8 2.4-1.4.7-2.6 1.7-3.6 2.9"
+        stroke="currentColor"
+        strokeWidth="1.3"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function Note({ children }: { children: React.ReactNode }) {
+  return (
+    <p className="mcp-note">
+      <Scribble />
+      <span>{children}</span>
+    </p>
+  );
+}
 
 interface DemoStep {
   n: number;
@@ -77,46 +130,42 @@ function LiveRun() {
   }
 
   return (
-    <div className="ad-run">
-      <div className="ad-run-head">
+    <div>
+      <div className="mcp-run-head">
         <div>
-          <h3>Watch an agent connect</h3>
           <p>
-            This runs a real MCP session against this merchant, right now. Nothing is simulated and
-            no payment link is created.
+            This opens a real Model Context Protocol session against this merchant, right now.
+            Nothing is simulated, and no payment link is created.
           </p>
         </div>
-        <button className="ad-run-go" type="button" onClick={run} disabled={running}>
+        <button className="mcp-go" type="button" onClick={run} disabled={running}>
           {running ? "Running…" : steps.length ? "Run again" : "Run a buyer agent"}
         </button>
       </div>
 
       {broke && (
-        <p className="ad-run-broke" role="status">
-          The run could not reach the merchant server. The MCP endpoint itself may still be up &mdash;
-          this page needs the server to be reachable from your browser.
+        <p className="mcp-broke" role="status">
+          The run could not reach the merchant server. The MCP endpoint itself may still be up —
+          this page needs the server reachable from your browser.
         </p>
       )}
 
       {steps.length > 0 && (
-        <ol className="ad-run-steps">
+        <ol className="mcp-tape">
           {steps.map((step) => (
             <li key={step.n} className={`is-${step.status}`}>
-              <span className="ad-run-n">{String(step.n).padStart(2, "0")}</span>
-              <div>
-                <strong>
-                  {step.title}
-                  {step.code && <code>{step.code}</code>}
-                </strong>
-                <p>{step.detail}</p>
-                {step.data && step.data.length > 0 && (
-                  <ul>
-                    {step.data.map((line) => (
-                      <li key={line}>{line}</li>
-                    ))}
-                  </ul>
-                )}
+              <div className="mcp-beat-top">
+                <strong>{step.title}</strong>
+                {step.code && <span className="mcp-code">{step.code}</span>}
               </div>
+              <p>{step.detail}</p>
+              {step.data && step.data.length > 0 && (
+                <ul>
+                  {step.data.map((line) => (
+                    <li key={line}>{line}</li>
+                  ))}
+                </ul>
+              )}
             </li>
           ))}
         </ol>
@@ -136,10 +185,11 @@ export function McpDoor() {
       .catch(() => setFailed(true));
   }, []);
 
-  const origin = doc ? new URL(apiUrl("/.well-known/bazaar-commerce")).origin : "";
+  const origin = apiOrigin();
 
   return (
     <PageShell slug="mcp">
+      <div className="mcp">
         <section className="pg-intro" data-reveal>
           <span className="pg-eyebrow">The other door</span>
           <h1>
@@ -152,16 +202,17 @@ export function McpDoor() {
             Where a person presses a confirm button, a buying agent presents a signed spend mandate.
             No screen, no browser, no human in the loop.
           </p>
+          <Note>one policy core — two doors onto it</Note>
         </section>
 
         {!doc && !failed && (
-          <p className="ad-empty" role="status">
+          <p className="mcp-empty" role="status">
             Fetching the merchant&rsquo;s live contract&hellip;
           </p>
         )}
 
         {failed && (
-          <p className="ad-empty" data-reveal>
+          <p className="mcp-empty" data-reveal>
             The merchant server is not responding, so its live contract cannot be shown.
           </p>
         )}
@@ -169,21 +220,22 @@ export function McpDoor() {
         {doc && (
           <>
             <section className="pg-section" data-reveal>
-              <h2>What an agent finds first</h2>
-              <p className="pg-lede">
-                Everything below is read from <code>{origin}/.well-known/bazaar-commerce</code> at
-                page load, so it cannot drift from what the server actually publishes.
+              <h2 data-index="01">What an agent finds first</h2>
+              <p className="mcp-source">
+                <b>read live</b>
+                <span>
+                  {origin}
+                  /.well-known/bazaar-commerce
+                </span>
               </p>
-              <dl className="ad-facts">
+              <dl className="mcp-facts">
                 <div>
                   <dt>Protocol</dt>
                   <dd>{doc.protocol}</dd>
                 </div>
                 <div>
                   <dt>Transport</dt>
-                  <dd>
-                    MCP over <code>{doc.transport.mcp}</code>
-                  </dd>
+                  <dd>MCP over {doc.transport.mcp}</dd>
                 </div>
                 <div>
                   <dt>Authorization</dt>
@@ -191,7 +243,9 @@ export function McpDoor() {
                 </div>
                 <div>
                   <dt>Settlement</dt>
-                  <dd>{doc.settlement.model}</dd>
+                  <dd>
+                    <em>{doc.settlement.model}</em> &middot; {doc.settlement.rail}
+                  </dd>
                 </div>
                 <div>
                   <dt>Order cap</dt>
@@ -202,43 +256,44 @@ export function McpDoor() {
                   <dd>{Math.round(doc.policy.quoteTtlMs / 60000)} minutes</dd>
                 </div>
               </dl>
+              <Note>fetched at page load, so it cannot drift from the server</Note>
             </section>
 
             <section className="pg-section" data-reveal>
-              <h2>Four tools, one of which spends</h2>
-              <ul className="ad-tools">
+              <h2 data-index="02">Four tools, one of which spends</h2>
+              <ul className="mcp-tools">
                 {(doc.tools ?? []).map((tool) => (
                   <li key={tool.name}>
                     <code>{tool.name}</code>
-                    <span className={`ad-tag${tool.writes ? " is-write" : ""}`}>
+                    <span className={`mcp-chip${tool.writes ? " is-write" : ""}`}>
                       {tool.writes ? "spends" : "reads"}
                     </span>
                     <p>{tool.purpose}</p>
                   </li>
                 ))}
+                {doc.not_exposed?.apply_discount && (
+                  <li className="is-absent">
+                    <code>apply_discount</code>
+                    <span className="mcp-chip is-absent">not built</span>
+                    <p>{doc.not_exposed.apply_discount}</p>
+                  </li>
+                )}
               </ul>
-              {doc.not_exposed?.apply_discount && (
-                <div className="ad-absent">
-                  <h3>
-                    <code>apply_discount</code> is deliberately absent
-                  </h3>
-                  <p>{doc.not_exposed.apply_discount}</p>
-                </div>
-              )}
+              <Note>a discount is offered by the shop, never requested by the buyer</Note>
             </section>
 
             <section className="pg-section" data-reveal>
-              <h2>See it happen</h2>
+              <h2 data-index="03">See it happen</h2>
               <LiveRun />
             </section>
 
             <section className="pg-section" data-reveal>
-              <h2>What happens when an agent misbehaves</h2>
+              <h2 data-index="04">When an agent misbehaves</h2>
               <p className="pg-lede">
-                The buyer in our own demo tries to cheat. These are the refusals it meets, named in
-                the contract so a counterparty can handle them.
+                The buyer in our own demo tries to cheat. These are the refusals it meets, each
+                named in the contract so a counterparty can handle them.
               </p>
-              <ul className="ad-refusals">
+              <ul className="mcp-refusals">
                 {REFUSALS_SHOWN.map((refusal) => (
                   <li key={refusal.code}>
                     <code>{refusal.code}</code>
@@ -256,62 +311,40 @@ export function McpDoor() {
             </section>
 
             <section className="pg-section" data-reveal>
-              <h2>Why the merchant cannot forge your authorization</h2>
-              <ul className="ad-security">
-                <li>
-                  <h3>Asymmetric, not shared</h3>
-                  <p>
-                    The buyer&rsquo;s wallet holds the private key. The merchant holds only
-                    <code> MANDATE_PUBLIC_KEY</code>. A merchant that could compute the signature
-                    could forge the consent, so the gate would be decoration.
-                  </p>
-                </li>
-                <li>
-                  <h3>Single use, durably</h3>
-                  <p>
-                    Spent mandate ids are inserted into a SQLite table with a primary key. The
-                    atomic compare-and-set is the constraint violation. In memory, every spent
-                    mandate would be replayable after a restart.
-                  </p>
-                </li>
-                <li>
-                  <h3>Bounds intersect, never union</h3>
-                  <p>{doc.policy.bounds}</p>
-                </li>
-                <li>
-                  <h3>Fails closed</h3>
-                  <p>
-                    With <code>AGENT_CREDENTIALS</code> unset, no agent can authenticate. There is
-                    no default credential, because that would make this an unauthenticated charge
-                    path.
-                  </p>
-                </li>
+              <h2 data-index="05">Why the merchant cannot forge your consent</h2>
+              <ul className="mcp-principles">
+                {PRINCIPLES.map((principle) => (
+                  <li key={principle.tag}>
+                    <h3 data-tag={principle.tag}>{principle.title}</h3>
+                    <p>{principle.body || doc.policy.bounds}</p>
+                  </li>
+                ))}
               </ul>
             </section>
 
             <section className="pg-section" data-reveal>
-              <h2>Connect an agent</h2>
+              <h2 data-index="06">Connect an agent</h2>
               <p className="pg-lede">
                 Any MCP client can call this merchant. Reading the catalog and pricing a basket need
                 only a credential; spending also needs a mandate signed by the buyer&rsquo;s wallet.
               </p>
-              <pre className="pg-code">
-                <code>{`endpoint  ${origin}${doc.transport.mcp}
+              <pre className="mcp-wire">
+                <code>
+                  {`endpoint  ${origin}${doc.transport.mcp}
 header    ${doc.transport.auth}
 mandate   ${doc.authorization.claims.join(", ")}
-signed    ${doc.authorization.scheme}, single use`}</code>
+signed    ${doc.authorization.scheme}, single use`}
+                </code>
               </pre>
               <p className="pg-lede">Or drive it with the reference buyer in this repository:</p>
-              <pre className="pg-code">
+              <pre className="mcp-wire">
                 <code>{`MERCHANT_MCP_URL=${origin}${doc.transport.mcp} npm run buyer`}</code>
               </pre>
-              <p className="pg-note">
-                Credentials are issued by the merchant, not self-served. That is deliberate on a
-                path that can move money.
-              </p>
+              <Note>credentials are issued by the merchant, not self-served</Note>
             </section>
           </>
         )}
+      </div>
     </PageShell>
   );
 }

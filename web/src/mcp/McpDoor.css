@@ -1,371 +1,552 @@
-.ad-empty {
-  margin-top: calc(var(--step) * 5);
-  padding: calc(var(--step) * 3);
-  font-size: 14px;
-  color: var(--ink-3);
-  background: var(--raise);
-  border: 1px solid var(--rule);
-  border-radius: 12px;
+/*
+ * The MCP page is a protocol transcript, so it is set as a lab notebook:
+ * warm paper, hairline rules, monospace for anything the wire carries, and
+ * handwritten marginalia for the asides that would bloat the body copy.
+ * Page-scoped tokens only — the shared shell in pages.css still owns chrome.
+ */
+.mcp {
+  --paper: #fff8e8;
+  --paper-2: #fdf3de;
+  --paper-3: #f8ead0;
+  --rule: rgba(58, 58, 58, 0.13);
+  --rule-firm: rgba(58, 58, 58, 0.26);
+  --note: #3a3a3a;
+  --note-2: #6d6862;
+  --note-3: #a8a59f;
+  --flame: #ed682b;
+  --ember: #c45c2a;
+  --ochre: #c98a2a;
+  --gold: #d4a64f;
+  --sage: #2d8a56;
+  --azure: #4a7ab5;
+
+  --hand: "Caveat", "Segoe Script", cursive;
+  --wire: "Fragment Mono", "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  color: var(--note);
 }
 
-.ad-facts {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 210px), 1fr));
-  gap: 1px;
-  margin: 0;
-  background: var(--rule);
-  border: 1px solid var(--rule);
-  border-radius: 12px;
-  overflow: hidden;
+html.dark .mcp {
+  --paper: #1a1714;
+  --paper-2: #211d18;
+  --paper-3: #2a241d;
+  --rule: rgba(240, 230, 210, 0.13);
+  --rule-firm: rgba(240, 230, 210, 0.24);
+  --note: #ede4d4;
+  --note-2: #b3aa9b;
+  --note-3: #857d71;
+  --flame: #ff8a52;
+  --ember: #e8794a;
+  --ochre: #e0ab5c;
+  --gold: #d4a64f;
+  --sage: #6fbf8f;
+  --azure: #7ea8dd;
 }
 
-.ad-facts > div {
-  padding: calc(var(--step) * 2.5);
-  background: var(--panel);
+/* The paper itself, bled past the shell's max-width. */
+.mcp::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(1100px 700px at 12% -8%, var(--paper-3), transparent 62%),
+    var(--paper);
 }
 
-.ad-facts dt {
-  font-family: var(--sys);
-  font-size: 10px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--ink-3);
+.mcp ::selection {
+  background: color-mix(in srgb, var(--gold) 42%, transparent);
+  color: var(--note);
 }
 
-.ad-facts dd {
-  margin: 8px 0 0;
-  font-size: 14.5px;
-  color: var(--ink);
+/* ── Marginalia ─────────────────────────────────────────────── */
+
+.mcp-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 14px 0 0;
+  color: var(--ember);
 }
 
-.ad-tools {
-  margin: 0;
-  padding: 0;
-  list-style: none;
+.mcp-note svg {
+  flex: none;
+  margin-top: 4px;
+  color: var(--gold);
+}
+
+.mcp-note span {
+  font-family: var(--hand);
+  font-size: 21px;
+  line-height: 1.32;
+  letter-spacing: 0.01em;
+  transform: rotate(-0.7deg);
+  transform-origin: left center;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .mcp-note {
+    animation: mcp-note-in 0.5s cubic-bezier(0.2, 0.7, 0.3, 1) both;
+  }
+}
+
+@keyframes mcp-note-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* ── Headings and body ──────────────────────────────────────── */
+
+.mcp .pg-intro h1 {
+  letter-spacing: -0.028em;
+}
+
+.mcp .pg-intro h1 em {
+  font-style: normal;
+  color: var(--ember);
+}
+
+.mcp .pg-section {
   border-top: 1px solid var(--rule);
+  padding-top: 30px;
 }
 
-.ad-tools li {
+.mcp .pg-section h2 {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  letter-spacing: -0.02em;
+}
+
+.mcp .pg-section h2::before {
+  content: attr(data-index);
+  font-family: var(--wire);
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.14em;
+  color: var(--note-3);
+}
+
+.mcp .pg-lede,
+.mcp .pg-note {
+  color: var(--note-2);
+}
+
+.mcp code {
+  font-family: var(--wire);
+  font-size: 0.88em;
+}
+
+/* ── Discovery spec sheet ───────────────────────────────────── */
+
+.mcp-source {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--wire);
+  font-size: 11.5px;
+  color: var(--note-3);
+}
+
+.mcp-source b {
+  font-weight: 400;
+  color: var(--sage);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-size: 10px;
+}
+
+.mcp-source span {
+  word-break: break-all;
+  color: var(--note-2);
+}
+
+.mcp-facts {
+  margin: 20px 0 0;
+  border-top: 1px solid var(--rule-firm);
+}
+
+.mcp-facts > div {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 6px calc(var(--step) * 2);
-  padding: calc(var(--step) * 2) 0;
+  grid-template-columns: 168px 1fr;
+  gap: 16px;
+  align-items: baseline;
+  padding: 11px 2px;
   border-bottom: 1px solid var(--rule);
 }
 
-.ad-tools p {
+.mcp-facts dt {
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--note-3);
+}
+
+.mcp-facts dd {
+  margin: 0;
+  font-family: var(--wire);
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--note);
+  word-break: break-word;
+}
+
+.mcp-facts dd em {
+  font-style: normal;
+  color: var(--ember);
+}
+
+/* ── Tool manifest ──────────────────────────────────────────── */
+
+.mcp-tools {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--rule-firm);
+}
+
+.mcp-tools > li {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 4px 16px;
+  padding: 13px 2px;
+  border-bottom: 1px solid var(--rule);
+}
+
+/* A grid item blockifies, which would stretch the shared code background
+   across the whole column. Hug the name instead. */
+.mcp-tools code {
+  justify-self: start;
+  font-size: 14px;
+  color: var(--note);
+  background: color-mix(in srgb, var(--gold) 13%, transparent);
+  padding: 2px 7px;
+  border-radius: 3px;
+}
+
+.mcp-tools p {
   grid-column: 1 / -1;
   margin: 0;
   font-size: 13.5px;
-  line-height: 1.6;
-  color: var(--ink-3);
+  line-height: 1.55;
+  color: var(--note-2);
 }
 
-.ad-tag {
-  justify-self: end;
-  padding: 3px 10px;
-  font-family: var(--sys);
-  font-size: 9.5px;
+.mcp-chip {
+  font-family: var(--wire);
+  font-size: 10px;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 3px;
+  border: 1px solid color-mix(in srgb, var(--sage) 38%, transparent);
+  color: var(--sage);
+  white-space: nowrap;
+  align-self: center;
+}
+
+.mcp-chip.is-write {
+  border-color: color-mix(in srgb, var(--flame) 45%, transparent);
+  color: var(--flame);
+  background: color-mix(in srgb, var(--flame) 9%, transparent);
+}
+
+/* The tool we refused to build, shown as a struck entry in the manifest. */
+.mcp-tools > li.is-absent {
+  opacity: 0.85;
+}
+
+.mcp-tools > li.is-absent code {
+  color: var(--note-3);
+  text-decoration: line-through;
+  text-decoration-color: var(--flame);
+  text-decoration-thickness: 1.5px;
+}
+
+.mcp-chip.is-absent {
+  border-style: dashed;
+  border-color: var(--note-3);
+  color: var(--note-3);
+  background: none;
+}
+
+/* ── Live transcript ────────────────────────────────────────── */
+
+.mcp-run-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.mcp-run-head p {
+  margin: 6px 0 0;
+  max-width: 46ch;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--note-2);
+}
+
+.mcp-go {
+  font-family: var(--wire);
+  font-size: 12px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  border-radius: 9999px;
-  color: var(--ink-3);
-  background: var(--raise);
-}
-
-.ad-tag.is-write {
-  color: var(--warn);
-  background: var(--warn-soft);
-}
-
-.ad-absent {
-  margin-top: calc(var(--step) * 3);
-  padding: calc(var(--step) * 3);
-  border: 1px solid var(--rule-2);
-  border-radius: 12px;
-  background: var(--panel);
-}
-
-.ad-absent h3 {
-  margin: 0 0 8px;
-  font-size: 14.5px;
-  font-weight: 600;
-  color: var(--ink);
-}
-
-.ad-absent p {
-  margin: 0;
-  font-size: 13.5px;
-  line-height: 1.65;
-  color: var(--ink-3);
-}
-
-.ad-refusals {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
-  gap: 1px;
-  background: var(--rule);
-  border: 1px solid var(--rule);
-  border-radius: 12px;
-  overflow: hidden;
-}
-
-.ad-refusals li {
-  padding: calc(var(--step) * 3);
-  background: var(--panel);
-}
-
-.ad-refusals code {
-  display: inline-block;
-  margin-bottom: 10px;
-  font-size: 11.5px;
-  color: var(--live);
-  background: var(--live-soft);
-}
-
-.ad-refusals p {
-  margin: 0;
-  font-size: 13.5px;
-  line-height: 1.6;
-  color: var(--ink-2);
-}
-
-.ad-refusals small {
-  display: block;
-  margin-top: 10px;
-  padding-top: 10px;
-  border-top: 1px solid var(--rule);
-  font-size: 12px;
-  line-height: 1.5;
-  color: var(--ink-3);
-}
-
-.ad-security {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
-  gap: calc(var(--step) * 3);
-}
-
-.ad-security li {
-  padding: calc(var(--step) * 3);
-  border: 1px solid var(--rule);
-  border-radius: 12px;
-  background: var(--panel);
-  transition: box-shadow 200ms var(--ease);
-}
-
-.ad-security li:hover {
-  box-shadow: 0 2px 8px rgba(47, 46, 38, 0.04);
-}
-
-.ad-security h3 {
-  margin: 0 0 8px;
-  font-size: 14.5px;
-  font-weight: 600;
-  color: var(--ink);
-}
-
-.ad-security p {
-  margin: 0;
-  font-size: 13.5px;
-  line-height: 1.65;
-  color: var(--ink-3);
-}
-
-.ad-run {
-  border: 1px solid var(--rule);
-  border-radius: 12px;
-  background: var(--panel);
-  overflow: hidden;
-}
-
-.ad-run-head {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: calc(var(--step) * 3);
-  padding: calc(var(--step) * 3);
-}
-
-.ad-run-head h3 {
-  margin: 0 0 6px;
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--ink);
-}
-
-.ad-run-head p {
-  max-width: 52ch;
-  margin: 0;
-  font-size: 13px;
-  line-height: 1.6;
-  color: var(--ink-3);
-}
-
-.ad-run-go {
-  flex: none;
-  padding: 9px 18px;
-  font-family: var(--human);
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--panel);
-  background: var(--live);
-  border: 0;
-  border-radius: 8px;
+  padding: 11px 18px;
+  border-radius: 4px;
+  border: 1px solid var(--note);
+  background: var(--note);
+  color: var(--paper);
   cursor: pointer;
-  transition: opacity 0.25s var(--ease), transform 0.15s var(--ease);
+  transition: transform 0.14s ease, box-shadow 0.14s ease, opacity 0.14s ease;
 }
 
-.ad-run-go:hover:not(:disabled) {
-  opacity: 0.88;
+.mcp-go:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 0 color-mix(in srgb, var(--ember) 70%, transparent);
 }
 
-.ad-run-go:active:not(:disabled) {
-  transform: scale(0.98);
+.mcp-go:active:not(:disabled) {
+  transform: translateY(1px);
+  box-shadow: none;
 }
 
-.ad-run-go:disabled {
+.mcp-go:disabled {
   opacity: 0.5;
-  cursor: progress;
+  cursor: default;
 }
 
-.ad-run-steps {
-  margin: 0;
-  padding: 0;
+.mcp-broke {
+  margin: 16px 0 0;
+  padding: 12px 14px;
+  border-left: 2px solid var(--flame);
+  background: color-mix(in srgb, var(--flame) 8%, transparent);
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--note-2);
+}
+
+.mcp-tape {
   list-style: none;
-  border-top: 1px solid var(--rule);
+  margin: 22px 0 0;
+  padding: 0 0 0 26px;
+  position: relative;
 }
 
-.ad-run-steps li {
-  display: grid;
-  grid-template-columns: 34px minmax(0, 1fr);
-  gap: 12px;
-  padding: calc(var(--step) * 2) calc(var(--step) * 3);
-  border-bottom: 1px solid var(--rule);
-  animation: ad-step-in 320ms var(--ease) both;
+/* The spine the beats hang from. */
+.mcp-tape::before {
+  content: "";
+  position: absolute;
+  left: 6px;
+  top: 6px;
+  bottom: 6px;
+  width: 1px;
+  background: var(--rule-firm);
 }
 
-@keyframes ad-step-in {
+.mcp-tape > li {
+  position: relative;
+  padding: 0 0 20px;
+}
+
+.mcp-tape > li::before {
+  content: "";
+  position: absolute;
+  left: -24px;
+  top: 6px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--paper);
+  border: 1.5px solid var(--note-3);
+}
+
+.mcp-tape > li.is-ok::before { border-color: var(--sage); background: var(--sage); }
+.mcp-tape > li.is-refused::before { border-color: var(--flame); background: var(--flame); }
+.mcp-tape > li.is-info::before { border-color: var(--gold); background: var(--paper); }
+
+@media (prefers-reduced-motion: no-preference) {
+  .mcp-tape > li {
+    animation: mcp-beat 0.42s cubic-bezier(0.2, 0.7, 0.3, 1) both;
+  }
+}
+
+@keyframes mcp-beat {
   from { opacity: 0; transform: translateY(6px); }
   to { opacity: 1; transform: none; }
 }
 
-.ad-run-n {
-  font-family: var(--sys);
-  font-size: 11px;
-  color: var(--ink-3);
-  padding-top: 2px;
+.mcp-beat-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 10px;
 }
 
-.ad-run-steps strong {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 8px;
-  font-size: 14px;
+.mcp-beat-top strong {
+  font-size: 14.5px;
   font-weight: 600;
-  color: var(--ink);
+  letter-spacing: -0.01em;
 }
 
-.ad-run-steps strong code {
+.mcp-beat-top .mcp-code {
+  font-family: var(--wire);
   font-size: 10.5px;
+  letter-spacing: 0.06em;
   padding: 2px 7px;
-  border-radius: 9999px;
+  border-radius: 3px;
+  border: 1px solid color-mix(in srgb, var(--flame) 40%, transparent);
+  color: var(--flame);
+  background: color-mix(in srgb, var(--flame) 8%, transparent);
 }
 
-.ad-run-steps li.is-ok strong code {
-  color: var(--live);
-  background: var(--live-soft);
-}
-
-.ad-run-steps li.is-refused strong code {
-  color: var(--warn);
-  background: var(--warn-soft);
-}
-
-.ad-run-steps li.is-refused .ad-run-n {
-  color: var(--warn);
-}
-
-.ad-run-steps li.is-info {
-  background: var(--raise);
-}
-
-.ad-run-steps p {
+.mcp-tape p {
   margin: 5px 0 0;
-  font-size: 13px;
-  line-height: 1.6;
-  color: var(--ink-3);
+  font-size: 13.5px;
+  line-height: 1.62;
+  color: var(--note-2);
+  max-width: 62ch;
 }
 
-.ad-run-steps ul {
-  margin: 9px 0 0;
-  padding: 0;
+.mcp-tape ul {
   list-style: none;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
+  margin: 9px 0 0;
+  padding: 9px 0 0 12px;
+  border-top: 1px dashed var(--rule);
 }
 
-.ad-run-steps ul li {
-  display: block;
-  padding: 3px 9px;
-  border: 0;
-  border-radius: 6px;
-  font-family: var(--sys);
-  font-size: 11px;
-  color: var(--ink-2);
-  background: var(--raise);
-  animation: none;
+.mcp-tape ul li {
+  font-family: var(--wire);
+  font-size: 12px;
+  line-height: 1.85;
+  color: var(--note-2);
 }
 
-@media (max-width: 620px) {
-  .ad-run-head {
-    flex-direction: column;
-  }
+.mcp-tape ul li::before {
+  content: "→ ";
+  color: var(--note-3);
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .ad-run-steps li {
-    animation: none;
-  }
-}
+/* ── Refusal ledger ─────────────────────────────────────────── */
 
-@media (max-width: 620px) {
-  .ad-run-head {
-    padding: calc(var(--step) * 2.5);
-  }
-
-  .ad-run-go {
-    width: 100%;
-  }
-
-  .ad-run-steps li {
-    grid-template-columns: 26px minmax(0, 1fr);
-    gap: 9px;
-    padding: calc(var(--step) * 2) calc(var(--step) * 2);
-  }
-
-  .ad-facts > div,
-  .ad-refusals li,
-  .ad-security li,
-  .ad-absent {
-    padding: calc(var(--step) * 2.5);
-  }
-}
-
-.ad-run-broke {
+.mcp-refusals {
+  list-style: none;
   margin: 0;
-  padding: calc(var(--step) * 2.5) calc(var(--step) * 3);
-  border-top: 1px solid var(--rule);
-  font-size: 13px;
+  padding: 0;
+  border-top: 1px solid var(--rule-firm);
+}
+
+.mcp-refusals > li {
+  padding: 14px 2px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.mcp-refusals code {
+  font-size: 12.5px;
+  color: var(--ember);
+  letter-spacing: 0.02em;
+}
+
+.mcp-refusals p {
+  margin: 6px 0 0;
+  font-size: 13.5px;
   line-height: 1.6;
-  color: var(--warn);
-  background: var(--warn-soft);
+  color: var(--note-2);
+}
+
+.mcp-refusals small {
+  display: block;
+  margin: 7px 0 0;
+  font-family: var(--hand);
+  font-size: 18px;
+  line-height: 1.35;
+  color: var(--sage);
+}
+
+/* ── Principles ─────────────────────────────────────────────── */
+
+.mcp-principles {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 1px;
+  background: var(--rule);
+  border: 1px solid var(--rule);
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.mcp-principles > li {
+  background: var(--paper-2);
+  padding: 18px;
+}
+
+.mcp-principles h3 {
+  margin: 0 0 7px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.mcp-principles h3::before {
+  content: attr(data-tag);
+  font-family: var(--wire);
+  font-size: 10px;
+  color: var(--ember);
+  letter-spacing: 0.1em;
+}
+
+.mcp-principles p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.62;
+  color: var(--note-2);
+}
+
+/* ── Wire block ─────────────────────────────────────────────── */
+
+.mcp-wire {
+  margin: 16px 0 0;
+  padding: 16px 18px;
+  border: 1px solid var(--rule-firm);
+  border-left: 2px solid var(--ochre);
+  background: var(--paper-2);
+  overflow-x: auto;
+}
+
+.mcp-wire code {
+  padding: 0;
+  background: none;
+  border-radius: 0;
+  font-family: var(--wire);
+  font-size: 12.5px;
+  line-height: 1.9;
+  color: var(--note);
+  white-space: pre;
+}
+
+.mcp-wire b {
+  font-weight: 400;
+  color: var(--note-3);
+}
+
+.mcp-empty {
+  font-family: var(--wire);
+  font-size: 13px;
+  color: var(--note-3);
+  padding: 24px 0;
+}
+
+@media (max-width: 720px) {
+  .mcp-facts > div { grid-template-columns: 1fr; gap: 3px; }
+  .mcp-principles { grid-template-columns: 1fr; }
+  .mcp-run-head { align-items: stretch; }
+  .mcp-go { width: 100%; }
+  .mcp-note span { font-size: 19px; }
 }
