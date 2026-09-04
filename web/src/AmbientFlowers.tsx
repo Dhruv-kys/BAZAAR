@@ -8,9 +8,10 @@ import "./AmbientFlowers.css";
  * being made rather than a texture sitting still behind the words.
  */
 
-const SPAWN_MS = 6500;
-const STROKES_PER_FRAME = 1;
 const FADE_PER_FRAME = 0.00025;
+
+/* Same reasoning as the burst: less canvas to cover, so sow further apart. */
+const spawnMs = () => (isNarrow() ? 11000 : 6500);
 const MAX_LIVE = 14;
 
 /* Text runs down the middle of every page, so pigment is sown to either side
@@ -64,7 +65,7 @@ export function AmbientFlowers() {
     const tick = (now: number) => {
       raf = requestAnimationFrame(tick);
 
-      if (now - lastSpawn > SPAWN_MS) {
+      if (now - lastSpawn > spawnMs()) {
         lastSpawn = now;
         sow(now);
       }
@@ -78,7 +79,9 @@ export function AmbientFlowers() {
 
       // Only the unfinished ones cost anything: a finished flower is already
       // on the canvas and is never painted twice.
-      for (const flower of live) layNext(ctx, flower, STROKES_PER_FRAME);
+      // One stroke a frame already; on a phone the smaller blooms finish
+      // sooner regardless, so the cadence is what carries the slowdown.
+      for (const flower of live) layNext(ctx, flower, 1);
     };
 
     const run = () => {

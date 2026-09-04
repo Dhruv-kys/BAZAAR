@@ -2,9 +2,16 @@ import { useEffect, useRef } from "react";
 import { growFlower, layAll, layNext, rand, type Flower } from "../flowers";
 import "./FlowerField.css";
 
-const SPAWN_MS = 1150;
 const FADE_PER_FRAME = 0.0006;
-const STROKES_PER_FRAME = 4;
+
+/*
+ * A phone has roughly a third of a laptop's area, so the same cadence fills it
+ * three times over in the same span and the painting reads as hurried. Both the
+ * sowing and the brush slow down to match the smaller canvas.
+ */
+const narrow = () => window.innerWidth < 820;
+const spawnMs = () => (narrow() ? 2900 : 1150);
+const strokesPerFrame = () => (narrow() ? 2 : 4);
 
 export function FlowerField({ painting }: { painting: boolean }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -30,9 +37,17 @@ export function FlowerField({ painting }: { painting: boolean }) {
     const tick = (now: number) => {
       raf = requestAnimationFrame(tick);
 
-      if (now - lastSpawn > SPAWN_MS) {
+      if (now - lastSpawn > spawnMs()) {
         lastSpawn = now;
-        open.push(growFlower(rand(0.06, 0.94) * window.innerWidth, rand(0.10, 0.92) * window.innerHeight, now));
+        const bloom = growFlower(
+          rand(0.06, 0.94) * window.innerWidth,
+          rand(0.10, 0.92) * window.innerHeight,
+          now,
+        );
+        // Full-size blooms swamp a phone, which is half of why the painting
+        // felt hurried there: fewer of them, but each one covering far more.
+        if (narrow()) bloom.scale *= 0.72;
+        open.push(bloom);
         if (open.length > 40) open.shift();
       }
 
@@ -47,7 +62,7 @@ export function FlowerField({ painting }: { painting: boolean }) {
 
       for (const flower of open) {
         if (still) layAll(ctx, flower);
-        else layNext(ctx, flower, STROKES_PER_FRAME);
+        else layNext(ctx, flower, strokesPerFrame());
       }
     };
 
