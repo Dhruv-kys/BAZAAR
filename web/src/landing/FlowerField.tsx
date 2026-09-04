@@ -2,9 +2,9 @@ import { useEffect, useRef } from "react";
 import { growFlower, layAll, layNext, rand, type Flower } from "../flowers";
 import "./FlowerField.css";
 
-const SPAWN_MS = 620;
-const FADE_PER_FRAME = 0.0009;
-const STROKES_PER_FRAME = 9;
+const SPAWN_MS = 1150;
+const FADE_PER_FRAME = 0.0006;
+const STROKES_PER_FRAME = 4;
 
 export function FlowerField({ painting }: { painting: boolean }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);

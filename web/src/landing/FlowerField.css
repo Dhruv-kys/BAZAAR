@@ -37,17 +37,24 @@ html.dark .bloom {
   transform: translateY(-50%);
   z-index: 5;
   display: grid;
-  place-items: center;
-  width: 104px;
-  height: 104px;
-  padding: 0;
+  /* Centred on both axes but stretched across, so the label wraps inside the
+     circle. place-items: center sizes the item to max-content, and the words
+     then run straight out through the edges. */
+  align-items: center;
+  justify-items: stretch;
+  text-align: center;
+  width: 120px;
+  height: 120px;
+  /* Four words have to wrap inside a circle, so the padding keeps the lines
+     off the curve rather than letting them touch it. */
+  padding: 0 16px;
   border-radius: 50%;
   border: 1.5px solid var(--flame-ink);
   background: color-mix(in srgb, var(--paper-raised) 88%, transparent);
   color: var(--flame-ink);
   font-family: var(--hand);
-  font-size: 23px;
-  line-height: 1.1;
+  font-size: 18px;
+  line-height: 1.04;
   cursor: pointer;
   backdrop-filter: blur(6px);
   transition: transform 0.35s cubic-bezier(0.34, 1.42, 0.64, 1), box-shadow 0.35s ease;
@@ -89,13 +96,14 @@ html.dark .bloom {
    The upper right of the hero is the one corner a phone leaves empty. */
 @media (max-width: 820px) {
   .lp-paint {
-    width: 76px;
-    height: 76px;
-    right: 12px;
-    top: 104px;
+    width: 96px;
+    height: 96px;
+    right: 10px;
+    top: 100px;
     bottom: auto;
     transform: none;
-    font-size: 18px;
+    padding: 0 11px;
+    font-size: 15px;
   }
 
   .lp-paint:hover {

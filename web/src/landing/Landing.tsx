@@ -106,7 +106,7 @@ export function Landing() {
           });
         }}
       >
-        {painting ? "bring it back" : "click here"}
+        {painting ? "bring it back" : "tap to see magic"}
       </button>
 
       {painting && (

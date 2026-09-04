@@ -8,9 +8,9 @@ import "./AmbientFlowers.css";
  * being made rather than a texture sitting still behind the words.
  */
 
-const SPAWN_MS = 4200;
-const STROKES_PER_FRAME = 2;
-const FADE_PER_FRAME = 0.00035;
+const SPAWN_MS = 6500;
+const STROKES_PER_FRAME = 1;
+const FADE_PER_FRAME = 0.00025;
 const MAX_LIVE = 14;
 
 /* Text runs down the middle of every page, so pigment is sown to either side
