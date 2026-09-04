@@ -21,6 +21,11 @@ const PALETTES = [
   ["#f9bdbd", "#ec8d8d", "#cc5158"],
   ["#fde5b4", "#f2c877", "#d7a032"],
   ["#f9c2cb", "#ec98a5", "#c96a79"],
+  // Autumn: torii vermillion, maple, and bronze, so the garden turns rather
+  // than staying in permanent spring.
+  ["#f7bfb0", "#e08a6b", "#b8452a"],
+  ["#f5b9b6", "#dd8177", "#a8382f"],
+  ["#f6c8a8", "#dfa060", "#a8641f"],
 ];
 const LEAF = ["#a8c79a", "#7fa876", "#5c8a58"];
 

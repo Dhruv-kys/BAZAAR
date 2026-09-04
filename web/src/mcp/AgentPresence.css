@@ -1,0 +1,115 @@
+/*
+ * Liveness, not history. The audit trail is the record; this only answers
+ * whether anything is talking to the merchant right now.
+ */
+.ap {
+  margin: 22px 0 0;
+  padding: 16px 18px;
+  border: 1px solid var(--rule);
+  border-left: 2px solid var(--rule-2);
+  background: color-mix(in srgb, var(--paper-raised) 70%, transparent);
+  border-radius: 4px;
+  transition: border-color 0.4s ease, background-color 0.4s ease;
+}
+
+.ap.is-live {
+  border-left-color: var(--flame);
+  background: color-mix(in srgb, var(--flame) 6%, transparent);
+}
+
+.ap-state {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.ap-state strong {
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+
+.ap-hint {
+  font-size: 12.5px;
+  color: var(--ink-3);
+}
+
+.ap-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--ink-3);
+  align-self: center;
+  flex: none;
+}
+
+.ap.is-live .ap-dot {
+  background: var(--flame);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .ap.is-live .ap-dot {
+    animation: ap-beat 1.6s ease-in-out infinite;
+  }
+}
+
+@keyframes ap-beat {
+  0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--flame) 55%, transparent); }
+  60% { box-shadow: 0 0 0 7px transparent; }
+}
+
+.ap-list {
+  list-style: none;
+  margin: 14px 0 0;
+  padding: 12px 0 0;
+  border-top: 1px solid var(--rule);
+}
+
+.ap-list > li + li {
+  margin-top: 12px;
+}
+
+.ap-who {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.ap-who code {
+  font-family: var(--wire);
+  font-size: 13px;
+  color: var(--ink);
+}
+
+.ap-who span {
+  font-size: 12px;
+  color: var(--ink-3);
+}
+
+/* Newest call first, fading back through what came before it. */
+.ap-calls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  list-style: none;
+  margin: 9px 0 0;
+  padding: 0;
+}
+
+.ap-calls li {
+  font-family: var(--wire);
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 3px;
+  border: 1px solid var(--rule-2);
+  color: var(--ink-3);
+}
+
+.ap-calls li.is-newest {
+  border-color: color-mix(in srgb, var(--flame) 45%, transparent);
+  background: color-mix(in srgb, var(--flame) 10%, transparent);
+  color: var(--flame-ink);
+}

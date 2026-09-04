@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { apiOrigin, apiUrl } from "../api";
 import { Note } from "../Marginalia";
+import { AgentPresence } from "./AgentPresence";
 import { PageShell } from "../pages/PageShell";
 import "./McpDoor.css";
 
@@ -255,6 +256,7 @@ export function McpDoor() {
 
             <section className="pg-section" data-reveal>
               <h2 data-index="03">See it happen</h2>
+              <AgentPresence />
               <LiveRun />
             </section>
 

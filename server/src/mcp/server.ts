@@ -12,6 +12,7 @@ import { REFUSAL_CODES } from "../commerce/refusals.js";
 import { merchant } from "../merchant/profile.js";
 import { GUARDRAILS } from "../guardrails/config.js";
 import { agentSessionId, resolveAgentId } from "./agents.js";
+import { noteAgentActivity } from "./presence.js";
 
 /**
  * Tool-calling models send an explicit null for an omitted field rather than
@@ -176,6 +177,13 @@ mcpRouter.post("/", async (req: Request, res: Response) => {
     });
     return;
   }
+
+  /*
+   * One hook for the whole door: the JSON-RPC envelope already names the tool,
+   * so presence does not need a callback wrapped around each of the four.
+   */
+  const body = req.body as { method?: string; params?: { name?: string } } | undefined;
+  noteAgentActivity(agentId, body?.method === "tools/call" ? body.params?.name : undefined);
 
   const server = buildServer(agentSessionId(req, agentId), agentId);
   const transport = new StreamableHTTPServerTransport({ sessionIdGenerator: undefined });

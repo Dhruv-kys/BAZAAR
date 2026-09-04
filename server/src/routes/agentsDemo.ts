@@ -1,7 +1,13 @@
 import { Router } from "express";
 import { runBuyerDemo, type DemoStep } from "../mcp/demoRun.js";
+import { activeAgents } from "../mcp/presence.js";
 
 export const agentsDemoRouter = Router();
+
+agentsDemoRouter.get("/presence", (_req, res) => {
+  const agents = activeAgents();
+  res.json({ connected: agents.length > 0, agents });
+});
 
 agentsDemoRouter.get("/demo", async (req, res) => {
   res.setHeader("Content-Type", "text/event-stream");
