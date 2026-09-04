@@ -13,6 +13,41 @@ import { merchant } from "../merchant/profile.js";
 import { GUARDRAILS } from "../guardrails/config.js";
 import { agentSessionId, resolveAgentId } from "./agents.js";
 
+/**
+ * Tool-calling models send an explicit null for an omitted field rather than
+ * dropping the key, so every non-required field here is nullish, not optional.
+ */
+export const agentToolInputs = {
+  search_catalog: {
+    query: z.string().nullish().describe("Free-text search, e.g. 'chocolate cake'"),
+    occasionTag: z.string().nullish().describe("Occasion tag such as 'birthday'"),
+    category: z.string().nullish().describe("Product category such as 'cake'"),
+  },
+  get_product: {
+    productId: z.string().describe("Product id from search_catalog"),
+  },
+  request_quote: {
+    items: z
+      .array(
+        z.object({
+          productId: z.string(),
+          variantId: z.string(),
+          quantity: z.number().int().min(1),
+        }),
+      )
+      .min(1),
+    addOnIds: z.array(z.string()).nullish(),
+    acceptOffer: z
+      .string()
+      .nullish()
+      .describe("An offer code from a previous quote's offers[] to apply to this one"),
+  },
+  confirm_order: {
+    quoteId: z.string().describe("quoteId from request_quote"),
+    mandate: signedMandateSchema.describe("A principal-signed spend mandate authorizing this agent"),
+  },
+} as const;
+
 interface ToolReply {
   [key: string]: unknown;
   content: { type: "text"; text: string }[];
@@ -48,15 +83,11 @@ function buildServer(sessionId: string, agentId: string): McpServer {
     {
       title: "Search catalog",
       description: "Search the merchant's product catalog by free text, occasion tag, or category.",
-      inputSchema: {
-        query: z.string().optional().describe("Free-text search, e.g. 'chocolate cake'"),
-        occasionTag: z.string().optional().describe("Occasion tag such as 'birthday'"),
-        category: z.string().optional().describe("Product category such as 'cake'"),
-      },
+      inputSchema: agentToolInputs.search_catalog,
     },
     async ({ query, occasionTag, category }) =>
       ok(
-        searchCatalog(query, occasionTag, category).map((product) => ({
+        searchCatalog(query ?? undefined, occasionTag ?? undefined, category ?? undefined).map((product) => ({
           productId: product.id,
           name: product.name,
           category: product.category,
@@ -71,7 +102,7 @@ function buildServer(sessionId: string, agentId: string): McpServer {
     {
       title: "Get product",
       description: "Full variant pricing for one product, plus the add-ons that pair with it.",
-      inputSchema: { productId: z.string().describe("Product id from search_catalog") },
+      inputSchema: agentToolInputs.get_product,
     },
     async ({ productId }) => {
       const product = getProductById(productId);
@@ -88,25 +119,15 @@ function buildServer(sessionId: string, agentId: string): McpServer {
       title: "Request quote",
       description:
         "Price a basket server-side and receive a binding, time-limited quote plus any offers the merchant extends. This does not charge anything.",
-      inputSchema: {
-        items: z
-          .array(
-            z.object({
-              productId: z.string(),
-              variantId: z.string(),
-              quantity: z.number().int().min(1),
-            }),
-          )
-          .min(1),
-        addOnIds: z.array(z.string()).optional(),
-        acceptOffer: z
-          .string()
-          .optional()
-          .describe("An offer code from a previous quote's offers[] to apply to this one"),
-      },
+      inputSchema: agentToolInputs.request_quote,
     },
     async ({ items, addOnIds, acceptOffer }) => {
-      const result = requestQuote({ items, addOnIds, acceptOffer, actor });
+      const result = requestQuote({
+        items,
+        addOnIds: addOnIds ?? undefined,
+        acceptOffer: acceptOffer ?? undefined,
+        actor,
+      });
       return result.ok ? ok(result.quote) : denied(result);
     },
   );
@@ -117,10 +138,7 @@ function buildServer(sessionId: string, agentId: string): McpServer {
       title: "Confirm order",
       description:
         "Confirm a quote and obtain a payment link. Requires a signed spend mandate authorizing this agent. The mandate is single-use and its ceiling is enforced against the merchant's own limits.",
-      inputSchema: {
-        quoteId: z.string().describe("quoteId from request_quote"),
-        mandate: signedMandateSchema.describe("A principal-signed spend mandate authorizing this agent"),
-      },
+      inputSchema: agentToolInputs.confirm_order,
     },
     async ({ quoteId, mandate }) => {
       const result = await confirmOrder({ summaryId: quoteId, actor, mandate });
@@ -159,8 +177,13 @@ mcpRouter.post("/", async (req: Request, res: Response) => {
     void server.close();
   });
 
-  await server.connect(transport);
-  await transport.handleRequest(req, res, req.body);
+  try {
+    await server.connect(transport);
+    await transport.handleRequest(req, res, req.body);
+  } catch (error) {
+    console.error("mcp request failed:", error);
+    if (!res.headersSent) res.status(500).json({ error: "The merchant MCP session failed." });
+  }
 });
 
 export const wellKnownRouter = Router();
