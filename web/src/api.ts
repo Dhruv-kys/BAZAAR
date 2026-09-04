@@ -4,6 +4,15 @@ export function apiUrl(path: string): string {
   return `${API_BASE_URL}${path}`;
 }
 
+/**
+ * The API's own origin, for showing an agent where to call. apiUrl() is
+ * relative in dev, and new URL() on a relative path throws, so resolve against
+ * the page before reading .origin.
+ */
+export function apiOrigin(): string {
+  return new URL(apiUrl("/"), window.location.origin).origin;
+}
+
 export class ApiUnavailableError extends Error {
   constructor() {
     super("The API is not reachable from this build.");
