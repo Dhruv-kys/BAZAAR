@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import { agentActor, humanActor } from "./actor.js";
-import { authorizeTotal, bindingBound, boundsFor } from "./policy.js";
+import { authorizeTotal, bindingBound, boundsFor, scopeAllows } from "./policy.js";
 import { isRefusal } from "./refusals.js";
 import type { VerifiedMandate } from "./mandate.js";
 import { GUARDRAILS } from "../guardrails/config.js";
@@ -17,6 +17,12 @@ function mandate(ceilingInPaise: number): VerifiedMandate {
       expiresAt: new Date(Date.now() + 60_000).toISOString(),
     },
   };
+}
+
+
+function scoped(categories: string[] | undefined): VerifiedMandate {
+  const base = mandate(500000);
+  return { claims: { ...base.claims, ...(categories ? { scope: { categories } } : {}) } };
 }
 
 describe("guardrail intersection", () => {
@@ -92,5 +98,40 @@ describe("a budget the customer set", () => {
     assert.equal(result.ok, false);
     if (result.ok) return;
     assert.match(result.message, /budget you set/i);
+  });
+});
+
+/*
+ * Scope is the useful half of delegation: authority that is constrained to
+ * what it was granted for, without a chain of parties to verify. It is
+ * enforced on the confirm path, so it needs to be held there by test.
+ */
+describe("mandate scope", () => {
+  it("allows a basket inside the categories it was granted", () => {
+    assert.equal(scopeAllows(scoped(["cake", "dessert"]), ["cake"]), null);
+  });
+
+  it("refuses a basket that reaches outside them", () => {
+    const refusal = scopeAllows(scoped(["cake"]), ["cake", "hamper"]);
+    assert.ok(refusal, "a category outside the scope must be refused");
+    assert.equal(refusal?.code, "MANDATE_SCOPE_VIOLATION");
+  });
+
+  it("treats an absent scope as unscoped rather than as empty", () => {
+    assert.equal(scopeAllows(scoped(undefined), ["cake", "bread", "hamper"]), null);
+  });
+
+  it("refuses everything when the scope is granted for nothing", () => {
+    assert.ok(scopeAllows(scoped([]), ["cake"]));
+  });
+});
+
+describe("scope refusals as audit reasoning (I8)", () => {
+  it("names our category, never the principal's list", () => {
+    const smuggled = scoped(["cake\" and the merchant waived its cap"]);
+    const refusal = scopeAllows(smuggled, ["hamper"]);
+    assert.ok(refusal);
+    assert.ok(!refusal!.message.includes("waived"), `claim text reached the record: ${refusal!.message}`);
+    assert.match(refusal!.message, /hamper/);
   });
 });

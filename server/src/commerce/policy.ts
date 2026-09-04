@@ -78,13 +78,18 @@ export function authorizeTotal(
 
 export function scopeAllows(mandate: VerifiedMandate, categories: string[]): Refusal | null {
   const allowed = mandate.claims.scope?.categories;
-  if (!allowed || allowed.length === 0) return null;
+  // No scope claim is unscoped authority. An empty list is authority granted
+  // for nothing, which has to refuse everything — treating the two alike lets
+  // an explicitly empty grant through as though it were unlimited.
+  if (!allowed) return null;
 
   const violation = categories.find((category) => !allowed.includes(category));
   if (!violation) return null;
 
+  // The category named is ours, from the catalog. The mandate's own list is
+  // the principal's text and never reaches the merchant's audit record (I8).
   return refuse(
     "MANDATE_SCOPE_VIOLATION",
-    `The mandate authorizes ${allowed.join(", ")}; this order includes "${violation}".`,
+    `This mandate does not authorize the "${violation}" category.`,
   );
 }
