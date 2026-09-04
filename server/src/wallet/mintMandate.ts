@@ -1,10 +1,11 @@
 import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
-import { signingBytes, type MandateClaims } from "../commerce/mandate.js";
+import type { MandateClaims } from "../commerce/mandate.js";
+import { loadPrivateKey as readPrincipalKey, principalKeyPath, signMandate } from "./principal.js";
 
-const walletDir = path.resolve(import.meta.dirname, "../../.wallet");
-const keyPath = path.join(walletDir, "principal.key");
+const walletDir = path.dirname(principalKeyPath);
+const keyPath = principalKeyPath;
 
 function keygen(): void {
   const { publicKey, privateKey } = crypto.generateKeyPairSync("ed25519");
@@ -24,11 +25,7 @@ function loadPrivateKey(): crypto.KeyObject {
     console.error(`No principal key at ${keyPath}. Run: npm run wallet -w server -- keygen`);
     process.exit(1);
   }
-  return crypto.createPrivateKey({
-    key: Buffer.from(fs.readFileSync(keyPath, "utf8"), "base64"),
-    format: "der",
-    type: "pkcs8",
-  });
+  return readPrincipalKey();
 }
 
 function flag(name: string, fallback?: string): string {
@@ -54,8 +51,7 @@ function mint(): void {
     ...(categories ? { scope: { categories: categories.split(",").map((c) => c.trim()) } } : {}),
   };
 
-  const signature = crypto.sign(null, signingBytes(claims), privateKey).toString("base64");
-  console.log(JSON.stringify({ claims, signature }, null, 2));
+  console.log(JSON.stringify(signMandate(claims, privateKey), null, 2));
 }
 
 const command = process.argv[2];

@@ -1,23 +1,12 @@
 import crypto from "node:crypto";
-import fs from "node:fs";
-import path from "node:path";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
-import { signingBytes, type MandateClaims, type SignedMandate } from "../commerce/mandate.js";
+import type { MandateClaims, SignedMandate } from "../commerce/mandate.js";
+import { signMandate } from "./principal.js";
 
 const MERCHANT_URL = process.env.MERCHANT_MCP_URL ?? "http://localhost:3001/mcp";
 const AGENT_KEY = process.env.AGENT_KEY ?? "demo-agent-key";
 const AGENT_ID = process.env.AGENT_ID ?? "agent-alpha";
-
-const keyPath = path.resolve(import.meta.dirname, "../../.wallet/principal.key");
-
-function privateKey(): crypto.KeyObject {
-  return crypto.createPrivateKey({
-    key: Buffer.from(fs.readFileSync(keyPath, "utf8"), "base64"),
-    format: "der",
-    type: "pkcs8",
-  });
-}
 
 function mintMandate(ceilingInPaise: number, ttlMinutes = 30): SignedMandate {
   const claims: MandateClaims = {
@@ -28,7 +17,7 @@ function mintMandate(ceilingInPaise: number, ttlMinutes = 30): SignedMandate {
     issuedAt: new Date().toISOString(),
     expiresAt: new Date(Date.now() + ttlMinutes * 60_000).toISOString(),
   };
-  return { claims, signature: crypto.sign(null, signingBytes(claims), privateKey()).toString("base64") };
+  return signMandate(claims);
 }
 
 interface Binding {
