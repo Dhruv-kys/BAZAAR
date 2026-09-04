@@ -1,38 +1,74 @@
+/*
+ * One notebook palette, defined here and aliased by every scope. The hues are
+ * taken from the reference the design follows: warm paper, charcoal ink, and a
+ * flame/ochre/sage set that carries state without turning the page colourful.
+ */
 :root {
-  --bg: #faf9f6;
-  --surface: #ffffff;
-  --surface-2: #f4f2ee;
-  --line: #e5e1d9;
-  --line-strong: #d3cec3;
+  --paper: #fff8e8;
+  --paper-raised: #fffdf4;
+  --paper-sunk: #f8ecd5;
+  --hairline: #e8dfc8;
+  --hairline-firm: #d6cbae;
 
-  --ink: #1c1b18;
-  --ink-2: #56534c;
-  --ink-3: #747067;
+  --ink-strong: #3a3a3a;
+  --ink-body: #5f5a52;
+  --ink-soft: #767065;
 
-  --accent: #1f1e1b;
-  --accent-ink: #faf9f6;
-  --accent-soft: #f0eee9;
-  --signal: #426a98;
-  --signal-soft: #e1eaf6;
-  --positive: #426a98;
-  --positive-soft: #e5edf8;
-  --caution: #8f6516;
-  --caution-soft: #f8f2e4;
-  --critical: #a34030;
-  --critical-soft: #faeeeb;
+  /*
+   * Two tiers. The vivid hues are the reference's and carry display type,
+   * marks and graphics; the -ink variants are darkened until small text and
+   * solid buttons clear 4.5:1 on paper. Reaching for a vivid hue at 13px is
+   * the mistake this split exists to prevent.
+   */
+  --flame: #ed682b;
+  --flame-ink: #b8501f;
+  --ember: #c45c2a;
+  --ochre: #c98a2a;
+  --ochre-ink: #946316;
+  --gold: #d4a64f;
+  --sage: #2d8a56;
+  --sage-ink: #267a4b;
+  --azure: #4a7ab5;
+  --azure-ink: #3d689e;
 
-  --term-bg: #201f1c;
-  --term-line: #35332e;
-  --term-ink: #e6e3db;
-  --term-dim: #918d84;
-  --term-blue: #6c8fbe;
-  --term-cyan: #8baed8;
-  --term-go: #8baed8;
-  --term-warn: #d4ac6a;
-  --term-stop: #dc9382;
+  --text: Inter, "Inter Tight", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --hand: "Caveat", "Segoe Script", cursive;
+  --wire: "Fragment Mono", "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
 
-  --sans: "Hanken Grotesk", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --bg: var(--paper);
+  --surface: var(--paper-raised);
+  --surface-2: var(--paper-sunk);
+  --line: var(--hairline);
+  --line-strong: var(--hairline-firm);
+
+  --ink: var(--ink-strong);
+  --ink-2: var(--ink-body);
+  --ink-3: var(--ink-soft);
+
+  --accent: var(--ink-strong);
+  --accent-ink: var(--paper);
+  --accent-soft: color-mix(in srgb, var(--gold) 24%, transparent);
+  --signal: var(--azure-ink);
+  --signal-soft: color-mix(in srgb, var(--azure) 14%, transparent);
+  --positive: var(--sage-ink);
+  --positive-soft: color-mix(in srgb, var(--sage) 13%, transparent);
+  --caution: var(--ochre-ink);
+  --caution-soft: color-mix(in srgb, var(--ochre) 14%, transparent);
+  --critical: var(--flame-ink);
+  --critical-soft: color-mix(in srgb, var(--ember) 12%, transparent);
+
+  --term-bg: #221d17;
+  --term-line: #383026;
+  --term-ink: #ede4d4;
+  --term-dim: #9a9082;
+  --term-blue: var(--azure);
+  --term-cyan: #7ea8dd;
+  --term-go: #6fbf8f;
+  --term-warn: var(--gold);
+  --term-stop: #e8794a;
+
+  --sans: var(--text);
+  --mono: var(--wire);
 
   --t-xs: 12px;
   --t-sm: 13px;
@@ -41,11 +77,11 @@
   --t-lg: 21px;
   --t-xl: 28px;
 
-  --r-sm: 8px;
-  --r-md: 12px;
-  --r-lg: 16px;
+  --r-sm: 4px;
+  --r-md: 6px;
+  --r-lg: 10px;
 
-  --shadow: 0 1px 2px rgba(28, 27, 24, 0.04), 0 10px 28px -16px rgba(28, 27, 24, 0.16);
+  --shadow: 0 1px 2px rgba(58, 58, 58, 0.04), 0 10px 28px -18px rgba(58, 58, 58, 0.18);
 
   --step: 8px;
 
@@ -53,30 +89,32 @@
 }
 
 html.dark {
-  --bg: #171613;
-  --surface: #1e1d1a;
-  --surface-2: #232220;
-  --line: #2e2c28;
-  --line-strong: #3d3a35;
+  --paper: #1a1714;
+  --paper-raised: #211d18;
+  --paper-sunk: #2a241d;
+  --hairline: rgba(240, 230, 210, 0.13);
+  --hairline-firm: rgba(240, 230, 210, 0.24);
 
-  --ink: #f1efe9;
-  --ink-2: #b0aca3;
-  --ink-3: #8d8981;
+  --ink-strong: #ede4d4;
+  --ink-body: #b3aa9b;
+  --ink-soft: #857d71;
 
-  --accent: #f1efe9;
-  --accent-ink: #171613;
-  --accent-soft: #2a2823;
-  --signal: #8baed8;
-  --signal-soft: rgba(139, 174, 216, .17);
-  --positive: #8baed8;
-  --positive-soft: rgba(139, 174, 216, .17);
-  --caution: #cfa663;
-  --caution-soft: #2b2519;
-  --critical: #dd8b78;
-  --critical-soft: #2e1f1b;
+  --flame: #ff8a52;
+  --flame-ink: #ff8a52;
+  --ember: #e8794a;
+  --ochre: #e0ab5c;
+  --ochre-ink: #e0ab5c;
+  --gold: #d4a64f;
+  --sage: #6fbf8f;
+  --sage-ink: #6fbf8f;
+  --azure: #7ea8dd;
+  --azure-ink: #7ea8dd;
 
-  --term-bg: #1a1917;
-  --term-line: #302e2a;
+  --accent: var(--ink-strong);
+  --accent-ink: var(--paper);
+
+  --term-bg: #141210;
+  --term-line: #2e2822;
 
   --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 10px 28px -16px rgba(0, 0, 0, 0.6);
 

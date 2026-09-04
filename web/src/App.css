@@ -1,26 +1,21 @@
 .cs {
-  --sys: var(--mono);
-  --human: "Inter Tight", "Plus Jakarta Sans", system-ui, sans-serif;
+  --sys: var(--wire);
+  --human: var(--text);
 
-  --bg: #faf7ec;
-  --panel: #fffdf6;
-  --raise: #f3efdf;
-  --rule: #e7e1cd;
-  --rule-2: #d2cab1;
+  --panel: var(--paper-raised);
+  --raise: var(--paper-sunk);
+  --rule: var(--hairline);
+  --rule-2: var(--hairline-firm);
 
-  --ink: #2f2e26;
-  --ink-2: #64604e;
-  --ink-3: #6f6a58;
+  --ok: var(--sage-ink);
+  --warn: var(--ochre-ink);
+  --stop: var(--flame-ink);
+  --live: var(--flame-ink);
 
-  --ok: #5a57d4;
-  --warn: #9a7526;
-  --stop: #c2543f;
-  --live: #5a57d4;
-
-  --ok-bg: rgba(90, 87, 212, 0.10);
-  --warn-bg: rgba(154, 117, 38, 0.12);
-  --stop-bg: rgba(194, 84, 63, 0.10);
-  --live-bg: #eceafc;
+  --ok-bg: color-mix(in srgb, var(--sage) 12%, transparent);
+  --warn-bg: color-mix(in srgb, var(--ochre) 14%, transparent);
+  --stop-bg: color-mix(in srgb, var(--ember) 12%, transparent);
+  --live-bg: color-mix(in srgb, var(--flame) 12%, transparent);
 
   --r: 4px;
   --ease: cubic-bezier(0.32, 0.72, 0, 1);
@@ -33,28 +28,6 @@
   color: var(--ink-2);
   font-family: var(--human);
   overflow: hidden;
-}
-
-html.dark .cs {
-  --bg: #16150e;
-  --panel: #1f1d15;
-  --raise: #27241a;
-  --rule: rgba(246, 240, 222, 0.13);
-  --rule-2: rgba(246, 240, 222, 0.24);
-
-  --ink: #f6f2e4;
-  --ink-2: #c9c3ac;
-  --ink-3: #968f79;
-
-  --ok: #a9a7ff;
-  --warn: #d7b775;
-  --stop: #e59280;
-  --live: #a9a7ff;
-
-  --ok-bg: rgba(169, 167, 255, 0.16);
-  --warn-bg: rgba(215, 183, 117, 0.14);
-  --stop-bg: rgba(229, 146, 128, 0.14);
-  --live-bg: rgba(169, 167, 255, 0.16);
 }
 
 .cs-label {

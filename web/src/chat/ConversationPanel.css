@@ -106,18 +106,18 @@
 
 .cp-greeting {
   margin: calc(var(--step) * 3) 0 0;
-  font-family: "Instrument Serif", Georgia, "Times New Roman", serif;
-  font-weight: 400;
-  font-size: clamp(30px, 4.4vw, 50px);
-  line-height: 1.08;
-  letter-spacing: -0.015em;
-  color: var(--ink-2);
+  font-family: var(--text);
+  font-weight: 600;
+  font-size: clamp(28px, 4vw, 44px);
+  line-height: 1.1;
+  letter-spacing: -0.032em;
+  color: var(--ink);
   text-wrap: balance;
 }
 
 .cp-greeting em {
-  font-style: italic;
-  color: var(--ink);
+  font-style: normal;
+  color: var(--flame);
 }
 
 .cp-stage-sub {
