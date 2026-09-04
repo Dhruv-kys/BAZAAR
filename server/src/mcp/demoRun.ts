@@ -45,6 +45,21 @@ function asRecord(value: unknown): Record<string, unknown> {
     : {};
 }
 
+/**
+ * The page shows what the merchant actually answered. A default here would let
+ * a transport or schema error render as a governance refusal the server never
+ * made, which is the one thing this demonstration cannot afford to fake.
+ */
+function refusalCode(refusal: Record<string, unknown>): string {
+  return typeof refusal.code === "string" ? refusal.code : "NO_REFUSAL_CODE_RETURNED";
+}
+
+function refusalText(refusal: Record<string, unknown>): string {
+  return typeof refusal.message === "string"
+    ? refusal.message
+    : "The merchant returned no refusal message. Something answered before the policy core did.";
+}
+
 function rupees(paise: number): string {
   return `₹${(paise / 100).toLocaleString("en-IN")}`;
 }
@@ -139,8 +154,8 @@ export async function runBuyerDemo(emit: (step: DemoStep) => void): Promise<void
     step({
       title: "Tried to spend with no mandate",
       status: "refused",
-      detail: String(noMandate.message ?? "Refused."),
-      code: String(noMandate.code ?? "MANDATE_REQUIRED"),
+      detail: refusalText(noMandate),
+      code: refusalCode(noMandate),
     });
 
     const forged = forgedMandate(500000);
@@ -150,11 +165,8 @@ export async function runBuyerDemo(emit: (step: DemoStep) => void): Promise<void
     step({
       title: "Tried to forge the buyer's consent",
       status: "refused",
-      detail: String(
-        badSignature.message ??
-          "The signature does not match the claims. This host holds only the public key, so it cannot produce a valid one.",
-      ),
-      code: String(badSignature.code ?? "MANDATE_SIGNATURE_INVALID"),
+      detail: refusalText(badSignature),
+      code: refusalCode(badSignature),
     });
 
     step({

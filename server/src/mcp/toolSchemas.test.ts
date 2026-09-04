@@ -3,7 +3,7 @@ import { describe, it } from "node:test";
 import { z } from "zod";
 import { agentToolInputs } from "./server.js";
 
-const REQUIRED = new Set(["productId", "items", "quoteId", "mandate"]);
+const REQUIRED = new Set(["productId", "items", "quoteId"]);
 
 describe("agent tool schemas", () => {
   it("accepts an explicit null for every non-required field", () => {
@@ -20,10 +20,18 @@ describe("agent tool schemas", () => {
     }
   });
 
-  it("still rejects a null on the fields that carry the money", () => {
+  it("still rejects a null on the fields that name what is being bought", () => {
     assert.equal(agentToolInputs.request_quote.items.safeParse(null).success, false);
     assert.equal(agentToolInputs.confirm_order.quoteId.safeParse(null).success, false);
-    assert.equal(agentToolInputs.confirm_order.mandate.safeParse(null).success, false);
+  });
+
+  // A missing mandate is refused by confirmOrder, not by the schema, so the
+  // agent is told what a mandate is instead of getting a -32602 about an
+  // object it does not know how to build. checkout.test.ts holds that gate.
+  it("lets a missing mandate reach the policy core", () => {
+    assert.equal(agentToolInputs.confirm_order.mandate.safeParse(null).success, true);
+    assert.equal(agentToolInputs.confirm_order.mandate.safeParse(undefined).success, true);
+    assert.equal(agentToolInputs.confirm_order.mandate.safeParse({ nonsense: true }).success, false);
   });
 
   it("prices a quote whose optional fields arrived as null", () => {

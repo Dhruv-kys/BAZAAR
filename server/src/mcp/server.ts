@@ -44,7 +44,15 @@ export const agentToolInputs = {
   },
   confirm_order: {
     quoteId: z.string().describe("quoteId from request_quote"),
-    mandate: signedMandateSchema.describe("A principal-signed spend mandate authorizing this agent"),
+    /**
+     * Nullish, though a mandate is always required to spend: a schema rejection
+     * answers a model with an opaque -32602 about a missing object, while the
+     * gate in confirmOrder answers with what a mandate is and how to get one.
+     * The refusal has to come from the policy core to be worth anything.
+     */
+    mandate: signedMandateSchema
+      .nullish()
+      .describe("A principal-signed spend mandate authorizing this agent. Required to spend."),
   },
 } as const;
 
