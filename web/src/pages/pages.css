@@ -126,11 +126,6 @@
   color: var(--ink);
 }
 
-.pg-intro h1 em {
-  font-style: normal;
-  color: var(--flame);
-}
-
 .pg-intro p {
   max-width: 58ch;
   margin: calc(var(--step) * 2.5) 0 0;

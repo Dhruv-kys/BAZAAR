@@ -38,11 +38,6 @@
   text-wrap: balance;
 }
 
-.lp-head em {
-  font-style: normal;
-  color: var(--flame);
-}
-
 .lp-feats {
   display: flex;
   align-items: center;

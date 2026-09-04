@@ -115,11 +115,6 @@
   text-wrap: balance;
 }
 
-.cp-greeting em {
-  font-style: normal;
-  color: var(--flame);
-}
-
 .cp-stage-sub {
   max-width: 46ch;
   margin: calc(var(--step) * 2.5) 0 0;
