@@ -3,6 +3,7 @@ import { AuditDrawer } from "./audit/AuditDrawer";
 import { useAuditEvents } from "./audit/useAuditEvents";
 import { ConversationPanel } from "./chat/ConversationPanel";
 import { OrderOverlay } from "./order/OrderOverlay";
+import { PaidReturn } from "./order/PaidReturn";
 import type { PendingOrder } from "./order/StagedOrder";
 import { SystemBar } from "./system/SystemBar";
 import { useTheme } from "./useTheme";
@@ -45,6 +46,8 @@ export function Workspace() {
       <main className="cs-main">
         <ConversationPanel sessionId={sessionId} onOrderStaged={stageOrder} onStarted={() => setStarted(true)} />
       </main>
+
+      <PaidReturn />
 
       {orderOpen && order && (
         <OrderOverlay order={order} events={events} sessionId={sessionId} onClose={() => setOrderOpen(false)} />

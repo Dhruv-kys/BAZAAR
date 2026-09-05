@@ -1,0 +1,109 @@
+.pr-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: grid;
+  place-items: center;
+  padding: calc(var(--step) * 3);
+  background: color-mix(in srgb, var(--paper) 78%, transparent);
+  backdrop-filter: blur(6px);
+}
+
+.pr {
+  width: min(420px, 100%);
+  padding: calc(var(--step) * 4);
+  text-align: center;
+  background: var(--panel);
+  border: 1px solid var(--rule-2);
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(58, 58, 58, 0.05), 0 40px 80px -46px rgba(58, 58, 58, 0.5);
+}
+
+.pr-mark {
+  display: inline-grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  font-size: 20px;
+  color: var(--ink-3);
+  border: 1px solid var(--rule-2);
+}
+
+.pr.is-settled .pr-mark {
+  color: var(--ok);
+  border-color: color-mix(in srgb, var(--ok) 45%, transparent);
+  background: color-mix(in srgb, var(--ok) 10%, transparent);
+}
+
+.pr h2 {
+  margin: calc(var(--step) * 2) 0 0;
+  font-size: 21px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+/* The one line that is allowed to sound like a person. */
+.pr-thanks {
+  margin: calc(var(--step) * 1.5) 0 0;
+  font-family: var(--hand);
+  font-size: 22px;
+  line-height: 1.3;
+  color: var(--ink-2);
+}
+
+.pr-facts {
+  margin: calc(var(--step) * 3) 0 0;
+  border-top: 1px solid var(--rule);
+  text-align: left;
+}
+
+.pr-facts > div {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+.pr-facts dt {
+  font-family: var(--sys);
+  font-size: var(--t-micro);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.pr-facts dd {
+  margin: 0;
+  font-family: var(--sys);
+  font-size: 13px;
+  color: var(--ink);
+}
+
+.pr-done {
+  width: 100%;
+  min-height: 44px;
+  margin: calc(var(--step) * 3) 0 0;
+  font-family: var(--human);
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--panel);
+  background: var(--ink);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .pr {
+    animation: pr-in 0.5s cubic-bezier(0.2, 0.7, 0.3, 1) both;
+  }
+}
+
+@keyframes pr-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: none; }
+}

@@ -44,6 +44,23 @@ export class PaymentProviderError extends Error {
   }
 }
 
+/*
+ * Where Razorpay sends the payer once they have paid. Without it they are left
+ * on Razorpay's own page with no way back, and the order they just paid for is
+ * still sitting unconfirmed on a tab behind them.
+ *
+ * APP_ORIGIN is the CORS allowlist and its first entry is the deployed front
+ * end, so it is also the right place to come home to.
+ */
+function returnUrl(summaryId: string): string | undefined {
+  const origin = (process.env.APP_ORIGIN ?? "")
+    .split(",")
+    .map((entry) => entry.trim())
+    .find(Boolean);
+  if (!origin) return undefined;
+  return `${origin.replace(/\/$/, "")}/app?paid=${encodeURIComponent(summaryId)}`;
+}
+
 export async function createPaymentLink(order: PendingOrder): Promise<{ id: string; shortUrl: string }> {
   const keyId = process.env.RAZORPAY_KEY_ID;
   const keySecret = process.env.RAZORPAY_KEY_SECRET;
@@ -76,6 +93,10 @@ export async function createPaymentLink(order: PendingOrder): Promise<{ id: stri
        */
       notify: { sms: false, email: false },
       reminder_enable: false,
+      // callback_method must be "get" whenever callback_url is sent.
+      ...(returnUrl(order.summaryId)
+        ? { callback_url: returnUrl(order.summaryId), callback_method: "get" }
+        : {}),
       notes: {
         summaryId: order.summaryId,
         sessionId: order.sessionId,
