@@ -1,8 +1,9 @@
 import cors from "cors";
 import express from "express";
 import { config, reportConfig } from "./config.js";
-import { rateLimit, securityHeaders } from "./security.js";
+import { rateLimit, rateLimitBy, securityHeaders } from "./security.js";
 import { mcpRouter, wellKnownRouter } from "./mcp/server.js";
+import { resolveAgentId } from "./mcp/agents.js";
 import { auditRouter } from "./routes/audit.js";
 import { chatRouter } from "./routes/chat.js";
 import { guardrailsRouter } from "./routes/guardrails.js";
@@ -41,7 +42,19 @@ app.use("/api/voice", rateLimit(30, 60_000), voiceRouter);
 app.use("/api/realtime", rateLimit(60, 60_000), realtimeRouter);
 app.use("/api/agents", rateLimit(10, 60_000), agentsDemoRouter);
 app.use("/.well-known", wellKnownRouter);
-app.use("/mcp", rateLimit(60, 60_000), mcpRouter);
+/*
+ * One tool call is one request on a stateless transport, so a single buyer
+ * flow is roughly ten and a full door check is twice that. 60/min was a human
+ * browsing rate; this is a machine's.
+ */
+app.use(
+  "/mcp",
+  rateLimitBy((req) => {
+    const agentId = resolveAgentId(req);
+    return agentId ? `agent:${agentId}` : null;
+  }, 300, 60_000),
+  mcpRouter,
+);
 
 app.listen(config.port, () => {
   console.log(`server listening on http://localhost:${config.port}`);

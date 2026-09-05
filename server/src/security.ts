@@ -31,6 +31,33 @@ export function createSlidingWindow(maxRequests: number, windowMs: number): Slid
   };
 }
 
+/*
+ * A limit keyed by who is calling rather than where from.
+ *
+ * Agents are identified — they present a credential — so they get a bucket
+ * each. Keyed by IP instead, every agent behind one egress address shares a
+ * budget and a busy one starves the rest, which is the opposite of what a door
+ * meant for machines should do. Anything unidentified still falls back to IP.
+ */
+export function rateLimitBy(
+  keyOf: (req: Request) => string | null,
+  maxRequests: number,
+  windowMs: number,
+) {
+  const window = createSlidingWindow(maxRequests, windowMs);
+  return (req: Request, res: Response, next: NextFunction) => {
+    const key = keyOf(req) ?? `ip:${req.ip ?? "unknown"}`;
+    if (!window.hit(key)) {
+      res.status(429).json({
+        error: "Too many requests on this credential. Wait a moment and try again.",
+        code: "RATE_LIMITED",
+      });
+      return;
+    }
+    next();
+  };
+}
+
 export function rateLimit(maxRequests: number, windowMs: number) {
   const window = createSlidingWindow(maxRequests, windowMs);
   return (req: Request, res: Response, next: NextFunction) => {

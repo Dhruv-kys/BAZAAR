@@ -47,6 +47,15 @@ function isMalformedToolCall(error: unknown): boolean {
   return error instanceof BadRequestError;
 }
 
+/*
+ * Warmth, bounded. The agent lives on tool calls, and past roughly 1.2 a
+ * tool-calling model starts emitting arguments that do not parse — which this
+ * client already retries, but a retry is a slower turn on a voice call. Money
+ * is unaffected either way: pricing and limits are server-side, so temperature
+ * changes how it talks, never what it is allowed to do.
+ */
+const TEMPERATURE = Math.min(1.4, Math.max(0, Number(process.env.OPENAI_TEMPERATURE ?? 1.15)));
+
 export async function createChatCompletion(
   messages: ChatCompletionMessageParam[],
   tools: ChatCompletionTool[],
@@ -56,6 +65,7 @@ export async function createChatCompletion(
       return await getClient().chat.completions.create({
         model: CHAT_MODEL,
         messages,
+        temperature: TEMPERATURE,
         max_completion_tokens: MAX_COMPLETION_TOKENS,
         ...(tools.length ? { tools } : {}),
       });
