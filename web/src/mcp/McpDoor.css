@@ -477,3 +477,14 @@
     min-height: 46px;
   }
 }
+
+/* The claim the rest of the page then goes on to demonstrate. */
+.mcp-claim {
+  margin: 20px 0 0;
+  padding-left: 16px;
+  border-left: 2px solid var(--flame);
+  font-size: 15.5px;
+  line-height: 1.62;
+  color: var(--ink);
+  max-width: 62ch;
+}

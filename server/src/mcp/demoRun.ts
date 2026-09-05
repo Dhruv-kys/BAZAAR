@@ -170,10 +170,10 @@ export async function runBuyerDemo(emit: (step: DemoStep) => void): Promise<void
     });
 
     step({
-      title: "Settlement is where this stops",
+      title: "Settlement is where this stops, and why",
       status: "info",
       detail:
-        "A genuine mandate is signed by the buyer's wallet, which lives on the buyer's machine and never on this server. Run the reference buyer to see a valid one accepted, refused for exceeding its ceiling, and the agent self-correcting.",
+        "A genuine mandate is signed by the buyer's wallet, which lives on the buyer's machine and never on this server. Authorization gets all the way to a payment link with nobody involved. Completing that link needs a person because a Razorpay Payment Link is a hosted checkout page, and the recurring rails an agent could settle on — UPI Autopay, e-mandate — are not enabled on this account. That is the rail's shape today, not a preference, and it is where NPCI's UAP pilots sit too.",
       data: ["MERCHANT_MCP_URL=<this host>/mcp npm run buyer"],
     });
   } catch (error) {

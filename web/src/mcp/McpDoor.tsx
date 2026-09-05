@@ -174,6 +174,12 @@ export function McpDoor() {
             Where a person presses a confirm button, a buying agent presents a signed spend mandate.
             No screen, no browser, no human in the loop.
           </p>
+          <p className="mcp-claim">
+            Authorization is fully agentic: the machine discovered the shop, negotiated, was
+            refused, corrected itself, and got a payment link &mdash; with no human in the loop. The
+            merchant only ever held the public key, so it could verify that consent but never forge
+            it.
+          </p>
           <Note>one policy core — two doors onto it</Note>
         </section>
 
