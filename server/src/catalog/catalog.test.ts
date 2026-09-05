@@ -19,3 +19,17 @@ test("punctuation and extra spacing do not break matching", () => {
 test("occasion tag still filters", () => {
   assert.equal(searchCatalog(undefined, "wedding").length, 0);
 });
+
+test("a misspelled word still falls back to the near match", () => {
+  const matches = searchCatalog("chocolat cake");
+  assert.ok(matches.some((product) => product.id === "choc-truffle-cake"));
+});
+
+test("an exact match wins outright over a coincidental near match elsewhere", () => {
+  const matches = searchCatalog("chocolate cake");
+  assert.ok(matches.every((product) => product.name.toLowerCase().includes("chocolate")));
+});
+
+test("a genuinely unrelated query still matches nothing", () => {
+  assert.equal(searchCatalog("xyzzyplugh").length, 0);
+});

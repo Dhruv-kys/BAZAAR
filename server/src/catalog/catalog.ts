@@ -1,4 +1,5 @@
 import { merchant } from "../merchant/profile.js";
+import { isNearMatch } from "./fuzzy.js";
 
 export interface Variant {
   id: string;
@@ -27,16 +28,35 @@ export interface AddOn {
 const products = merchant.products as Product[];
 const addOns = merchant.addOns as AddOn[];
 
+function words(text: string): string[] {
+  return text.toLowerCase().split(/[^a-z0-9]+/).filter(Boolean);
+}
+
+function haystackOf(product: Product): string {
+  return `${product.name} ${product.category} ${product.tags.join(" ")}`.toLowerCase();
+}
+
 export function searchCatalog(query?: string, occasionTag?: string, category?: string): Product[] {
-  return products.filter((product) => {
+  const shortlist = products.filter((product) => {
     if (category && product.category !== category) return false;
     if (occasionTag && !product.tags.includes(occasionTag)) return false;
-    if (query) {
-      const haystack = `${product.name} ${product.category} ${product.tags.join(" ")}`.toLowerCase();
-      const words = query.toLowerCase().split(/[^a-z0-9]+/).filter(Boolean);
-      if (!words.every((word) => haystack.includes(word))) return false;
-    }
     return true;
+  });
+  if (!query) return shortlist;
+
+  const queryWords = words(query);
+  const exact = shortlist.filter((product) => {
+    const haystack = haystackOf(product);
+    return queryWords.every((word) => haystack.includes(word));
+  });
+  if (exact.length > 0) return exact;
+
+  return shortlist.filter((product) => {
+    const haystack = haystackOf(product);
+    const tokens = words(haystack);
+    return queryWords.every(
+      (word) => haystack.includes(word) || tokens.some((token) => isNearMatch(word, token)),
+    );
   });
 }
 
