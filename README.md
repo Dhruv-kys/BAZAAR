@@ -128,16 +128,19 @@ merchant through the standard remote shim. Verified against the deployed endpoin
       "args": [
         "-y", "mcp-remote",
         "https://bazaar-demo.duckdns.org/mcp",
-        "--header", "Authorization: Bearer <your agent credential>"
+        "--header", "Authorization: Bearer demo-agent-key"
       ]
     }
   }
 }
 ```
 
-Credentials are issued by the merchant, never self-served: `AGENT_CREDENTIALS` maps a bearer
-token to an agent id, and with it unset nobody authenticates at all. Rate limits are per
-credential, so one busy agent cannot starve another.
+`demo-agent-key` is a standing public demo credential on the deployed merchant — paste the config
+above as-is. Credentials are otherwise issued by the merchant, never self-served:
+`AGENT_CREDENTIALS` maps a bearer token to an agent id, and with it unset nobody authenticates at
+all. Rate limits are per credential, so one busy agent cannot starve another, and the demo
+credential cannot spend anything on its own — `confirm_order` still requires a genuine mandate
+signed by a buyer's wallet.
 
 ## Verify the agent door yourself
 
@@ -159,8 +162,10 @@ creation.** It is safe to run repeatedly against the demo account.
 
 Test mode; no money moves.
 
-- Card `4111 1111 1111 1111`, any future expiry, any CVV. OTP of 4–10 digits pays.
-- OTP under 4 digits, or UPI `failure@razorpay`, declines.
+- Card `4100 2800 0000 1007` (Visa) or `5555 5100 0008 1006` (Mastercard), any future expiry, any
+  CVV. OTP of 4–10 digits pays. (International cards are disabled on this account —
+  `4111 1111 1111 1111` will be rejected before the OTP step.)
+- OTP under 4 digits declines.
 
 **Razorpay test mode caps Payment Links at 30 for the lifetime of the account, with no reset.**
 Cancelling old links does not free slots — creation is what counts. Conversation, clamping and the

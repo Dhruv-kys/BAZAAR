@@ -327,12 +327,17 @@ signed    ${doc.authorization.scheme}, single use`}
       "args": [
         "-y", "mcp-remote",
         "${origin}${doc.transport.mcp}",
-        "--header", "Authorization: Bearer <your agent credential>"
+        "--header", "Authorization: Bearer demo-agent-key"
       ]
     }
   }
 }`}</code>
               </pre>
+              <p className="pg-note">
+                <code>demo-agent-key</code> is a standing public credential on this deployment
+                &mdash; paste the config as-is. It cannot spend anything on its own: confirming a
+                purchase still requires a genuine mandate signed by a buyer&rsquo;s wallet.
+              </p>
 
               <p className="pg-lede">Or drive it with the reference buyer in this repository:</p>
               <pre className="mcp-wire">
@@ -350,7 +355,9 @@ signed    ${doc.authorization.scheme}, single use`}
                 Every confirm it attempts is one the merchant must refuse, so the run never reaches
                 payment link creation and costs the demo account nothing.
               </p>
-              <Note>credentials are issued by the merchant, not self-served</Note>
+              <Note>
+                credentials are otherwise issued by the merchant, not self-served
+              </Note>
             </section>
           </>
         )}
