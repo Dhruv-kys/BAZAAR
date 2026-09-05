@@ -309,6 +309,25 @@ mandate   ${doc.authorization.claims.join(", ")}
 signed    ${doc.authorization.scheme}, single use`}
                 </code>
               </pre>
+              <p className="pg-lede">
+                For a client that speaks stdio &mdash; Claude Desktop, Cursor, and most others
+                &mdash; drop this into its MCP config. Verified against this endpoint:
+              </p>
+              <pre className="mcp-wire">
+                <code>{`{
+  "mcpServers": {
+    "bazaar": {
+      "command": "npx",
+      "args": [
+        "-y", "mcp-remote",
+        "${origin}${doc.transport.mcp}",
+        "--header", "Authorization: Bearer <your agent credential>"
+      ]
+    }
+  }
+}`}</code>
+              </pre>
+
               <p className="pg-lede">Or drive it with the reference buyer in this repository:</p>
               <pre className="mcp-wire">
                 <code>{`MERCHANT_MCP_URL=${origin}${doc.transport.mcp} npm run buyer`}</code>

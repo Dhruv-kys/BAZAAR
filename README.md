@@ -115,6 +115,30 @@ survives a process restart.
 Settlement is deliberately split, and declared as `authorization-agentic/settlement-human`: the
 mandate is the authorization gate, and Razorpay's hosted Payment Link stays the settlement gate.
 
+## Connect a third-party MCP client
+
+Any client that speaks stdio — Claude Desktop, Cursor, and most others — reaches this
+merchant through the standard remote shim. Verified against the deployed endpoint:
+
+```json
+{
+  "mcpServers": {
+    "bazaar": {
+      "command": "npx",
+      "args": [
+        "-y", "mcp-remote",
+        "https://bazaar-demo.duckdns.org/mcp",
+        "--header", "Authorization: Bearer <your agent credential>"
+      ]
+    }
+  }
+}
+```
+
+Credentials are issued by the merchant, never self-served: `AGENT_CREDENTIALS` maps a bearer
+token to an agent id, and with it unset nobody authenticates at all. Rate limits are per
+credential, so one busy agent cannot starve another.
+
 ## Verify the agent door yourself
 
 ```bash
