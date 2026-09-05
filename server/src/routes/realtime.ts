@@ -20,11 +20,33 @@ const realtimeTools = toolDefinitions
 
 export const realtimeRouter = Router();
 
+/*
+ * Which voice the shop speaks with, chosen rather than inferred.
+ *
+ * "realtime" is OpenAI speech-to-speech over WebRTC: interruptible, and its
+ * tool calls come back through the same server code the typed path uses.
+ * "turn" is the Deepgram/ElevenLabs path — record, transcribe, answer, speak.
+ * Slower to reply, but nova-3 with language=multi handles Hindi/English
+ * code-switching, which the realtime model does not do as well, and keyterms
+ * from the catalog make it hear product names exactly.
+ *
+ * Reporting unavailable is how the client is told to take the turn-based path,
+ * so this is the one switch that decides it.
+ */
+const VOICE_MODE = (process.env.VOICE_MODE ?? "realtime").toLowerCase();
+
 realtimeRouter.get("/config", (_req, res) => {
-  res.json({ available: missingKeysFor("chat").length === 0 });
+  res.json({
+    available: VOICE_MODE === "realtime" && missingKeysFor("chat").length === 0,
+    mode: VOICE_MODE,
+  });
 });
 
 realtimeRouter.post("/session", async (_req, res) => {
+  if (VOICE_MODE !== "realtime") {
+    res.status(503).json({ error: `Realtime voice is off; VOICE_MODE is "${VOICE_MODE}".` });
+    return;
+  }
   if (missingKeysFor("chat").length > 0) {
     res.status(503).json({ error: "Realtime voice isn't configured. Add OPENAI_API_KEY to .env and restart." });
     return;
